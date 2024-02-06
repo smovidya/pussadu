@@ -59,6 +59,7 @@ const theme = createTheme({
     },
     black01: {
         main: black01,
+        contrastText: white,
     },
     red01: {
         main: red01
