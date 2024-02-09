@@ -177,7 +177,7 @@ export default function LogIn() {
                       </li>
                     </ol>
                     <p>
-                      {" "}
+                      
                       ขอให้ท่านยอมรับและเห็นด้วยกับเงื่อนไขและข้อกำหนดที่ระบุในนโยบายความเป็นส่วนตัวนี้
                       เพื่อเข้าใช้งานระบบลงประชามติ นโยบายนี้อาจมีการเปลี่ยนแปลง
                       และการแก้ไขใด ๆ
@@ -187,7 +187,7 @@ export default function LogIn() {
                       <p>Email:smovidyachula@gmail.com</p>
                       <p>
                         Facebook: สโมสรนิสิตคณะวิทยาศาสตร์จุฬาลงกรณ์มหาวิทยาลัย
-                        - CU Smovidya{" "}
+                        - CU Smovidya
                       </p>
                       <p>Instagram:@smovidya_official</p>
                     </p>
@@ -359,7 +359,7 @@ export default function LogIn() {
                         </li>
                       </ol>
                       <p>
-                        {" "}
+
                         ขอให้ท่านยอมรับและเห็นด้วยกับเงื่อนไขและข้อกำหนดที่ระบุในนโยบายความเป็นส่วนตัวนี้
                         เพื่อเข้าใช้งานระบบลงประชามติ
                         นโยบายนี้อาจมีการเปลี่ยนแปลง และการแก้ไขใด ๆ
@@ -370,7 +370,7 @@ export default function LogIn() {
                         <p>
                           Facebook:
                           สโมสรนิสิตคณะวิทยาศาสตร์จุฬาลงกรณ์มหาวิทยาลัย - CU
-                          Smovidya{" "}
+                          Smovidya
                         </p>
                         <p>Instagram:@smovidya_official</p>
                       </p>
