@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'SukhumvitMedium';
+    src: url('SukhumvitSet-Medium.ttf') format('truetype');
+  }
+@font-face {
+    font-family: 'SukhumvitLight';
+    src: url('SukhumvitSet-Light.ttf') format('truetype');
+  }
+  .normalThaiFont {
+    font-family: 'SukhumvitMedium', sans-serif;
+    font-weight: 700;
+  }
+  .lightThaiFont {
+    font-family: 'SukhumvitLight', sans-serif;
+    font-weight: 700;
+  }
