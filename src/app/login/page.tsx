@@ -20,12 +20,7 @@ import "/public/font/fontStyle.css";
 import { PolicyText } from "@/app/components/policy";
 
 export default function Login() {
-  let width: number;
-  let setWidth: (arg0: number) => void;
-  if (typeof window !== "undefined") {
-    [width, setWidth] = useState<number>(window.innerWidth);
-  }
-  else{width=0}
+  const [width, setWidth] = useState<number>(typeof window!=='undefined' ? window.innerWidth:0);
   const isMobile = width <= 768;
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,16 +50,15 @@ export default function Login() {
   }
   function MobileLoginPage() {
     return (
-      <Box
-        bgcolor={yellow01}
-        width={"100%"}
-        height={"100%"}
-        display={"flex"}
-        position={"fixed"}
-        alignItems={"center"}
-        justifyContent={"center"}
-        boxShadow={"5px 0px 20px 0px rgba(0, 0, 0, 0.25) inset"}
-        minWidth={"300px"}
+      <Grid 
+      bgcolor={yellow01}
+      width={"100vw"}
+      height={"100vh"}
+      display={"flex"}
+      position={"fixed"}
+      alignItems={"center"}
+      justifyContent={"center"}
+      minWidth={"300px"}
       >
         <Image
           src={"picture/logoSmo.svg"}
@@ -178,7 +172,7 @@ export default function Login() {
             <Box height={"108px"}></Box>
           </Stack>
         </Box>
-      </Box>
+      </Grid>
     );
   }
   function ComLoginPage() {
@@ -309,5 +303,5 @@ export default function Login() {
       </Grid>
     );
   }
-  return <div>{isMobile ? MobileLoginPage() : ComLoginPage()}</div>;
+  return <div>{isMobile ? <MobileLoginPage/> : <ComLoginPage/>}</div>;
 }
