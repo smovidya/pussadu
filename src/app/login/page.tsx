@@ -20,7 +20,12 @@ import "/public/font/fontStyle.css";
 import { PolicyText } from "@/app/components/policy";
 
 export default function Login() {
-  const [width, setWidth] = useState<number>(window.innerWidth);
+  let width: number;
+  let setWidth: (arg0: number) => void;
+  if (typeof window !== "undefined") {
+    [width, setWidth] = useState<number>(window.innerWidth);
+  }
+  else{width=0}
   const isMobile = width <= 768;
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,7 +34,6 @@ export default function Login() {
     target: { checked: boolean | ((prevState: boolean) => boolean) };
   }) => {
     setIsChecked(event.target.checked);
-    // If the Checkbox is checked, open the Modal
     if (event.target.checked) {
       setIsModalOpen(true);
     }
