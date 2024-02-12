@@ -1,7 +1,4 @@
-@font-face {
-    font-family: "Noto Sans Thai";
-    src: url("https://fonts.googleapis.com/css2?family=Noto+Sans+Thai") format("truetype");
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@500;600;700;&display=swap');
 
 .H1 {
     font-family: "Noto Sans Thai", sans-serif;

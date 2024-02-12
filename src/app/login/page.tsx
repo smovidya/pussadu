@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import Image from 'next/image'
 import { grey02, yellow01, white } from "@/colors";
 import {
   Box,
@@ -61,11 +62,11 @@ export default function Login() {
         boxShadow={"5px 0px 20px 0px rgba(0, 0, 0, 0.25) inset"}
         minWidth={"300px"}
       >
-        <img
-          src="picture/logoSmo.png"
+        <Image
+          src={"picture/logoSmo.svg"}
           alt="logoSmo"
-          width={"72px"}
-          height={"64px"}
+          width={72}
+          height={64}
           style={{ position: "fixed", right: "23px", top: "29px" }}
         />
         <Box
@@ -75,14 +76,15 @@ export default function Login() {
           gap={"130px"}
         >
           <Stack direction={"column"} spacing={"0"} alignItems={"center"}>
-            <img
-              src="picture/yellowBox.svg"
+            <Image
+              src={"picture/yellowBox.svg"}
               alt="iconBox"
-              width={"108px"}
-              height={"108px"}
+              width={108}
+              height={108}
             />
+            
             <Typography
-              className="H2"
+              className="H1"
               style={{ textShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
             >
               ระบบพัสดุ
@@ -150,7 +152,7 @@ export default function Login() {
                   overflow={"auto"}
                   style={{ marginBottom: "13px" }}
                 >
-                  <PolicyText></PolicyText>
+                  <PolicyText/>
                 </Typography>
                 <Box>
                   <Button
@@ -187,7 +189,12 @@ export default function Login() {
           justifyContent={"center"}
           alignItems={"center"}
         >
-          <img src="picture/yellowBox.svg" alt="iconBox" />
+          <Image
+            src={"picture/yellowBox.svg"}
+            alt="iconBox"
+            width={200}
+            height={200}
+          />
         </Grid>
         <Grid item xs={4.8}>
           <Box
@@ -200,10 +207,11 @@ export default function Login() {
             height={"100%"}
             minWidth={"400px"}
           >
-            <img
-              src="picture/logoSmo.png"
+            <Image
+              src={"picture/logoSmo.svg"}
               alt="logoSmo"
-              width="80px"
+              width={80}
+              height={71.5}
               style={{ position: "fixed", right: "28px", top: "33px" }}
             />
             <Typography
@@ -273,7 +281,7 @@ export default function Login() {
                   overflow={"auto"}
                   style={{ marginBottom: "13px" }}
                 >
-                  <PolicyText></PolicyText>
+                  <PolicyText/>
                 </Typography>
                 <Box>
                   <Button
@@ -298,142 +306,4 @@ export default function Login() {
     );
   }
   return <div>{isMobile ? MobileLoginPage() : ComLoginPage()}</div>;
-}
-
-function testResponsive() {
-  const [isChecked, setIsChecked] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleCheckboxChange = (event: {
-    target: { checked: boolean | ((prevState: boolean) => boolean) };
-  }) => {
-    setIsChecked(event.target.checked);
-    if (event.target.checked) {
-      setIsModalOpen(true);
-    }
-  };
-
-  const handleModalClose = () => {
-    setIsModalOpen(false);
-  };
-
-  return (
-    <Grid container height={"100vh"}>
-      <Grid
-        item
-        xs={false} md={7.2}
-        bgcolor={yellow01}
-        display={"flex"}
-        height={"100%"}
-        justifyContent={"center"}
-        alignItems={"center"}
-      >
-      </Grid>
-      <Grid item xs={12} md={4.8}>
-        <Box
-          bgcolor={grey02}
-          display={"flex"}
-          flexDirection={"column"}
-          alignItems={"center"}
-          justifyContent={"center"}
-          boxShadow={"5px 0px 20px 0px rgba(0, 0, 0, 0.25) inset"}
-          height={"100%"}
-          minWidth={"400px"}
-        >
-          <img
-            src="picture/logoSmo.png"
-            alt="logoSmo"
-            width="80px"
-            style={{ position: "fixed", right: "28px", top: "33px" }}
-          />
-          <Typography
-            className="H1"
-            style={{ textShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
-          >
-            ระบบพัสดุ
-          </Typography>
-          <Typography className="subHead1" style={{ marginBottom: "113px" }}>
-            สโมสรนิสิตคณะวิทยาศาสตร์
-          </Typography>
-
-          <Button
-            variant="contained"
-            style={{
-              width: "285px",
-              height: "35px",
-              backgroundColor: "black",
-            }}
-          >
-            <Typography className="bodyEngBold1" color={white}>
-              LOGIN CHULA SSO
-            </Typography>
-          </Button>
-          <FormControlLabel
-            required
-            className="body1"
-            label="ยอมรับนโยบายการจัดเก็บข้อมูลส่วนตัว"
-            control={
-              <Checkbox
-                checked={isChecked}
-                onChange={handleCheckboxChange}
-                sx={{ color: "black", "&.Mui-checked": { color: "black" } }}
-              />
-            }
-          />
-          <Modal
-            open={isModalOpen}
-            onClose={handleModalClose}
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <Stack
-              width={"760px"}
-              height={"620px"}
-              bgcolor={white}
-              flexDirection={"column"}
-              alignItems={"center"}
-              borderRadius={"var(--2, 16px)"}
-            >
-              <Box
-                ml={"23.5px"}
-                mt={"15.5px"}
-                mb={"17.5px"}
-                alignSelf={"start"}
-              >
-                <Typography className="H2">
-                  นโยบายการจัดเก็บข้อมูลส่วนบุคคล
-                </Typography>
-              </Box>
-              <Typography
-                width={"696px"}
-                height={"481px"}
-                overflow={"auto"}
-                style={{ marginBottom: "13px" }}
-              >
-                <PolicyText></PolicyText>
-              </Typography>
-              <Box>
-                <Button
-                  onClick={handleModalClose}
-                  variant="contained"
-                  style={{
-                    width: "694px",
-                    height: "42px",
-                    backgroundColor: yellow01,
-                  }}
-                >
-                  <Typography className="body1" fontSize={15}>
-                    ตกลง
-                  </Typography>
-                </Button>
-              </Box>
-            </Stack>
-          </Modal>
-        </Box>
-      </Grid>
-    </Grid>
-  );
 }
