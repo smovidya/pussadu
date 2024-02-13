@@ -1,12 +1,12 @@
 'use client';
 import React from 'react';
-import PrimarySearchAppBar from '@/app/components/navbar'; // Add missing import statement
+import Navbar from '@/app/components/navbar'; // Add missing import statement
+import "@/app/globals.css";
 
 const Page = () => {
     return (
         <div>
-            <PrimarySearchAppBar />
-            <h1>Hello, World!</h1>
+            <Navbar />
         </div>
     );
 };
