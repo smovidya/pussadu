@@ -14,7 +14,7 @@ const supabase = createClient(
 
 // get image and return image as url
 export async function GET() {
-  const { data} = supabase.storage
+  const {data} = supabase.storage
       .from("test")
       .getPublicUrl("reference.png");
   return NextResponse.json({ link: data });
