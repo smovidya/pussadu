@@ -1,10 +1,6 @@
-import * as React from "react";
 import Button from "@mui/material/Button";
-import PrimarySearchAppBar from "./components/navbar";
+import Login from "./login/page";
 
-export default function ButtonUsage() {
-  return <>
-
-  </>
- ;
+export default function Home() {
+  return <Login/>
 }
