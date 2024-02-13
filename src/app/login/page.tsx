@@ -19,11 +19,14 @@ import "@fontsource/roboto/700.css";
 import "/public/font/fontStyle.css";
 import { PolicyText } from "@/app/components/policy";
 
+
+
 export default function Login() {
   const [width, setWidth] = useState<number>(typeof window!=='undefined' ? window.innerWidth:0);
   const isMobile = width <= 768;
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   const handleCheckboxChange = (event: {
     target: { checked: boolean | ((prevState: boolean) => boolean) };
@@ -39,11 +42,16 @@ export default function Login() {
   };
 
   useEffect(() => {
+    setIsLoaded(true);
     window.addEventListener("resize", handleWindowSizeChange);
     return () => {
       window.removeEventListener("resize", handleWindowSizeChange);
     };
   }, []);
+
+  if (!isLoaded) {
+    return null;
+  }
 
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
@@ -303,5 +311,9 @@ export default function Login() {
       </Grid>
     );
   }
+  
+  // ...
+
   return <div>{isMobile ? <MobileLoginPage/> : <ComLoginPage/>}</div>;
 }
+
