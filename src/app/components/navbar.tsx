@@ -83,6 +83,7 @@ export default function Navbar() {
                             style={{ width: "50%", height: "40px", marginInline: "50px", border: "0px", fontSize: "15px" }}
                             onSubmit={(event) => {
                                 event.preventDefault();
+                                // js script to redirect to the search page
                                 const searchValue = (event.target as HTMLFormElement).querySelector('input[name="search"]')?.value;
                                 if (searchValue == null || searchValue === "") { return; }
                                 else
