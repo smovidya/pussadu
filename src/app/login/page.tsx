@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import Image from 'next/image'
+import Image from "next/image";
 import { grey02, yellow01, white } from "@/colors";
 import {
   Box,
@@ -19,18 +19,13 @@ import "@fontsource/roboto/700.css";
 import "/public/font/fontStyle.css";
 import { PolicyText } from "@/app/components/policy";
 
-
-
 export default function Login() {
-  const [width, setWidth] = useState<number>(typeof window!=='undefined' ? window.innerWidth:0);
+  const [width, setWidth] = useState<number>(0);
   const isMobile = width <= 768;
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
 
-  const handleCheckboxChange = (event: {
-    target: { checked: boolean | ((prevState: boolean) => boolean) };
-  }) => {
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsChecked(event.target.checked);
     if (event.target.checked) {
       setIsModalOpen(true);
@@ -41,32 +36,29 @@ export default function Login() {
     setIsModalOpen(false);
   };
 
+
   useEffect(() => {
-    setIsLoaded(true);
+    setWidth(window.innerWidth);
     window.addEventListener("resize", handleWindowSizeChange);
     return () => {
       window.removeEventListener("resize", handleWindowSizeChange);
     };
   }, []);
 
-  if (!isLoaded) {
-    return null;
-  }
-
   function handleWindowSizeChange() {
     setWidth(window.innerWidth);
   }
   function MobileLoginPage() {
     return (
-      <Grid 
-      bgcolor={yellow01}
-      width={"100vw"}
-      height={"100vh"}
-      display={"flex"}
-      position={"fixed"}
-      alignItems={"center"}
-      justifyContent={"center"}
-      minWidth={"300px"}
+      <Grid
+        bgcolor={yellow01}
+        width={"100vw"}
+        height={"100vh"}
+        display={"flex"}
+        position={"fixed"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        minWidth={"300px"}
       >
         <Image
           src={"picture/logoSmo.svg"}
@@ -88,7 +80,6 @@ export default function Login() {
               width={108}
               height={108}
             />
-            
             <Typography
               className="H1"
               style={{ textShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
@@ -158,7 +149,7 @@ export default function Login() {
                   overflow={"auto"}
                   style={{ marginBottom: "13px" }}
                 >
-                  <PolicyText/>
+                  <PolicyText />
                 </Typography>
                 <Box>
                   <Button
@@ -287,7 +278,7 @@ export default function Login() {
                   overflow={"auto"}
                   style={{ marginBottom: "13px" }}
                 >
-                  <PolicyText/>
+                  <PolicyText />
                 </Typography>
                 <Box>
                   <Button
@@ -311,9 +302,9 @@ export default function Login() {
       </Grid>
     );
   }
-  
-  // ...
-
-  return <div>{isMobile ? <MobileLoginPage/> : <ComLoginPage/>}</div>;
+  return (
+    <div suppressHydrationWarning>
+      {isMobile ? <MobileLoginPage  /> : <ComLoginPage />}
+    </div>
+  );
 }
-
