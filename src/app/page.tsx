@@ -1,5 +1,6 @@
 import Button from "@mui/material/Button";
+import Login from "./login/page";
 
-export default function ButtonUsage() {
-  return <Button variant="contained" color="yellow01">Hello world</Button>;
+export default function Home() {
+  return <Login/>
 }
