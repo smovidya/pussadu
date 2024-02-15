@@ -5,7 +5,7 @@ import "@/app/globals.css";
 import { useState, useEffect } from 'react';
 import {Box, Card, Grid} from '@mui/material';
 import "@fontsource/roboto/700.css";
-import { red01, yellow01, yellow02 } from '@/colors';
+import { red01, yellow01, yellow02, green1, white, black01 } from '@/colors';
 import { BorderBottom } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
@@ -73,6 +73,10 @@ const Page = () => {
         setWidth(window.innerWidth);
     }
 
+    function handleCartClick(item: { id: number; title: string; img: string; price: string; isAvailable: boolean; amount: number; }) {
+        window.location.href = "{`/cart/${item.id}`}";
+    }
+
     useEffect(() => {
         setIsLoaded(true);
         setWidth(window.innerWidth);
@@ -89,6 +93,8 @@ const Page = () => {
     if (!isLoaded) {
         return null;
     }
+
+    const is_user_containt_cart = true;
 
 
 
@@ -108,14 +114,26 @@ const Page = () => {
                                         <img src={item.img} alt={item.title} style={{ width: "100%", height: "200px" }} />
                                         <div>{item.title}</div>
                                         <div>{item.price}</div>
-                                        <div style={{ alignContent: "center" }}>
+                                        <div style={{ justifyContent: "center", width: "100%", display:"flex", paddingLeft: "5px", paddingRight: "5px"}}>
+
                                             {item.isAvailable ? (
-                                                <Button variant="contained" color="success" style={{ width: "100px", height: "40px", background: "green01" }}>
-                                                    Add to cart
-                                                </Button>
+                                                is_user_containt_cart ? (
+                                                    <>
+                                                        <Button variant="contained" style={{ width: "80px", height: "40px", backgroundColor: green1, borderRadius: "20px", color: white}} onClick={() => handleCartClick(item)}>
+                                                            ใช้งาน {item.amount}
+                                                        </Button>
+                                                        <Button variant="contained" style={{ width: "80px", height: "40px", backgroundColor: white, borderRadius: "20px", color: black01}}>
+                                                            เหลือ {item.amount}
+                                                        </Button>
+                                                    </>
+                                                ) : (
+                                                    <Button variant="contained" style={{ width: "80px", height: "40px", backgroundColor: green1, borderRadius: "20px", color: white}}>
+                                                        ใส่ตะกร้า
+                                                    </Button>
+                                                )
                                             ) : (
-                                                <Button variant="contained" color= "red01" style={{ width: "100px", height: "40px", background: "red01" }} disabled>
-                                                    Out of stock
+                                                <Button variant="contained" style={{ width: "80px", height: "40px", backgroundColor: red01, borderRadius: "20px", color: white}} disabled>
+                                                    หมด
                                                 </Button>
                                             )}
                                         </div>
