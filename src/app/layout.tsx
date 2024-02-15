@@ -1,18 +1,18 @@
-/* eslint-disable @next/next/no-page-custom-font */
 'use client'
-import "../global.css";
+
+import theme from "@/theme";
+import { ThemeProvider } from "@mui/material";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+// or `v1X-appRouter` if you are using Next.js v1X
 
 export default function RootLayout(props: { children: any }) {
   const { children } = props;
   return (
     <html lang="en">
-      <head>
-          <link rel="preconnect" href="https://fonts.googleapis.com"/>
-          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-          <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@100..900&display=swap" rel="stylesheet"/>
-      </head>
       <body>
-        {children}
+        <AppRouterCacheProvider options={{ enableCssLayer: true }}>
+          <ThemeProvider theme={theme}>{children}</ThemeProvider>
+        </AppRouterCacheProvider>
       </body>
     </html>
   );
