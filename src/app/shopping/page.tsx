@@ -6,7 +6,6 @@ import { useState, useEffect } from 'react';
 import {Box, Card, Grid} from '@mui/material';
 import "@fontsource/roboto/700.css";
 import { red01, yellow01, yellow02, green1, white, black01 } from '@/colors';
-import { BorderBottom } from '@mui/icons-material';
 import { Button } from '@mui/material';
 
 
