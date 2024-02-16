@@ -1,18 +1,23 @@
 'use strict';
 import Image from "next/image";
-import Avatar from "react-avatar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
+
 const isAdmin = true;
 const AdminButton = () => {
     return (
         <a href="/admin">
-            <Avatar name="Admin" size="30" round="30px" color="#DAB021" />
+            <Avatar>
+                <AvatarImage src="/picture/admin.svg" alt="admin" className="bg-yellow02 aspect-square" />
+                <AvatarFallback className=" dark:bg-yellow02" style={{}}>A</AvatarFallback>
+            </Avatar>
         </a>
     );
 }
 const Navbar = () => {
     return (
         <>
-            <div className="flex justify-between items-center min-w-120 h-20 pt-6 sm:h-20 sm:pt-0" style={{ backgroundColor: "#F7CF47", width: "100%" }}>
+            <div className="flex justify-between items-center min-w-120 h-20 pt-6 sm:h-20 sm:pt-0 bg-yellow01" style={{ width: "100%" }}>
                 <div className="flex justify-between items-center" style={{ width: "100%" }}>
                     <div className="flex items-center" style={{ width: "100%" }}  >
                         <a className="hidden sm:flex mx-10">
@@ -44,7 +49,9 @@ const Navbar = () => {
                     <div className="flex items-center space-x-5 mx-10 align-right">
                         {isAdmin && <AdminButton />}
                         <a href="/profile">
-                            <Avatar name="P" size="30" round="30px" color="#DAB021" />
+                            <Avatar>
+                                <AvatarFallback className="dark:bg-yellow02">P</AvatarFallback>
+                            </Avatar>
                         </a>
                     </div>
                 </div>
