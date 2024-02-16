@@ -1,16 +1,30 @@
+"use client";
 import Image from "next/image";
-import AgreementDialog from "./components/AgreementDialog";
+import AgreementDialog from "../components/AgreementDialog";
+import { useState, useEffect } from 'react'
 
 const LoginPage = () => {
+  const [isClient, setIsClient] = useState(false)
+ 
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient) {
+    return null
+  }
+
   return (
-    <div className="w-screen h-screen grid grid-cols-2">
+    <div className="w-screen h-screen grid grid-cols-2 color-green">
       <div className="bg-yellow01 hidden md:flex items-center justify-center">
-        <Image
-          src={"/picture/yellowBox.svg"}
-          alt="parcel"
-          width={200}
-          height={200}
-        />
+        <a>
+          <Image
+            src={"/picture/yellowBox.svg"}
+            alt="parcel"
+            width={200}
+            height={200}
+          />
+        </a>
       </div>
       <div className="flex flex-col p-5 md:p-10 lg:p-20 col-span-3 md:col-span-1 bg-yellow01 md:bg-white">
         <div className="w-full flex justify-end">
