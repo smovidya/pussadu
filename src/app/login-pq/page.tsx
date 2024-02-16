@@ -1,5 +1,5 @@
 import Image from "next/image";
-import AgreementDialog from "./components/AgreementDialog";
+import AgreementDialog from "../components/AgreementDialog";
 
 const LoginPage = () => {
   return (
