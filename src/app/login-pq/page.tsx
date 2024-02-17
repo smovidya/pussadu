@@ -3,7 +3,7 @@ import AgreementDialog from "../components/AgreementDialog";
 
 const LoginPage = () => {
   return (
-    <div className="w-screen h-screen grid grid-cols-2">
+    <div className="w-full h-full grid grid-cols-2">
       <div className="bg-yellow01 hidden md:flex items-center justify-center">
         <Image
           src={"/picture/yellowBox.svg"}
@@ -52,3 +52,4 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
+  

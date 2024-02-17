@@ -38,7 +38,10 @@ module.exports = {
         grey01: "#6B6B6B",
         black01: "#000000",
         grey02: '#F2F2F2'
-      }
+      },
+      boxShadow: {
+        'inner':'5px 0px 20px 0px rgba(0, 0, 0, 0.25) inset'
+      },
     },
   },
   plugins: [],
