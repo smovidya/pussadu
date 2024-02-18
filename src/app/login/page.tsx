@@ -43,7 +43,7 @@ const LoginPage = () => {
           >
             LOGIN CHULA SSO
           </button>
-          <AgreementDialog/>
+          <AgreementDialog />
           <div className="h-36 md:h-16"></div>
         </div>
       </div>
