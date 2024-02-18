@@ -13,26 +13,26 @@ import {
 const AgreementDialog = () => {
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
-        <div className="flex py-4 items-center">
+      <div className="flex py-4 items-center">
+        <AlertDialogTrigger>
           <input
             type="checkbox"
             name="agreement"
             id="agreement"
-            className="w-5 h-5 mr-2"
+            className="w-5 h-5 mr-2 accent-yellow01 flex  "
             readOnly
           />
-          <p className=" font-noto-sans font-medium text-body2 text-black">
-            ยอมรับนโยบายการจัดเก็บข้อมูลส่วนตัว
-          </p>
-        </div>
-      </AlertDialogTrigger>
+        </AlertDialogTrigger>
+        <p className="font-noto-sans font-medium text-body2 text-black">
+          ยอมรับนโยบายการจัดเก็บข้อมูลส่วนตัว
+        </p>
+      </div>
       <AlertDialogContent className="bg-white">
-        <AlertDialogHeader >
-          <AlertDialogTitle className=" font-noto-sans text-H3 font-medium">
+        <AlertDialogHeader>
+          <AlertDialogTitle className=" font-noto-sans text-[24px] text-black font-medium">
             นโยบายการจัดเก็บข้อมูลส่วนบุคคล
           </AlertDialogTitle>
-          <AlertDialogDescription className=" font-noto-sans text-body2 font-medium">
+          <AlertDialogDescription className=" font-noto-sans text-[16px] text-black font-medium">
             สโมสรนิสิตคณะวิทยาศาสตร์จุฬาลงกรณ์มหาวิทยาลัยให้ความสำคัญต่อความปลอดภัยของข้อมูลส่วนบุคคลของท่าน
             และเพื่อช่วยให้เราปกป้องข้อมูลส่วนบุคคล
             (โดยอ้างอิงนิยามของข้อมูลส่วนบุคคลในพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล
@@ -71,7 +71,7 @@ const AgreementDialog = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogAction className="bg-yellow-400 text-black font-noto-sans w-full hover:bg-yellow-500">
+          <AlertDialogAction className="bg-yellow01 text-black font-noto-sans w-full h-10 rounded-md shadow-sm shadow-black">
             ตกลง
           </AlertDialogAction>
         </AlertDialogFooter>
