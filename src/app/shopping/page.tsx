@@ -11,8 +11,6 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { relative } from "path";
 
 function strip(string: string) {
     return string.replace(/['"]+/g, '');
