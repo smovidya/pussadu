@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+
+
+
 
 function strip(string: string) {
     return string.replace(/['"]+/g, '');
@@ -142,25 +147,25 @@ function buttonOption(it: any[]) {
     if (it[4] == true) {
         if (it[5] == "\"Borrowed\"") {
             return (
-            <div className=" flex w-3/5 space-x-1 justify-content-center place-items-center drop-shadow-lg">
-                <Button className="text-white01 p-2 bg-red01 font-noto-sans" disabled style={{ borderRadius: "50px", flexGrow: "1" }}>ไม่ว่าง</Button>
-            </div>
-        )}
+                <div className=" flex w-3/5 space-x-1 justify-content-center place-items-center drop-shadow-lg">
+                    <Button className="text-white01 p-2 bg-red01 font-noto-sans" disabled style={{ borderRadius: "50px", flexGrow: "1" }}>ไม่ว่าง</Button>
+                </div>
+            )
+        }
         else {
             return (<div className="flex w-3/5 space-x-1 justify-content-center place-items-center justify-center">
-            <Button asChild className="text-white01 p-2 bg-green01 hover:bg-grey01 drop-shadow-lg font-noto-sans" style={{ borderRadius: "50px", flexGrow: "1" }}>
-                <Link href={`/shopping/${it[0]}`}>
-                    ว่าง
-                </Link>
-            </Button>
+                <Button asChild className="text-white01 p-2 bg-green01 hover:bg-grey01 drop-shadow-lg font-noto-sans" style={{ borderRadius: "50px", flexGrow: "1" }}>
+                    <Link href={`/shopping/${it[0]}`}>
+                        ว่าง
+                    </Link>
+                </Button>
             </div>
-        )}
+            )
+        }
     }
     else {
         const amount = amountItem(it);
-        console.log(amount);
         const pick = pickItem(userPick, String(it[0]));
-        console.log(pick);
         const remaining = amount != undefined && pick !== undefined ? amount - pick : 0;
         if (pick == 0) {
             return (<div className="flex w-full space-x-1 justify-content-center">
@@ -170,23 +175,48 @@ function buttonOption(it: any[]) {
                     </Link>
                 </Button>
             </div>
-        )}
+            )
+        }
         else
-        return (<div className=" flex w-full space-x-1 justify-content-center">
-            <Button asChild className="text-white01 p-2 w-5/12 bg-green01 hover:bg-grey01 drop-shadow-lg font-noto-sans" style={{ borderRadius: "50px", flexGrow: "1" }}>
-                <Link href={`/shopping/${it[0]}`}> 
-                    เลือก {pick}
-                </Link>
-            </Button>
-            <Button asChild className="text-black01 p-2 w-5/12 border-2 hover:bg-grey01 drop-shadow-lg font-noto-sans" style={{ borderRadius: "50px", flexGrow: "1" }}>
-                <Link href={`/shopping/${it[0]}`}>
-                    เหลือ {remaining}
-                </Link>
-            </Button>
+            return (<div className=" flex w-full space-x-1 justify-content-center">
+                <Button asChild className="text-white01 p-2 w-5/12 bg-green01 hover:bg-grey01 drop-shadow-lg font-noto-sans" style={{ borderRadius: "50px", flexGrow: "1" }}>
+                    <Link href={`/shopping/${it[0]}`}>
+                        เลือก {pick}
+                    </Link>
+                </Button>
+                <Button asChild className="text-black01 p-2 w-5/12 border-2 hover:bg-grey01 drop-shadow-lg font-noto-sans" style={{ borderRadius: "50px", flexGrow: "1" }}>
+                    <Link href={`/shopping/${it[0]}`}>
+                        เหลือ {remaining}
+                    </Link>
+                </Button>
             </div>
-        )
+            )
     }
 }
+
+function RadioGroupDemo() {
+    return (
+        <div className="row">
+            <p className="pb-2">ประเภท</p>
+            <RadioGroup defaultValue="allProduct" className="font-noto-sans">
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="allProduct" id="r1"/>
+                    <Label htmlFor="r1" className="font-noto-sans">ทั้งหมด</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="borrowItem" id="r2" />
+                    <Label htmlFor="r2" className="font-noto-sans">ครุภัณฑ์</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Inventory" id="r3" />
+                    <Label htmlFor="r3" className="font-noto-sans">พัสดุ</Label>
+                </div>
+            </RadioGroup>
+        </div>
+    )
+}
+
+
 
 
 
@@ -212,7 +242,7 @@ function Layout() { // Fix the function name to follow the naming convention
                             </div>
                             {
                                 //<p className="text-black01 font-noto-sans">{strip(String(it[5]))}</p>"}
-                            }%
+                            }
                         </CardContent>
                     </Card>
                 )
@@ -222,12 +252,19 @@ function Layout() { // Fix the function name to follow the naming convention
 
 }
 
+
+
 const shoppingPage = () => {
     return (
         <div>
             <Navbar />
             <div className="w-full flex flex-wrap justify-center align-center content-center items-baseline">
                 <div className="w-11/12 h-20 md:w-4/5 text-center border-2 border-b-8 m-10 pt-6 drop-shadow-xl rounded-md border-yellow02 font-noto-sans">รายการสิ่งของ</div>
+            </div>
+            <div className="invisible lg:visible fixed w-full justify-right align-right content-right font-noto-sans mr-16 z-50">
+                <div className="flex justify-end content-right mr-0 lg:mr-20">
+                    {RadioGroupDemo()}
+                </div>
             </div>
             {Layout()}
         </div>
