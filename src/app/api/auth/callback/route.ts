@@ -1,6 +1,7 @@
 "use server";
 
 import { DeeAppId, DeeAppSecret } from "@/lib/constants";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 const serviceValidation = async (ticket: string) => {
@@ -52,7 +53,12 @@ export async function GET(request: Request) {
 
   // Use the extracted ticket in your logic or validation
   const { status, message } = await serviceValidation(ticket);
-  if (status === 200) {
+  if (status === 200 && message !== null) {
+    const datas = message.message;
+    const cookieStore = cookies();
+    cookieStore.set('first_name', datas.firstname);
+    cookieStore.set('last_name', datas.lastname);
+    cookieStore.set('student_id', datas.ouid);
     return NextResponse.redirect('https://pussaduvidyacu.vercel.app/profile')
   } else {
     return NextResponse.json({ message: message });
