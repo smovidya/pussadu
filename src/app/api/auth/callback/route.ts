@@ -54,7 +54,8 @@ export async function GET(request: Request) {
   // Use the extracted ticket in your logic or validation
   const { status, message } = await serviceValidation(ticket);
   if (status === 200 && message !== null) {
-    const datas = message.message;
+    const datas = message;
+    console.log('datas_debug', datas);
     const cookieStore = cookies();
     cookieStore.set('first_name', datas.firstname);
     cookieStore.set('last_name', datas.lastname);
