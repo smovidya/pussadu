@@ -53,7 +53,7 @@ export async function GET(request: Request) {
   // Use the extracted ticket in your logic or validation
   const { status, message } = await serviceValidation(ticket);
   if (status === 200) {
-    return NextResponse.redirect('/profile')
+    return NextResponse.redirect('https://pussaduvidyacu.vercel.app/')
   } else {
     return NextResponse.json({ message: message });
   }
