@@ -43,6 +43,7 @@ const serviceValidation = async (ticket: string) => {
 export async function GET(request: Request) {
   // Extract the ticket from the URL parameters
   const ticket = new URL(request.url).searchParams.get('ticket')
+  console.log("Ticket debugging", ticket);
 
   if (!ticket) {
     // Handle the case where the ticket parameter is missing
