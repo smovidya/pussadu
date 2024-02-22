@@ -42,9 +42,7 @@ const serviceValidation = async (ticket: string) => {
 };
 
 export async function GET(request: Request) {
-  // Extract the ticket from the URL parameters
-  const ticket = new URL(request.url).searchParams.get('ticket')
-  console.log("Ticket debugging", ticket);
+  const ticket = new URL(request.url).searchParams.get("ticket");
 
   if (!ticket) {
     // Handle the case where the ticket parameter is missing
@@ -55,12 +53,15 @@ export async function GET(request: Request) {
   const { status, message } = await serviceValidation(ticket);
   if (status === 200 && message !== null) {
     const datas = message;
-    console.log('datas_debug', datas);
+
+    // Set cookies
     const cookieStore = cookies();
-    cookieStore.set('first_name', datas.firstname);
-    cookieStore.set('last_name', datas.lastname);
-    cookieStore.set('student_id', datas.ouid);
-    return NextResponse.redirect('https://pussaduvidyacu.vercel.app/profile')
+    cookieStore.set("first_name", datas.firstname);
+    cookieStore.set("last_name", datas.lastname);
+    cookieStore.set("student_id", datas.ouid);
+
+    // Go to the profile
+    return NextResponse.redirect("https://pussaduvidyacu.vercel.app/profile");
   } else {
     return NextResponse.json({ message: message });
   }

@@ -36,14 +36,14 @@ const LoginPage = () => {
             สโมสรนิสิตคณะวิทยาศาสตร์
           </div>
           <a href="https://account.it.chula.ac.th/html/login.html?serviceName=PUSSADU-SUCU&service=https://pussaduvidyacu.vercel.app/api/auth/callback">
-          <button
-            type="button"
-            data-modal-target="default-model"
-            data-modal-toggle="default-modal"
-            className=" block font-noto-sans text-bodyEngBold1 font-bold py-2 px-6 bg-black text-white rounded-lg w-72 shadow-sm shadow-black"
-          >
-            LOGIN CHULA SSO
-          </button>
+            <button
+              type="button"
+              data-modal-target="default-model"
+              data-modal-toggle="default-modal"
+              className=" block font-noto-sans text-bodyEngBold1 font-bold py-2 px-6 bg-black text-white rounded-lg w-72 shadow-sm shadow-black"
+            >
+              LOGIN CHULA SSO
+            </button>
           </a>
           <AgreementDialog />
           <div className="h-36 md:h-16"></div>
