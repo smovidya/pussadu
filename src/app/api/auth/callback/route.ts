@@ -42,24 +42,21 @@ const serviceValidation = async (ticket: string) => {
 };
 
 export async function GET(request: Request) {
-    // Extract the ticket from the URL parameters
-    const ticket = request.url.slice(request.url.lastIndexOf("/") + 1);
-    console.log("Ticket", ticket);
+  // Extract the ticket from the URL parameters
+  const ticket = request.url.slice(request.url.lastIndexOf("/") + 1);
+  console.log("Ticket", ticket);
 
-    if (!ticket) {
-      // Handle the case where the ticket parameter is missing
-      return new Response("Ticket parameter is missing", { status: 400 });
-    }
+  if (!ticket) {
+    // Handle the case where the ticket parameter is missing
+    return new Response("Ticket parameter is missing", { status: 400 });
+  }
 
-    // Use the extracted ticket in your logic or validation
-    const { status, message } = await serviceValidation(ticket);
-    console.log("Message debugging", message);
-    if (status === 200) {
-        return NextResponse.redirect('/profile')
-
-    }
-    else {
-        return NextResponse.json({message : message});
-    }
-  } 
+  // Use the extracted ticket in your logic or validation
+  const { status, message } = await serviceValidation(ticket);
+  console.log("Message debugging", message);
+  if (status === 200) {
+    return NextResponse.redirect("/profile");
+  } else {
+    return NextResponse.json({ message: message });
+  }
 }
