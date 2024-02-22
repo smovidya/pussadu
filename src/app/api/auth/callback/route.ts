@@ -21,7 +21,6 @@ const serviceValidation = async (ticket: string) => {
 
     if (response.ok) {
       const jsonResponse = await response.json();
-      console.log("DEBUGGER SSO ", jsonResponse);
       return {
         status: 200,
         message: jsonResponse,
@@ -43,8 +42,7 @@ const serviceValidation = async (ticket: string) => {
 
 export async function GET(request: Request) {
   // Extract the ticket from the URL parameters
-  const ticket = request.url.slice(request.url.lastIndexOf("/") + 1);
-  console.log("Ticket", ticket);
+  const ticket = new URL(request.url).searchParams.get('ticket')
 
   if (!ticket) {
     // Handle the case where the ticket parameter is missing
@@ -53,9 +51,8 @@ export async function GET(request: Request) {
 
   // Use the extracted ticket in your logic or validation
   const { status, message } = await serviceValidation(ticket);
-  console.log("Message debugging", message);
   if (status === 200) {
-    return NextResponse.redirect("/profile");
+    return NextResponse.redirect('/profile')
   } else {
     return NextResponse.json({ message: message });
   }
