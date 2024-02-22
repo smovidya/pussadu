@@ -35,7 +35,7 @@ const LoginPage = () => {
           <div className="font-noto-sans text-subHead2 md:text-subHead1 font-bold mb-28">
             สโมสรนิสิตคณะวิทยาศาสตร์
           </div>
-          <a href="https://account.it.chula.ac.th/html/login.html?serviceName=PUSSADU-SUCU&service=https://pussaduvidyacu.vercel.app/callback">
+          <a href="https://account.it.chula.ac.th/html/login.html?serviceName=PUSSADU-SUCU&service=https://pussaduvidyacu.vercel.app/api/auth/callback">
           <button
             type="button"
             data-modal-target="default-model"
