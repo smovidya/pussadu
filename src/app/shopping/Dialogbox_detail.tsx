@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { use } from "react"
+import Image from "next/image"
 
 export function adminEdit() {
     return (
@@ -27,7 +28,8 @@ function ItemDetail(it:any) {
     <AlertDialogContent className="dark:bg-white01">
         <AlertDialogHeader>
         <AlertDialogDescription className="font-noto-sans flex">
-        <img src={it["img_url"]} className="aspect-square object-cover rounded-md w-1/2 " />
+        {/* { @TODO: replace it into <Image> } */}
+        <Image src={it["img_url"]} className="aspect-square object-cover rounded-md w-1/2 " alt={""} />
         <div className="mx-4 justify-items-center w-full h-full">
             <div className="flex justify-left gap-1">
             </div>

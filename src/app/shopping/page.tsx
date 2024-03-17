@@ -12,9 +12,8 @@ import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import ItemDetail from "./Dialogbox_detail";
 import { useState, useEffect } from 'react'
-import mockData from "./mockData.json";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
+import { read } from "fs";
 
 
 // interface Item {
@@ -134,26 +133,40 @@ const ShoppingPage = () => {
     const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
-        // Assuming mockData is an object with an 'items' property
-        if (mockData && mockData.items) {
-            setData(mockData.items);
-            setRecord(mockData.items);
-            setIsReady(true);
+        const mockData = async () => {
+            try {
+                const response = await fetch('/mockData.json');
+                const mockData = await response.json();
+                return mockData;
+            } catch (error) {
+                console.error('Error fetching mock data:', error);
             }
-        }, []); 
+        };
+        // Assuming mockData is an object with an 'items' property
+        const fetchData = async () => {
+            const data = await mockData();
+            if (data && data.items) {
+                setData(data.items);
+                setRecord(data.items);
+                setIsReady(true);
+            }
+        };
+        fetchData();
+
+    }, []);
 
     function filterItem(status: string, setRecord: any) {
-        if (status == "allProduct") {
-            setRecord(mockData.items);
+        if (status === "allProduct") {
+            setRecord((data) || []); // Check if data.items is defined before applying the filter
         }
-        else if (status == "borrowItem") {
-            setRecord(mockData.items.filter((it: any) => {
+        else if (status === "borrowItem") {
+            setRecord((data || []).filter((it: any) => { // Check if data.items is defined before applying the filter
                 return (it["id"]).split("-").length === 3
             }));
         }
-        else if (status == "Inventory") {
-            setRecord(mockData.items.filter((it: any) => {
-                return (it["id"]).split("-").length != 3
+        else if (status === "Inventory") {
+            setRecord((data as any[] || []).filter((it: any) => { // Check if data.items is defined before applying the filter
+                return (it["id"]).split("-").length !== 3
             }));
         }
     }
