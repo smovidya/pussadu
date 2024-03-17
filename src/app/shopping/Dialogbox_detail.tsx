@@ -48,14 +48,14 @@ function ItemDetail(it:any) {
                     {isAdmin() && adminEdit()}
                 </div>
             </div>
-            <div className="flex align-center gap-1 pt-2 justify-between">
+            <div className="flex align-center gap-1 pt-1 mb-2 justify-between">
             <div className="flex flex-row align-center gap-1 pt-2">
                 <p className=" font-noto-sans">{it["name"]}</p>
                 <p className=" font-noto-sans">| {it["id"]}</p>
             </div>
             </div>
             <hr></hr>
-            <div className="h-1/5">
+            <div className="h-1/5 mt-1">
                 <p className=" font-noto-sans">{it["status"]}</p>
             </div>
         </div>
