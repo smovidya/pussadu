@@ -13,8 +13,8 @@
 	"d1_databases": [
 		{
 			"binding": "PUSSADU_DB",
-			"database_name": "demo-db", // TODO: change database name AND ALSO IN package.json
-			"database_id": "demo-id", // TODO: add database id
+			"database_name": "pussadu-db",
+			"database_id": "04c60c9b-bf0e-419c-aed1-751247e5678b",
 			"preview_database_id": "d1-preview",
 			"migrations_dir": "drizzle/migrations" // needs to match the path in drizzle/config.ts
 		}
@@ -22,7 +22,7 @@
 	"kv_namespaces": [
 		{
 			"binding": "PUSSADU_KV",
-			"id": "<YOUR_KV_ID>", // TODO: add kv id
+			"id": "bdc61737c47b4809948db67fed301c72",
 			"preview_id": "kv-preview"
 		}
 	]
