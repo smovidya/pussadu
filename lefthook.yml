@@ -1,0 +1,6 @@
+pre-commit:
+  commands:
+    prettier:
+      run: bun prettier --write {staged_files}
+    eslint:
+      run: bun eslint --fix {staged_files}

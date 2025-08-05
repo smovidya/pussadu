@@ -1,7 +1,7 @@
-import { getRequestEvent, query } from "$app/server";
+import { getRequestEvent, query } from '$app/server';
 
 export const hello = query(() => {
-  const { user } = getRequestEvent().locals;
+	const { user } = getRequestEvent().locals;
 
-  return `Hello, ${user?.name ?? 'World'}!`;
+	return `Hello, ${user?.name ?? 'World'}!`;
 });
