@@ -1,4 +1,4 @@
-import { APIError, betterAuth } from 'better-auth';
+import { betterAuth } from 'better-auth';
 import { admin, oneTap } from 'better-auth/plugins';
 import { drizzleAdapter as drizzleAdapterForBetterAuth } from 'better-auth/adapters/drizzle';
 
@@ -35,7 +35,7 @@ export const createAuth = (env: Env) => {
 		databaseHooks: {
 			user: {
 				create: {
-					async before(user) {
+					async before(user, context) {
 						if (
 							user.email.endsWith('@chula.ac.th') ||
 							user.email.endsWith('@student.chula.ac.th')
@@ -63,7 +63,7 @@ export const createAuth = (env: Env) => {
 						}
 
 						console.error(`[auth] Error: invalid-email ${JSON.stringify(user)}`);
-						throw new APIError('FORBIDDEN', {
+						throw context?.error('FORBIDDEN', {
 							code: 'invalid-email',
 							message: 'โปรดเลือกอีเมลที่ถูกต้อง (@student.chula.ac.th หรือ @chula.ac.th เท่านั้น)'
 						});
