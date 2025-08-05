@@ -1,6 +1,5 @@
 import { sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { id, timestamps } from './helper';
-import { borrower } from './borrower.schema';
 
 export const log = sqliteTable('log', {
 	...id,

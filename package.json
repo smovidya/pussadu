@@ -20,11 +20,19 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"d1:migrate": "wrangler d1 migrations apply PUSSADU_DB",
-		"d1:migrate:remote": "wrangler d1 migrations apply PUSSADU_DB --remote"
+		"d1:migrate:remote": "wrangler d1 migrations apply PUSSADU_DB --remote",
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
 	},
 	"devDependencies": {
+		"@chromatic-com/storybook": "^4.1.0",
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
+		"@storybook/addon-a11y": "^9.1.1",
+		"@storybook/addon-docs": "^9.1.1",
+		"@storybook/addon-svelte-csf": "^5.0.7",
+		"@storybook/addon-vitest": "^9.1.1",
+		"@storybook/sveltekit": "^9.1.1",
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/adapter-cloudflare": "^7.1.2",
 		"@sveltejs/kit": "^2.22.0",
@@ -35,12 +43,14 @@
 		"drizzle-kit": "^0.30.2",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
+		"eslint-plugin-storybook": "^9.1.1",
 		"eslint-plugin-svelte": "^3.0.0",
 		"globals": "^16.0.0",
 		"lefthook": "^1.12.2",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.11",
+		"storybook": "^9.1.1",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^4.0.0",
@@ -48,7 +58,10 @@
 		"typescript-eslint": "^8.20.0",
 		"vite": "^7.0.4",
 		"vite-plugin-devtools-json": "^0.2.0",
-		"wrangler": "^4.28.0"
+		"wrangler": "^4.28.0",
+		"vitest": "^3.2.4",
+		"@vitest/browser": "^3.2.4",
+		"playwright": "^1.54.2"
 	},
 	"dependencies": {
 		"7.css": "^0.21.1",
