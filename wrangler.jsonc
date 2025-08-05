@@ -25,6 +25,12 @@
 			"id": "bdc61737c47b4809948db67fed301c72",
 			"preview_id": "kv-preview"
 		}
+	],
+	"routes": [
+		{
+			"pattern": "pussadu.vidyachula.org",
+			"custom_domain": true
+		}
 	]
 	/**
 	 * Smart Placement
