@@ -13,3 +13,5 @@
 		{text}
 	{/await}
 </h1>
+
+<h1>{await hello()}</h1>
