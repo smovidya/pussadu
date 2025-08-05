@@ -1,10 +1,31 @@
-import { drizzle } from 'drizzle-orm/libsql';
-import { createClient } from '@libsql/client';
+import { drizzle as drizzleD1 } from 'drizzle-orm/d1';
+import { drizzle as drizzleLibsql } from 'drizzle-orm/libsql';
 import * as schema from './schema';
-import { env } from '$env/dynamic/private';
+import type { DrizzleConfig } from 'drizzle-orm';
 
-if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
+interface GetDbParams {
+	d1Binding?: D1Database;
+	libsqlBinding?: string;
+}
 
-const client = createClient({ url: env.DATABASE_URL });
+const options = {
+	schema,
+	logger: {
+		logQuery(query, params) {
+			console.debug(`[drizzle] Executing query: ${query} with params: ${JSON.stringify(params)}`);
+		}
+	}
+} satisfies DrizzleConfig<typeof schema>;
 
-export const db = drizzle(client, { schema });
+export const getDb = ({ d1Binding, libsqlBinding }: GetDbParams) => {
+	if (d1Binding) {
+		return drizzleD1(d1Binding, options);
+	}
+	if (libsqlBinding) {
+		return drizzleLibsql(libsqlBinding, options);
+	}
+	throw new Error(`No database binding provided ${JSON.stringify({ d1Binding, libsqlBinding })}`);
+};
+
+export type DrizzleClient = ReturnType<typeof getDb>;
+export const tables = schema;

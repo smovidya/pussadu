@@ -4,12 +4,28 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "my-svelte-app",
+	"name": "vidya-chula-pussadu",
 	"compatibility_date": "2025-08-05",
 	"pages_build_output_dir": ".svelte-kit/cloudflare",
 	"observability": {
 		"enabled": true
-	}
+	},
+	"d1_databases": [
+		{
+			"binding": "PUSSADU_DB",
+			"database_name": "demo-db", // TODO: change database name AND ALSO IN package.json
+			"database_id": "demo-id", // TODO: add database id
+			"preview_database_id": "d1-preview",
+			"migrations_dir": "drizzle/migrations" // needs to match the path in drizzle/config.ts
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "PUSSADU_KV",
+			"id": "<YOUR_KV_ID>", // TODO: add kv id
+			"preview_id": "kv-preview"
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
