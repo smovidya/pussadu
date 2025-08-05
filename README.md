@@ -26,6 +26,16 @@ bun run dev
 bun run dev -- --open
 ```
 
+### Components development
+
+To develop components, we use [Storybook](https://storybook.js.org/). You can start the Storybook server with:
+
+```sh
+bun run storybook
+```
+
+This will allow you to develop and test your components in isolation at `http://localhost:6006`.
+
 ## Building
 
 To create a production version of your app:
