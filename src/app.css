@@ -1,2 +1,5 @@
 @import 'tailwindcss';
 @plugin '@tailwindcss/forms';
+@import "tw-animate-css";
+
+@import "7.css/dist/7.scoped.css"
