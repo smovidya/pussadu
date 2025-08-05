@@ -20,15 +20,11 @@
 		"db:generate": "drizzle-kit generate",
 		"db:migrate": "drizzle-kit migrate",
 		"d1:migrate": "wrangler d1 migrations apply PUSSADU_DB",
-		"d1:migrate:remote": "wrangler d1 migrations apply PUSSADU_DB --remote",
-		"story:dev": "histoire dev",
-		"story:build": "histoire build",
-		"story:preview": "histoire preview"
+		"d1:migrate:remote": "wrangler d1 migrations apply PUSSADU_DB --remote"
 	},
 	"devDependencies": {
 		"@eslint/compat": "^1.2.5",
 		"@eslint/js": "^9.18.0",
-		"@histoire/plugin-svelte": "^1.0.0-alpha.3",
 		"@sveltejs/adapter-auto": "^6.0.0",
 		"@sveltejs/adapter-cloudflare": "^7.1.2",
 		"@sveltejs/kit": "^2.22.0",
@@ -41,7 +37,6 @@
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^3.0.0",
 		"globals": "^16.0.0",
-		"histoire": "^1.0.0-alpha.3",
 		"lefthook": "^1.12.2",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
