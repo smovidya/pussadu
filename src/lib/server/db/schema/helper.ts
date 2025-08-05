@@ -9,6 +9,8 @@ export const id = {
 
 export const timestamps = {
 	createdAt: integer('created_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
-	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(() => new Date()),
+	updatedAt: integer('updated_at', { mode: 'timestamp' })
+		.$defaultFn(() => new Date())
+		.$onUpdateFn(() => new Date()),
 	deletedAt: integer('deleted_at', { mode: 'timestamp' })
 };
