@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "a7ac4900-8bbc-4c8c-b829-be89a099763a",
+  "id": "b0cde964-dd53-40c6-96c9-0ef52a3fbe5b",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "asset": {
@@ -82,6 +82,13 @@
           "autoincrement": false,
           "default": "'secretary'"
         },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "integer",
@@ -105,7 +112,92 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "asset_category_id_category_id_fk": {
+          "name": "asset_category_id_category_id_fk",
+          "tableFrom": "asset",
+          "tableTo": "category",
+          "columnsFrom": [
+            "category_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "asset_to_borrower": {
+      "name": "asset_to_borrower",
+      "columns": {
+        "asset_id": {
+          "name": "asset_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "borrower_id": {
+          "name": "borrower_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "project_id": {
+          "name": "project_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "asset_to_borrower_asset_id_asset_id_fk": {
+          "name": "asset_to_borrower_asset_id_asset_id_fk",
+          "tableFrom": "asset_to_borrower",
+          "tableTo": "asset",
+          "columnsFrom": [
+            "asset_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asset_to_borrower_borrower_id_borrower_ouid_fk": {
+          "name": "asset_to_borrower_borrower_id_borrower_ouid_fk",
+          "tableFrom": "asset_to_borrower",
+          "tableTo": "borrower",
+          "columnsFrom": [
+            "borrower_id"
+          ],
+          "columnsTo": [
+            "ouid"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "asset_to_borrower_project_id_project_id_fk": {
+          "name": "asset_to_borrower_project_id_project_id_fk",
+          "tableFrom": "asset_to_borrower",
+          "tableTo": "project",
+          "columnsFrom": [
+            "project_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
@@ -227,15 +319,15 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "asset_to_project_borrower_id_project_owner_fk": {
-          "name": "asset_to_project_borrower_id_project_owner_fk",
+        "asset_to_project_borrower_id_borrower_ouid_fk": {
+          "name": "asset_to_project_borrower_id_borrower_ouid_fk",
           "tableFrom": "asset_to_project",
-          "tableTo": "project",
+          "tableTo": "borrower",
           "columnsFrom": [
             "borrower_id"
           ],
           "columnsTo": [
-            "owner"
+            "ouid"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -641,8 +733,8 @@
           "notNull": true,
           "autoincrement": false
         },
-        "department": {
-          "name": "department",
+        "department_id": {
+          "name": "department_id",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
@@ -688,12 +780,12 @@
         }
       },
       "foreignKeys": {
-        "borrower_department_department_id_fk": {
-          "name": "borrower_department_department_id_fk",
+        "borrower_department_id_department_id_fk": {
+          "name": "borrower_department_id_department_id_fk",
           "tableFrom": "borrower",
           "tableTo": "department",
           "columnsFrom": [
-            "department"
+            "department_id"
           ],
           "columnsTo": [
             "id"
@@ -874,18 +966,18 @@
           "notNull": true,
           "autoincrement": false
         },
-        "comment": {
-          "name": "comment",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
         "target": {
           "name": "target",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
+          "autoincrement": false
+        },
+        "comment": {
+          "name": "comment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
           "autoincrement": false
         },
         "created_at": {
@@ -989,13 +1081,6 @@
     "project_to_borrower": {
       "name": "project_to_borrower",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "text",
-          "primaryKey": true,
-          "notNull": true,
-          "autoincrement": false
-        },
         "project_id": {
           "name": "project_id",
           "type": "text",
@@ -1008,27 +1093,6 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "autoincrement": false
-        },
-        "deleted_at": {
-          "name": "deleted_at",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
           "autoincrement": false
         }
       },
@@ -1061,7 +1125,15 @@
           "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {},
+      "compositePrimaryKeys": {
+        "project_to_borrower_project_id_borrower_id_pk": {
+          "columns": [
+            "project_id",
+            "borrower_id"
+          ],
+          "name": "project_to_borrower_project_id_borrower_id_pk"
+        }
+      },
       "uniqueConstraints": {},
       "checkConstraints": {}
     }

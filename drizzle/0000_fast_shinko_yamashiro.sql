@@ -9,9 +9,20 @@ CREATE TABLE `asset` (
 	`image_url` text,
 	`category` text DEFAULT 'ทั่วไป' NOT NULL,
 	`owner` text DEFAULT 'secretary' NOT NULL,
+	`category_id` text,
 	`created_at` integer,
 	`updated_at` integer,
-	`deleted_at` integer
+	`deleted_at` integer,
+	FOREIGN KEY (`category_id`) REFERENCES `category`(`id`) ON UPDATE no action ON DELETE no action
+);
+--> statement-breakpoint
+CREATE TABLE `asset_to_borrower` (
+	`asset_id` text NOT NULL,
+	`borrower_id` text NOT NULL,
+	`project_id` text NOT NULL,
+	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`borrower_id`) REFERENCES `borrower`(`ouid`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`project_id`) REFERENCES `project`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `asset_to_project` (
@@ -29,7 +40,7 @@ CREATE TABLE `asset_to_project` (
 	`deleted_at` integer,
 	FOREIGN KEY (`asset_id`) REFERENCES `asset`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`project_id`) REFERENCES `project`(`id`) ON UPDATE no action ON DELETE no action,
-	FOREIGN KEY (`borrower_id`) REFERENCES `project`(`owner`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`borrower_id`) REFERENCES `borrower`(`ouid`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE TABLE `account` (
@@ -93,12 +104,12 @@ CREATE TABLE `borrower` (
 	`email` text NOT NULL,
 	`line_id` text NOT NULL,
 	`phone` text NOT NULL,
-	`department` text NOT NULL,
+	`department_id` text NOT NULL,
 	`old_is_admin` integer DEFAULT false NOT NULL,
 	`created_at` integer,
 	`updated_at` integer,
 	`deleted_at` integer,
-	FOREIGN KEY (`department`) REFERENCES `department`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`department_id`) REFERENCES `department`(`id`) ON UPDATE no action ON DELETE no action
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `borrower_email_unique` ON `borrower` (`email`);--> statement-breakpoint
@@ -129,8 +140,8 @@ CREATE TABLE `log` (
 	`id` text PRIMARY KEY NOT NULL,
 	`action` text NOT NULL,
 	`actor` text NOT NULL,
-	`comment` text,
 	`target` text NOT NULL,
+	`comment` text,
 	`created_at` integer,
 	`updated_at` integer,
 	`deleted_at` integer
@@ -148,12 +159,9 @@ CREATE TABLE `project` (
 );
 --> statement-breakpoint
 CREATE TABLE `project_to_borrower` (
-	`id` text PRIMARY KEY NOT NULL,
 	`project_id` text NOT NULL,
 	`borrower_id` text NOT NULL,
-	`created_at` integer,
-	`updated_at` integer,
-	`deleted_at` integer,
+	PRIMARY KEY(`project_id`, `borrower_id`),
 	FOREIGN KEY (`project_id`) REFERENCES `project`(`id`) ON UPDATE no action ON DELETE no action,
 	FOREIGN KEY (`borrower_id`) REFERENCES `borrower`(`ouid`) ON UPDATE no action ON DELETE no action
 );

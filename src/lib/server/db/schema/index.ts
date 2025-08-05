@@ -1,4 +1,5 @@
 export * from './asset.schema';
+export * from './assetToBorrower.schema';
 export * from './assetToProject.schema';
 export * from './auth.schema';
 export * from './borrower.schema';

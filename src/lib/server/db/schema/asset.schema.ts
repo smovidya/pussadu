@@ -1,5 +1,9 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { timestamps, id } from './helper';
+import { relations } from 'drizzle-orm';
+import { category } from './category.schema';
+import { assetToProject } from './assetToProject.schema';
+import { assetToBorrower } from './assetToBorrower.schema';
 
 export const asset = sqliteTable('asset', {
 	...id,
@@ -40,5 +44,15 @@ export const asset = sqliteTable('asset', {
 	})
 		.notNull()
 		.default('secretary'),
+	categoryId: text('category_id').references(() => category.id),
 	...timestamps
 });
+
+export const assetRelations = relations(asset, ({ many, one }) => ({
+	borrowers: many(assetToBorrower),
+	category: one(category, {
+		fields: [asset.categoryId],
+		references: [category.id]
+	}),
+	projects: many(assetToProject)
+}));
