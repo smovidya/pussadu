@@ -9,4 +9,9 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children?.()}
+<svelte:boundary>
+	{@render children?.()}
+	{#snippet pending()}
+		loading
+	{/snippet}
+</svelte:boundary>
