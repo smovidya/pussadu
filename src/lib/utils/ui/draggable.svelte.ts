@@ -1,7 +1,7 @@
 export function createDraggable() {
 	let left = $state(0);
 	let top = $state(0);
-	const css = $derived(`transform: translate(${left}px, ${top}px);`);
+	const css = $derived(`position: relative; left: ${left}px; top: ${top}px;`);
 
 	let startLeft = 0;
 	let startTop = 0;

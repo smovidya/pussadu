@@ -1,5 +1,6 @@
 <script>
-	import Dialog from './dialog.svelte';
+	// import Dialog from './dialog.svelte';
+	import * as Dialog from '$lib/components/win7/dialog';
 
 	let open = $state(false);
 </script>
@@ -13,5 +14,12 @@
 
 <div class="ml-8 max-w-80">
 	<!-- TODO: make this draggable lmao -->
-	<Dialog bind:open />
+	<Dialog.Root bind:open>
+		<Dialog.Window>
+			<Dialog.Titlebar>Window Title</Dialog.Titlebar>
+			<Dialog.Body>
+				Bodyyyyyyyyyyyyyyyyyyy
+			</Dialog.Body>
+		</Dialog.Window>
+	</Dialog.Root>
 </div>
