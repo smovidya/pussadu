@@ -1,4 +1,5 @@
 import type { Preview } from '@storybook/sveltekit';
+import '../src/app.css';
 
 const preview: Preview = {
 	parameters: {
@@ -8,7 +9,8 @@ const preview: Preview = {
 				date: /Date$/i
 			}
 		}
-	}
+	},
+	tags: ['autodocs']
 };
 
 export default preview;
