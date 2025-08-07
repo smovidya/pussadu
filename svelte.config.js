@@ -14,6 +14,10 @@ const config = {
 		adapter: adapter(),
 		experimental: {
 			remoteFunctions: true
+		},
+		alias: {
+			$stories: 'src/stories',
+			'$stories/*': 'src/stories'
 		}
 	},
 
