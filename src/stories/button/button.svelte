@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { HTMLAttributes } from 'svelte/elements';
+
 	interface Props {
 		/**
 		 * Disabled state of the button
@@ -10,35 +12,21 @@
 		label?: string;
 	}
 
-	const { disabled, label, ...props }: Props = $props();
+	const {
+		disabled = false,
+		label = 'Click me!',
+		onclick = () => {},
+		...props
+	}: Props & HTMLAttributes<HTMLButtonElement> = $props();
 </script>
 
-<button type="button" {disabled} {...props}>
+<button type="button" {disabled} {...props} {onclick}>
 	{label}
 </button>
 
 <style>
 	[role='button'],
 	button {
-		background: linear-gradient(#f2f2f2 45%, #ebebeb 0, #cfcfcf);
-		border: 1px solid #8e8f8f;
-		border-radius: 3px;
-		box-shadow: inset 0 0 0 1px #fffc;
-		box-sizing: border-box;
-		color: #222;
-		font:
-			9pt Segoe UI,
-			SegoeUI,
-			Noto Sans,
-			sans-serif;
-		min-height: 23px;
-		min-width: 75px;
-		padding: 0 12px;
-		position: relative;
-		text-align: center;
-		z-index: 0;
-	}
-	input[type='file']::file-selector-button {
 		background: linear-gradient(#f2f2f2 45%, #ebebeb 0, #cfcfcf);
 		border: 1px solid #8e8f8f;
 		border-radius: 3px;
@@ -151,13 +139,6 @@
 		animation: pulse-anim 1s ease infinite alternate;
 		background-image: linear-gradient(#eaf6fd 45%, #bee6fd 0, #a7d9f5);
 		border-color: #5586a3;
-	}
-	label[role='button'] {
-		align-items: center;
-		display: inline-flex;
-	}
-	label[role='button'] > input[type='file'] {
-		display: none;
 	}
 	@-webkit-keyframes pulse-anim {
 		0% {

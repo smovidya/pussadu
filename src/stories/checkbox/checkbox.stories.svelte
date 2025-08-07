@@ -1,6 +1,7 @@
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
 	import Checkbox from './checkbox.svelte';
+	import { fn } from 'storybook/test';
 
 	// More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 	const { Story } = defineMeta({
@@ -22,7 +23,8 @@
 				table: {
 					type: { summary: '(isChecked: boolean) => void' },
 					defaultValue: { summary: 'undefined' }
-				}
+				},
+				control: { type: 'function' }
 			},
 			labelText: {
 				control: { type: 'text' },
@@ -44,9 +46,7 @@
 		args: {
 			disabled: false,
 			checked: false,
-			onCheckChange: (isChecked: boolean) => {
-				console.log('Checkbox state changed:', isChecked);
-			}
+			onCheckChange: fn()
 		}
 	});
 </script>

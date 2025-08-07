@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { HTMLInputAttributes } from 'svelte/elements';
+
 	interface Props {
 		/**
 		 * Checked state of the checkbox
@@ -24,7 +26,7 @@
 		disabled = false,
 		labelText = '',
 		onCheckChange = () => {}
-	}: Props = $props();
+	}: Props & HTMLInputAttributes = $props();
 </script>
 
 <input
