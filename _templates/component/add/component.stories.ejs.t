@@ -3,7 +3,7 @@ to: src/stories/<%= h.changeCase.param(componentName) %>/<%= h.changeCase.param(
 ---
 <script module lang="ts">
 	import { defineMeta } from '@storybook/addon-svelte-csf';
-	import <%= h.changeCase.pascal(subComponentName) %> from './<%= h.changeCase.pascal(subComponentName) %>.svelte';
+	import <%= h.changeCase.pascal(subComponentName) %> from './<%= h.changeCase.param(subComponentName) %>.svelte';
 
 	const { Story } = defineMeta({
 		title: 'Components/<%= h.changeCase.pascal(componentName) %>/<%= h.changeCase.pascal(subComponentName) %>',
