@@ -6,8 +6,8 @@ import { type DrizzleClient } from '../db';
  * @param table The table to insert the record into.
  * @returns A function that takes a database client and the data to insert.
  */
-export function insertToTable(table: Table) {
-	return async function (db: DrizzleClient, data: typeof table.$inferInsert) {
+export function insertToTable<T extends Table>(table: T) {
+	return async function (db: DrizzleClient, data: T["$inferInsert"]) {
 		return db.insert(table).values(data);
 	};
 }
