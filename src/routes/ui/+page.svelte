@@ -17,9 +17,7 @@
 	<Dialog.Root bind:open>
 		<Dialog.Window>
 			<Dialog.Titlebar>Window Title</Dialog.Titlebar>
-			<Dialog.Body>
-				Bodyyyyyyyyyyyyyyyyyyy
-			</Dialog.Body>
+			<Dialog.Body>Bodyyyyyyyyyyyyyyyyyyy</Dialog.Body>
 		</Dialog.Window>
 	</Dialog.Root>
 </div>
