@@ -36,6 +36,26 @@ bun run storybook
 
 This will allow you to develop and test your components in isolation at `http://localhost:6006`.
 
+#### Create a new component
+
+To create a new component, run the following command:
+
+```sh
+bun storybook:new <ComponentName>
+```
+
+This will create a new component in the `src/stories` directory with the necessary files and boilerplate code.
+
+### Add a new sub component
+
+Sometime you may want to add a sub component to an existing component. Dialog header is a good example of this. To add a sub component, run the following command:
+
+```sh
+bun storybook:add
+```
+
+After follow the prompt, it will create a new sub component in the `src/stories/<ComponentName>` directory with the necessary files and boilerplate code.
+
 ## Building
 
 To create a production version of your app:
