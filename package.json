@@ -22,7 +22,9 @@
 		"d1:migrate": "wrangler d1 migrations apply PUSSADU_DB",
 		"d1:migrate:remote": "wrangler d1 migrations apply PUSSADU_DB --remote",
 		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
+		"storybook:build": "storybook build",
+		"storybook:new": "hygen component new",
+		"storybook:add": "hygen component add"
 	},
 	"devDependencies": {
 		"@chromatic-com/storybook": "^4.1.0",
@@ -70,6 +72,7 @@
 		"better-auth": "^1.3.4",
 		"bits-ui": "^2.9.1",
 		"drizzle-orm": "^0.40.0",
+		"hygen": "^6.2.11",
 		"tailwind-merge": "^3.3.1",
 		"tw-animate-css": "^1.3.6"
 	},
