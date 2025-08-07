@@ -1,7 +1,7 @@
 <script lang="ts">
-  import type { HTMLButtonAttributes } from "svelte/elements";
+	import type { HTMLButtonAttributes } from 'svelte/elements';
 
-  let { ...restProps }: HTMLButtonAttributes = $props();
+	let { ...restProps }: HTMLButtonAttributes = $props();
 </script>
 
 <button data-slot="dialog-close" aria-label="Minimize" {...restProps}></button>

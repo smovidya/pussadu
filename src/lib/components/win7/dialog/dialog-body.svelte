@@ -5,4 +5,3 @@
 <div class="window-body has-space">
 	{@render children?.()}
 </div>
-
