@@ -32,10 +32,7 @@
 		{...restProps}
 	>
 		<div
-			class={cn(
-				'window glass active pointer-events-auto w-full group-data-[state=closed]:animate-out group-data-[state=closed]:fade-out-0 group-data-[state=closed]:zoom-out-95 group-data-[state=open]:animate-in group-data-[state=open]:fade-in-0 group-data-[state=open]:zoom-in-95',
-				className
-			)}
+			class={cn('window glass active pointer-events-auto w-full group-data-[state=open]:animate-in group-data-[state=closed]:animate-out group-data-[state=closed]:fade-out-0 group-data-[state=open]:fade-in-0 group-data-[state=closed]:zoom-out-95 group-data-[state=open]:zoom-in-95', className)}
 			{...draggable.container}
 		>
 			{@render children?.()}
