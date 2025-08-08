@@ -8,6 +8,13 @@
       "when": 1754413837282,
       "tag": "0000_fast_shinko_yamashiro",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1754665574717,
+      "tag": "0001_brown_redwing",
+      "breakpoints": true
     }
   ]
 }
