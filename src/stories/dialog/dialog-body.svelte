@@ -1,8 +1,15 @@
 <script lang="ts">
-	let { children } = $props();
+	import { cn } from '$lib/utils/ui';
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		class?: string;
+		children?: Snippet;
+	}
+
+	let { class: className, children }: Props = $props();
 </script>
 
-<div class="window-body has-space">
+<div class={cn('window-body has-space', className)}>
 	{@render children?.()}
 </div>
-

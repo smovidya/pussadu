@@ -16,7 +16,7 @@
 			"database_name": "pussadu-db",
 			"database_id": "04c60c9b-bf0e-419c-aed1-751247e5678b",
 			"preview_database_id": "d1-preview",
-			"migrations_dir": "drizzle/migrations" // needs to match the path in drizzle/config.ts
+			"migrations_dir": "drizzle" // needs to match the path in drizzle/config.ts
 		}
 	],
 	"kv_namespaces": [

@@ -8,10 +8,12 @@
 		ref = $bindable(null),
 		class: className,
 		portalProps,
+		overlayProps,
 		children,
 		...restProps
 	}: WithoutChildrenOrChild<DialogPrimitive.ContentProps> & {
 		portalProps?: DialogPrimitive.PortalProps;
+		overlayProps?: DialogPrimitive.OverlayProps;
 		children: Snippet;
 	} = $props();
 
@@ -23,7 +25,7 @@
 <svelte:body {onpointermove} />
 
 <Dialog.Portal {...portalProps}>
-	<Dialog.Overlay />
+	<Dialog.Overlay {...overlayProps} />
 	<DialogPrimitive.Content
 		bind:ref
 		data-slot="dialog-content"
@@ -32,7 +34,10 @@
 		{...restProps}
 	>
 		<div
-			class={cn('window glass active pointer-events-auto w-full group-data-[state=open]:animate-in group-data-[state=closed]:animate-out group-data-[state=closed]:fade-out-0 group-data-[state=open]:fade-in-0 group-data-[state=closed]:zoom-out-95 group-data-[state=open]:zoom-in-95', className)}
+			class={cn(
+				'window glass active pointer-events-auto w-full group-data-[state=closed]:animate-out group-data-[state=closed]:fade-out-0 group-data-[state=closed]:zoom-out-95 group-data-[state=open]:animate-in group-data-[state=open]:fade-in-0 group-data-[state=open]:zoom-in-95',
+				className
+			)}
 			{...draggable.container}
 		>
 			{@render children?.()}

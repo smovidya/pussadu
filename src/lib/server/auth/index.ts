@@ -8,7 +8,7 @@ import { PUBLIC_APP_TITLE, PUBLIC_BETTER_AUTH_URL } from '$env/static/public';
 
 import { getDb } from '../db';
 import * as authSchema from '../db/schema/auth.schema';
-import { getBorrowerByOuid } from '../models/borrower.model';
+import { getBorrower } from '../models/borrower.model';
 import { betterAuthOptions } from './options';
 
 export const createAuth = (env: Env) => {
@@ -20,6 +20,21 @@ export const createAuth = (env: Env) => {
 		secret: BETTER_AUTH_SECRET,
 		logger: {
 			level: dev ? 'debug' : 'info'
+		},
+
+		socialProviders: {
+			google: {
+				clientId: env.PUBLIC_GOOGLE_CLIENT_ID,
+				clientSecret: env.GOOGLE_CLIENT_SECRET,
+				scopes: ['email', 'profile'],
+				// Optional configuration:
+				autoSelect: false,
+				cancelOnTapOutside: true,
+				context: 'signin',
+				additionalOptions: {
+					hd: 'chula.ac.th' // Restrict to Chula domain
+				}
+			}
 		},
 
 		user: {
@@ -43,11 +58,11 @@ export const createAuth = (env: Env) => {
 							console.log(`[auth] Creating user: ${JSON.stringify(user)}`);
 							const ouid = user.email.split('@')[0];
 							try {
-								const studentInfo = await getBorrowerByOuid(db, ouid);
+								const studentInfo = await getBorrower(db, ouid);
 								return {
 									data: {
 										...user,
-										name: studentInfo?.name || user.name,
+										name: studentInfo?.[0]?.name || user.name,
 										ouid
 									}
 								};

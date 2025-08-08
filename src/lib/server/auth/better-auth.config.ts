@@ -9,5 +9,30 @@ export const auth = betterAuth({
 	database: drizzleAdapter(db, {
 		provider: 'sqlite'
 	}),
+	socialProviders: {
+		google: {
+			clientId: '',
+			clientSecret: '',
+			scopes: ['email', 'profile'],
+			// Optional configuration:
+			autoSelect: false,
+			cancelOnTapOutside: true,
+			context: 'signin',
+			additionalOptions: {
+				hd: 'chula.ac.th' // Restrict to Chula domain
+			}
+		}
+	},
+
+	user: {
+		additionalFields: {
+			ouid: {
+				type: 'string',
+				unique: true,
+				input: false
+			}
+		}
+	},
+
 	plugins: [admin(), oneTap()]
 });
