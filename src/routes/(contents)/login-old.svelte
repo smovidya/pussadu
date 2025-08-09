@@ -1,30 +1,29 @@
 <script>
+	import { authClient } from '$lib/auth-client';
+	import Button from '$stories/shadcnui/button/button.svelte';
+	import BgImage from '$lib/assets/bg.jpg';
+	import { Card } from '$stories/shadcnui/card';
+	import { Package } from '@lucide/svelte';
 </script>
 
-<div class="h-full w-full bg-yellow-400">
-	<div class="flex flex-col items-center justify-around">
-		<div>
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="24"
-				height="24"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-				class="lucide lucide-package-icon lucide-package"
-				><path
-					d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"
-				/><path d="M12 22V12" /><polyline points="3.29 7 12 12 20.71 7" /><path
-					d="m7.5 4.27 9 5.15"
-				/></svg
-			>
-		</div>
-		<div>
+<div
+	class="flex h-full w-full items-center justify-center"
+	style="background-image: url({BgImage}); background-size: cover; background-position: center;"
+>
+	<Card class="flex w-full max-w-md flex-col items-center justify-center gap-4 p-6">
+		<div class="flex flex-col items-center justify-center gap-2">
+			<Package class="h-12 w-12" />
 			<h1 class="text-2xl font-bold">ระบบพัสดุ</h1>
 			<span>สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</span>
+			<Button
+				onclick={() =>
+					authClient.signIn.social({
+						provider: 'google',
+						callbackURL: '/dashboard'
+					})}
+			>
+				เข้าสู่ระบบ
+			</Button>
 		</div>
-	</div>
+	</Card>
 </div>

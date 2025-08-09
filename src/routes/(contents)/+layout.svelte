@@ -4,6 +4,6 @@
 	let { children } = $props();
 </script>
 
-<div class="win7">
+<div class="h-screen">
 	{@render children?.()}
 </div>
