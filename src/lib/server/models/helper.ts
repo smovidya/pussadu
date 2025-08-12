@@ -1,5 +1,6 @@
 import { and, Column, eq, isNotNull, isNull, Table } from 'drizzle-orm';
 import { type DrizzleClient } from '../db';
+import type { SQLiteSelect } from 'drizzle-orm/sqlite-core';
 
 /**
  * Inserts a new record into the specified table.
@@ -20,7 +21,7 @@ export function insertToTable<T extends Table>(table: T) {
  * @description Updates a record in the specified table.
  * @returns A function that takes a database client and the ID and data to update.
  */
-export function updateToTable<T extends Table>(table: T, idColumn: Column) {
+export function updateToTable<T extends Table, C extends Column>(table: T, idColumn: C) {
 	return async function (db: DrizzleClient, id: string, data: typeof table.$inferInsert) {
 		return db.update(table).set(data).where(eq(idColumn, id));
 	};
@@ -85,3 +86,19 @@ export function purgeDeletedFromTable<T extends Table & { deletedAt: Column }>(t
 		return db.delete(table).where(isNotNull(table.deletedAt));
 	};
 }
+
+export function withPagination<T extends SQLiteSelect>(db: DrizzleClient, qb: T) {
+	return async function (page: number, pageSize: number) {
+		if (page < 0 || pageSize <= 0) {
+			throw new Error(
+				'Page must be a non-negative integer and pageSize must be a positive integer.'
+			);
+		}
+		return qb.limit(pageSize).offset(page * pageSize);
+	};
+}
+
+export type FilterOrderByField<T extends Table> = {
+	field: keyof T & string;
+	direction: 'asc' | 'desc';
+}[];

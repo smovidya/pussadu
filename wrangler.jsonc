@@ -22,16 +22,10 @@
 	"kv_namespaces": [
 		{
 			"binding": "PUSSADU_KV",
-			"id": "bdc61737c47b4809948db67fed301c72",
-			"preview_id": "kv-preview"
+			"id": "bdc61737c47b4809948db67fed301c72"
 		}
 	],
-	"routes": [
-		{
-			"pattern": "pussadu.vidyachula.org",
-			"custom_domain": true
-		}
-	]
+	"compatibility_flags": ["nodejs_compat"]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

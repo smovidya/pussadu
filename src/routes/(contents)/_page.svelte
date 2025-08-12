@@ -4,10 +4,6 @@
 	import * as Dialog from '$stories/dialog';
 </script>
 
-<svelte:head>
-	<title>ระบบพัสดุ | SMO Vidya Chula</title>
-</svelte:head>
-
 {#snippet controls()}
 	<!-- <Dialog.Minimize /> -->
 	<Dialog.Close disabled />

@@ -1,8 +1,17 @@
 <script lang="ts">
+	import { browser } from '$app/environment';
 	import '../app.css';
 	import '@fontsource-variable/anuphan';
-	import favicon from '$lib/assets/favicon.svg';
+	import favicon from '$lib/assets/favicon.png';
+	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 
+	const queryClient = new QueryClient({
+		defaultOptions: {
+			queries: {
+				enabled: browser
+			}
+		}
+	});
 	let { children } = $props();
 </script>
 
@@ -11,7 +20,9 @@
 </svelte:head>
 
 <svelte:boundary>
-	{@render children?.()}
+	<QueryClientProvider client={queryClient}>
+		{@render children?.()}
+	</QueryClientProvider>
 	{#snippet pending()}
 		loading
 	{/snippet}

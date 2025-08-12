@@ -9,7 +9,7 @@ export const betterAuthOptions = (env: Env) =>
 			enabled: true,
 			window: 60, // the window is 60 seconds
 			max: 100, // number of requests allowed in that window
-			storage: 'secondary-storage'
+			storage: 'database'
 		},
 		secondaryStorage: {
 			get: async (key) => {
