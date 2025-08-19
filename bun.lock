@@ -77,6 +77,9 @@
   "trustedDependencies": [
     "@tailwindcss/oxide",
   ],
+  "patchedDependencies": {
+    "better-auth-cloudflare@0.2.2": "patches/better-auth-cloudflare@0.2.2.patch",
+  },
   "packages": {
     "7.css": ["7.css@0.21.1", "", {}, "sha512-Q+/aFUpGemoR/Zltj4a7yvHonyxfb+9cgiwBL+j/Lm+H28EOoLzWoJki7MdGPV+3mLCvKSCVqr3M2x2uNYyeWw=="],
 

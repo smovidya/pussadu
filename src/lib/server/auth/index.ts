@@ -1,6 +1,5 @@
 import { betterAuth } from 'better-auth';
 import { admin, oneTap } from 'better-auth/plugins';
-import { drizzleAdapter as drizzleAdapterForBetterAuth } from 'better-auth/adapters/drizzle';
 
 import { BETTER_AUTH_SECRET } from '$env/static/private';
 import { dev } from '$app/environment';
@@ -25,6 +24,7 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 					? {
 							db: drizzle(env.PUSSADU_DB),
 							options: {
+								schema: authSchema,
 								usePlural: false,
 								debugLogs: true
 							}
@@ -122,11 +122,6 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 						}
 					}
 				},
-
-				database: drizzleAdapterForBetterAuth(db, {
-					provider: 'sqlite',
-					schema: authSchema
-				}),
 
 				...betterAuthOptions(env),
 
