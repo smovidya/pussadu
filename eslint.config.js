@@ -44,5 +44,8 @@ export default ts.config(
 			}
 		}
 	},
-	storybook.configs['flat/recommended']
+	storybook.configs['flat/recommended'],
+	{
+		ignores: ['src/worker-configuration.d.ts']
+	}
 );

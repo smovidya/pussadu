@@ -11,7 +11,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
-		"lint": "prettier --check . && eslint .",
+		"lint": "prettier --check . && eslint . --cache",
 		"deploy": "bun run build && wrangler pages deploy",
 		"cf-typegen": "wrangler types src/worker-configuration.d.ts",
 		"auth:generate": "bun x @better-auth/cli generate --config src/lib/server/auth/better-auth.config.ts --output src/lib/server/db/schema/auth.schema.ts -y",
