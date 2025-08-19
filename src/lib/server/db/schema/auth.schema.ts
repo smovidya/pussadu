@@ -32,6 +32,14 @@ export const session = sqliteTable('session', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => user.id, { onDelete: 'cascade' }),
+	timezone: text('timezone'),
+	city: text('city'),
+	country: text('country'),
+	region: text('region'),
+	regionCode: text('region_code'),
+	colo: text('colo'),
+	latitude: text('latitude'),
+	longitude: text('longitude'),
 	impersonatedBy: text('impersonated_by')
 });
 
@@ -68,4 +76,21 @@ export const verification = sqliteTable('verification', {
 	updatedAt: integer('updated_at', { mode: 'timestamp' }).$defaultFn(
 		() => /* @__PURE__ */ new Date()
 	)
+});
+
+export const userFile = sqliteTable('user_file', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => user.id, { onDelete: 'cascade' }),
+	filename: text('filename').notNull(),
+	originalName: text('original_name').notNull(),
+	contentType: text('content_type').notNull(),
+	size: integer('size').notNull(),
+	r2Key: text('r2_key').notNull(),
+	uploadedAt: integer('uploaded_at', { mode: 'timestamp' }).notNull(),
+	category: text('category'),
+	isPublic: integer('is_public', { mode: 'boolean' }),
+	description: text('description'),
+	uploadedBy: text('uploaded_by')
 });

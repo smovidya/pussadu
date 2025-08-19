@@ -15,6 +15,13 @@
       "when": 1754665574717,
       "tag": "0001_brown_redwing",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1755006789594,
+      "tag": "0002_past_stature",
+      "breakpoints": true
     }
   ]
 }

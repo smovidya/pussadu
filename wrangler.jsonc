@@ -25,6 +25,13 @@
 			"id": "bdc61737c47b4809948db67fed301c72"
 		}
 	],
+	"r2_buckets": [
+		{
+			"binding": "PUSSADU_R2",
+			"bucket_name": "pussadu-r2",
+			"preview_bucket_name": "pussadu-r2-preview"
+		}
+	],
 	"compatibility_flags": ["nodejs_compat"]
 	/**
 	 * Smart Placement
