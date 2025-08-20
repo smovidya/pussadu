@@ -1,15 +1,10 @@
-diff --git a/node_modules/better-auth-cloudflare/.bun-tag-53e40c4e4828690a b/.bun-tag-53e40c4e4828690a
-new file mode 100644
-index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
-diff --git a/node_modules/better-auth-cloudflare/.bun-tag-57b2927a3701dc49 b/.bun-tag-57b2927a3701dc49
-new file mode 100644
-index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 diff --git a/dist/index.js b/dist/index.js
-index 0ec68cc85fa8898951bc80742573bee10f5096cb..c9d7831321dc996aecfa748ff133c2209a2ef65e 100644
+index 0ec68cc85fa8898951bc80742573bee10f5096cb..849a3edd40b0e1a8bac3d0aeb6c728689b6a6a30 100644
 --- a/dist/index.js
 +++ b/dist/index.js
 @@ -1,12 +1,12 @@
- import {} from "better-auth";
+-import {} from "better-auth";
++import { } from "better-auth";
  import { drizzleAdapter } from "better-auth/adapters/drizzle";
  import { createAuthEndpoint, getSessionFromCtx } from "better-auth/api";
 -import { schema } from "./schema";
