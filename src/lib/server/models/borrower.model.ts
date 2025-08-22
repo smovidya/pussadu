@@ -1,7 +1,7 @@
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
-	getFromTable,
+	getOneFromTable,
 	insertToTable,
 	purgeDeletedFromTable,
 	updateToTable
@@ -11,7 +11,7 @@ const borrowerTable = tables.borrower;
 
 export const insertNewBorrower = insertToTable(borrowerTable);
 export const updateBorrower = updateToTable(borrowerTable, borrowerTable.ouid);
-export const selectBorrower = getFromTable(borrowerTable, borrowerTable.ouid);
+export const selectBorrower = getOneFromTable(borrowerTable, borrowerTable.ouid);
 export const deleteBorrower = deleteFromTable(borrowerTable, borrowerTable.ouid);
 export const purgeBorrower = purgeDeletedFromTable(borrowerTable);
 

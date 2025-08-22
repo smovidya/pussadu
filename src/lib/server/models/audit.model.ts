@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
-	getFromTable,
+	getOneFromTable,
 	insertToTable,
 	purgeDeletedFromTable,
 	updateToTable
@@ -12,7 +12,7 @@ const logTable = tables.log;
 
 export const insertNewLog = insertToTable(logTable);
 export const updateLog = updateToTable(logTable, logTable.id);
-export const getLog = getFromTable(logTable, logTable.id);
+export const getLog = getOneFromTable(logTable, logTable.id);
 export const deleteLog = deleteFromTable(logTable, logTable.id);
 export const purgeLog = purgeDeletedFromTable(logTable);
 

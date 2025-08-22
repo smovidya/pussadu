@@ -24,6 +24,12 @@
 		{@render children?.()}
 	</QueryClientProvider>
 	{#snippet pending()}
-		loading
+		<div class="flex h-screen w-full items-center justify-center">
+			<span
+				class="size-10 animate-spin rounded-full border-4 border-x-yellow-300/20 border-y-yellow-400"
+			>
+				<span class="sr-only"> กำลังโหลด </span>
+			</span>
+		</div>
 	{/snippet}
 </svelte:boundary>

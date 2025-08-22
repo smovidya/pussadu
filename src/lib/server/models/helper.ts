@@ -33,9 +33,12 @@ export function updateToTable<T extends Table, C extends Column>(table: T, idCol
  * @param idColumn The column to use as the ID for lookup.
  * @returns A function that takes a database client and the ID of the record to retrieve.
  */
-export function getFromTable<T extends Table & { deletedAt: Column }>(table: T, idColumn: Column) {
+export function getOneFromTable<T extends Table & { deletedAt: Column }>(
+	table: T,
+	idColumn: Column
+) {
 	return async function (db: DrizzleClient, id: string, options?: { includeDeleted?: boolean }) {
-		return db
+		const result = await db
 			.select()
 			.from(table)
 			.where(
@@ -44,6 +47,10 @@ export function getFromTable<T extends Table & { deletedAt: Column }>(table: T, 
 					options?.includeDeleted ? isNotNull(table.deletedAt) : isNull(table.deletedAt)
 				)
 			);
+		if (result.length === 0) {
+			throw new Error(`Record with ID ${id} not found.`);
+		}
+		return result[0];
 	};
 }
 

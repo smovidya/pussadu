@@ -21,6 +21,7 @@ export const listAllBorrowers = query(async () => {
 		locals,
 		request: { headers }
 	} = getRequestEvent();
+
 	if (!locals.user) {
 		error(401, 'Unauthorized');
 	}

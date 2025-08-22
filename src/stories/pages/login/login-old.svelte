@@ -26,7 +26,7 @@
 			<h1 class="text-2xl font-bold">ระบบพัสดุ</h1>
 			<span>สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</span>
 			{#if $auth.data?.user}
-				<Button href="/dashboard" class="mt-4 w-full">ไปยังแดชบอร์ด</Button>
+				<Button href="/projects" class="mt-4 w-full">ไปยังแดชบอร์ด</Button>
 			{:else}
 				<Button
 					class="mt-4 w-full"
