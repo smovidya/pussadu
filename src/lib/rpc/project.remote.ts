@@ -19,8 +19,8 @@ export const getAllProjects = query(async () => {
 });
 
 export const getAllMyProjects = query(async () => {
-	const { id } = Guard.loggedIn();
-	return selectAllMyProjects(Locals.db, id);
+	const { ouid } = Guard.loggedIn();
+	return selectAllMyProjects(Locals.db, ouid);
 });
 
 export const createProject = command(createProjectSchema, async (data) => {

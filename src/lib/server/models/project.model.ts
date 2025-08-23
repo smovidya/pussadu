@@ -21,9 +21,9 @@ export const selectAllProjects = async (db: DrizzleClient) => {
 	});
 };
 
-export const selectAllMyProjects = async (db: DrizzleClient, userId: string) => {
+export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
 	return await db.query.projectToBorrower.findMany({
-		where: (projectToBorrower, { eq, and }) => and(eq(projectToBorrower.borrowerId, userId)),
+		where: (projectToBorrower, { eq, and }) => and(eq(projectToBorrower.borrowerId, ouid)),
 		with: {
 			project: true
 		},
