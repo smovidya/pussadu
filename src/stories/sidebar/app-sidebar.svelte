@@ -1,13 +1,13 @@
 <script lang="ts" module></script>
 
 <script lang="ts">
-	import { Package2Icon, PlusIcon } from '@lucide/svelte';
-	import * as Sidebar from '../shadcnui/sidebar';
-	import * as DropdownMenu from '../shadcnui/dropdown-menu';
-	import type { ComponentProps } from 'svelte';
-	import Button from '$stories/shadcnui/button/button.svelte';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
+	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Package2Icon, PlusIcon } from '@lucide/svelte';
+	import type { ComponentProps } from 'svelte';
+	import * as DropdownMenu from '../shadcnui/dropdown-menu';
+	import * as Sidebar from '../shadcnui/sidebar';
 
 	type Props = ComponentProps<typeof Sidebar.Root>;
 	let { ref = $bindable(null), ...restProps }: Props = $props();
@@ -26,14 +26,14 @@
 	}
 	interface Group {
 		title: string;
-		allowRole: string;
+		allowRoles: string[];
 		items: Item[];
 	}
 
 	const data: Group[] = [
 		{
 			title: 'ยืมพัสดุ',
-			allowRole: 'user',
+			allowRoles: ['user', 'admin'],
 			items: [
 				{
 					title: 'เริ่มยืม',
@@ -51,7 +51,7 @@
 		},
 		{
 			title: 'จัดการพัสดุ',
-			allowRole: 'admin',
+			allowRoles: ['admin'],
 			items: [
 				{
 					title: 'รายการพัสดุ',
@@ -65,7 +65,7 @@
 		},
 		{
 			title: 'จัดการโครงการ',
-			allowRole: 'admin',
+			allowRoles: ['admin'],
 			items: [
 				{
 					title: 'รายการโครงการ',
@@ -100,9 +100,9 @@
 	</Sidebar.Header>
 	<Sidebar.Content>
 		<!-- We create a Sidebar.Group for each parent. -->
-		{#each data.filter((v) => $auth.data?.user.role
-				?.split(',')
-				.includes(v.allowRole)) as group (group.title)}
+		{#each data.filter((v) => v.allowRoles.some((role) => $auth.data?.user.role
+					?.split(',')
+					.includes(role))) as group (group.title)}
 			<Sidebar.Group>
 				<Sidebar.GroupLabel>{group.title}</Sidebar.GroupLabel>
 				<Sidebar.GroupContent>

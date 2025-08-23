@@ -98,8 +98,8 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 									return {
 										data: {
 											...user,
-											role: studentInfo?.[0]?.oldIsAdmin ? 'admin' : 'user',
-											name: studentInfo?.[0]?.name || user.name,
+											role: studentInfo?.oldIsAdmin ? 'admin' : 'user',
+											name: studentInfo?.name || user.name,
 											ouid
 										}
 									};
