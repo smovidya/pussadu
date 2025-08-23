@@ -4,6 +4,8 @@ interface FacadeOptions {
 
 /**
  * Create a static-like interface to an object, most useful with AsyncLocalStorage wrapper such as getRequestEvent
+ * @see https://laravel.com/docs/12.x/facades
+ * we should add some DI container and a bit of TypeORM, boom, we got laravel
  */
 export function createFacade<T extends object>(getInstance: () => T, options?: FacadeOptions): T {
   let instance: T;
