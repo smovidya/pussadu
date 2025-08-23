@@ -14,7 +14,7 @@ export function getLocalD1DB() {
 		}
 
 		const url = path.resolve(basePath, dbFile);
-		return url;
+		return `file:${url}`;
 	} catch (err) {
 		console.log(`Error  ${err.message}`);
 	}
