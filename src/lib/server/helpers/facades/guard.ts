@@ -3,12 +3,19 @@ import type { createAuth } from "../../auth";
 import { LocalRequest, Locals } from "./request-event";
 
 interface GaurdOptions {
-  // default to all roles
+  /**
+   * @default all roles
+   */
   roles?: string[];
-  // default to false
+  /**
+   * @default false
+   */
   allowBanned?: boolean;
 }
 
+/**
+ * Will throw if the user is not logged in 
+ */
 function loggedIn(options?: GaurdOptions) {
   const user = Locals.user;
 
@@ -30,14 +37,15 @@ function loggedIn(options?: GaurdOptions) {
 
 type PermissionCheckFn = ReturnType<typeof createAuth>["api"]["userHasPermission"];
 type Body = Parameters<PermissionCheckFn>["0"]["body"];
+/**
+ * Will throw if the user dont have the specified permission
+ */
 async function allows(body: Body) {
   const { headers } = LocalRequest;
 
   const { success } = await Locals.auth.api.userHasPermission({
     headers,
-    body: {
-      ...body
-    }
+    body
   });
 
   if (!success) {
@@ -45,6 +53,10 @@ async function allows(body: Body) {
   }
 }
 
+/**
+ * Shorthand for Guard.loggedIn({ roles: "admin" })
+ * @returns 
+ */
 function admin() {
   return loggedIn({ roles: ["admin"] });
 }

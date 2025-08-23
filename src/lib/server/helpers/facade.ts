@@ -2,6 +2,9 @@ interface FacadeOptions {
   key?: () => any;
 }
 
+/**
+ * Create a static-like interface to an object, most useful with AsyncLocalStorage wrapper such as getRequestEvent
+ */
 export function createFacade<T extends object>(getInstance: () => T, options?: FacadeOptions): T {
   let instance: T;
   let key: any = Symbol("no");
