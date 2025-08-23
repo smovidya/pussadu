@@ -1,4 +1,4 @@
-import { query } from '$app/server';
+import { command, query } from '$app/server';
 import { Guard } from '$lib/server/helpers/facades/guard';
 import { Locals } from '$lib/server/helpers/facades/request-event';
 import {
@@ -25,7 +25,7 @@ export const listAllBorrowers = query(async () => {
 	return await selectAllBorrowers(Locals.db, { limit: 100, offset: 0 });
 });
 
-export const adminUpdateBorrower = query(
+export const adminUpdateBorrower = command(
 	z4.object({
 		ouid: z4.string(),
 		data: z4.object({

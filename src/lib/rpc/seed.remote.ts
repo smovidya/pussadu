@@ -1,9 +1,9 @@
 import { dev } from '$app/environment';
-import { getRequestEvent, query } from '$app/server';
+import { command, getRequestEvent, query } from '$app/server';
 import { department } from '$lib/server/db/schema';
 import { error } from '@sveltejs/kit';
 
-export const seed = query(async () => {
+export const seed = command(async () => {
 	if (!dev) error(401, 'Unauthorized');
 
 	const { locals } = getRequestEvent();
