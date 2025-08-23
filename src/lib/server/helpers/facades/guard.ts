@@ -54,8 +54,7 @@ async function allows(body: Body) {
 }
 
 /**
- * Shorthand for Guard.loggedIn({ roles: "admin" })
- * @returns 
+ * Shorthand for `Guard.loggedIn({ roles: "admin" })`
  */
 function admin() {
   return loggedIn({ roles: ["admin"] });
