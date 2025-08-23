@@ -49,6 +49,11 @@ async function allows(body: Body) {
   });
 
   if (!success) {
+    // TODO: i assume that some permission are allowed for non logged in user
+    if (!Locals.user) {
+      error(401, "Unauthorized");
+    }
+
     error(403, "Forbidden");
   }
 }

@@ -15,7 +15,6 @@ export const getMyBorrowerData = query(async () => {
 });
 
 export const listAllBorrowers = query(async () => {
-	Guard.loggedIn();
 	await Guard.allows({
 		permissions: {
 			user: ['list']
@@ -37,13 +36,16 @@ export const adminUpdateBorrower = command(
 		})
 	}),
 	async ({ ouid, data }) => {
-		Guard.admin();
 		await Guard.allows({
 			permissions: {
 				user: ['update']
 			},
 		});
 
-		return await updateBorrower(Locals.db, ouid, data);
+		await updateBorrower(Locals.db, ouid, data);
+
+		// see https://svelte.dev/docs/kit/remote-functions#form-Single-flight-mutations
+		// we can also do this client side
+		await listAllBorrowers().refresh();
 	}
 );
