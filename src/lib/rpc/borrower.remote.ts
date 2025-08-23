@@ -18,7 +18,7 @@ export const listAllBorrowers = query(async () => {
 	await Guard.allows({
 		permissions: {
 			user: ['list']
-		},
+		}
 	});
 
 	return await selectAllBorrowers(Locals.db, { limit: 100, offset: 0 });
@@ -39,7 +39,7 @@ export const adminUpdateBorrower = command(
 		await Guard.allows({
 			permissions: {
 				user: ['update']
-			},
+			}
 		});
 
 		await updateBorrower(Locals.db, ouid, data);

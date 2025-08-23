@@ -1,4 +1,4 @@
-import { getRequestEvent, query, command } from '$app/server';
+import { query, command } from '$app/server';
 import { insertNewLog } from '$lib/server/models/audit.model';
 import {
 	assignBorrower,
@@ -10,11 +10,8 @@ import {
 	assignBorrowerToProjectSchema,
 	createProjectSchema
 } from '$lib/validator/project.validator';
-import { error } from '@sveltejs/kit';
-import { query } from '$app/server';
 import { Guard } from '$lib/server/helpers/facades/guard';
 import { Locals } from '$lib/server/helpers/facades/request-event';
-import { selectAllMyProjects, selectAllProjects } from '$lib/server/models/project.model';
 
 export const getAllProjects = query(async () => {
 	Guard.admin();
