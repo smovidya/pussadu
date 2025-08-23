@@ -24,8 +24,7 @@ export const getAllMyProjects = query(async () => {
 });
 
 export const createProject = command(createProjectSchema, async (data) => {
-	Guard.admin();
-	const { id } = Guard.loggedIn();
+	const { id } = Guard.admin();
 
 	const project = await insertNewProject(Locals.db, data);
 
@@ -41,9 +40,8 @@ export const createProject = command(createProjectSchema, async (data) => {
 });
 
 export const assignBorrowerToProject = command(assignBorrowerToProjectSchema, async (data) => {
-	Guard.admin();
-	const { id } = Guard.loggedIn();
-
+	const { id } = Guard.admin();
+	
 	const project = await assignBorrower(Locals.db, data.projectId, data.borrowerId);
 
 	await insertNewLog(Locals.db, {
