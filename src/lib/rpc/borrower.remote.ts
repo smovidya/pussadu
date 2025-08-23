@@ -1,45 +1,28 @@
-import { getRequestEvent, query } from '$app/server';
+import { query } from '$app/server';
+import { Guard } from '$lib/server/helpers/facades/guard';
+import { Locals } from '$lib/server/helpers/facades/request-event';
 import {
 	selectAllBorrowers,
 	selectBorrower,
 	updateBorrower
 } from '$lib/server/models/borrower.model';
-import { error } from '@sveltejs/kit';
 import z4 from 'zod/v4';
 
 export const getMyBorrowerData = query(async () => {
-	const { locals } = getRequestEvent();
-	if (!locals.user) {
-		error(401, 'Unauthorized');
-	}
+	const { ouid } = Guard.loggedIn();
 
-	return await selectBorrower(locals.db, locals.user.ouid);
+	return await selectBorrower(Locals.db, ouid);
 });
 
 export const listAllBorrowers = query(async () => {
-	const {
-		locals,
-		request: { headers }
-	} = getRequestEvent();
+	Guard.loggedIn();
+	await Guard.allows({
+		permissions: {
+			user: ['list']
+		},
+	});
 
-	if (!locals.user) {
-		error(401, 'Unauthorized');
-	}
-
-	if (
-		!locals.auth.api.userHasPermission({
-			headers: headers,
-			body: {
-				permissions: {
-					user: ['list']
-				}
-			}
-		})
-	) {
-		error(403, 'Forbidden');
-	}
-
-	return await selectAllBorrowers(locals.db, { limit: 100, offset: 0 });
+	return await selectAllBorrowers(Locals.db, { limit: 100, offset: 0 });
 });
 
 export const adminUpdateBorrower = query(
@@ -54,27 +37,13 @@ export const adminUpdateBorrower = query(
 		})
 	}),
 	async ({ ouid, data }) => {
-		const {
-			locals,
-			request: { headers }
-		} = getRequestEvent();
-		if (!locals.user) {
-			error(401, 'Unauthorized');
-		}
+		Guard.admin();
+		await Guard.allows({
+			permissions: {
+				user: ['update']
+			},
+		});
 
-		if (
-			!locals.auth.api.userHasPermission({
-				headers: headers,
-				body: {
-					permissions: {
-						user: ['update']
-					}
-				}
-			})
-		) {
-			error(403, 'Forbidden');
-		}
-
-		return await updateBorrower(locals.db, ouid, data);
+		return await updateBorrower(Locals.db, ouid, data);
 	}
 );
