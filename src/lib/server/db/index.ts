@@ -1,6 +1,6 @@
 import { drizzle as drizzleD1 } from 'drizzle-orm/d1';
 import { drizzle as drizzleLibsql } from 'drizzle-orm/libsql';
-import * as schema from './schema';
+import * as schema from '$lib/schema';
 import type { DrizzleConfig } from 'drizzle-orm';
 
 interface GetDbParams {

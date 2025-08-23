@@ -30,3 +30,19 @@ export const selectAllMyProjects = async (db: DrizzleClient, userId: string) => 
 		orderBy: (projectToBorrower) => projectToBorrower.projectId
 	});
 };
+
+export const assignBorrower = async (db: DrizzleClient, projectId: string, borrowerId: string) => {
+	const result = await db
+		.insert(tables.projectToBorrower)
+		.values({
+			borrowerId,
+			projectId
+		})
+		.returning();
+
+	if (!result[0]) {
+		throw new Error('Failed to assign borrower');
+	}
+
+	return result[0];
+};

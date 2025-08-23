@@ -15,7 +15,7 @@
 </script>
 
 <div
-	class="flex h-full w-full items-center justify-center"
+	class="flex h-full min-h-screen w-full items-center justify-center"
 	style="background-image: url({BgImage}); background-size: cover; background-position: center;"
 >
 	<Card

@@ -22,7 +22,7 @@
 	data-slot="sidebar-trigger"
 	variant="ghost"
 	size="icon"
-	class={cn('size-7', className)}
+	class={cn('size-8', className)}
 	type="button"
 	onclick={(e) => {
 		onclick?.(e);
@@ -31,5 +31,5 @@
 	{...restProps}
 >
 	<PanelLeftIcon />
-	<span class="sr-only">Toggle Sidebar</span>
+	<span class="sr-only"> เปิด-ปิดแถบด้านข้าง </span>
 </Button>

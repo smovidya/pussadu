@@ -1,7 +1,7 @@
 import { betterAuth } from 'better-auth';
 import { admin, oneTap } from 'better-auth/plugins';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import * as authSchema from '../db/schema/auth.schema';
+import * as authSchema from '$lib/schema/auth.schema';
 import { getDb } from '../db';
 import { withCloudflare } from 'better-auth-cloudflare';
 

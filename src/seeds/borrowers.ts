@@ -1,7 +1,7 @@
 import { getLocalD1DB } from '../../drizzle.config';
 import { drizzle } from 'drizzle-orm/libsql';
 import { seed } from 'drizzle-seed';
-import * as schema from '../lib/server/db/schema';
+import * as schema from '$lib/schema';
 import { deletedAtGenerator } from './helper';
 
 async function main() {

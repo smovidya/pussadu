@@ -1,9 +1,13 @@
 <script lang="ts">
-	import '7.css/dist/7.scoped.css';
+	import AppSidebar from '$stories/sidebar/app-sidebar.svelte';
+	import * as Sidebar from '$stories/shadcnui/sidebar';
 
 	let { children } = $props();
 </script>
 
-<div class="h-screen">
-	{@render children?.()}
-</div>
+<Sidebar.Provider>
+	<AppSidebar />
+	<Sidebar.Inset>
+		{@render children?.()}
+	</Sidebar.Inset>
+</Sidebar.Provider>

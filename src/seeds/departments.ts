@@ -1,6 +1,6 @@
 import { getLocalD1DB } from '../../drizzle.config';
 import { drizzle } from 'drizzle-orm/libsql';
-import { department } from '../lib/server/db/schema';
+import { department } from '$lib/schema';
 
 async function main() {
 	const db = drizzle({

@@ -6,7 +6,7 @@ import { dev } from '$app/environment';
 import { PUBLIC_APP_TITLE, PUBLIC_BETTER_AUTH_URL } from '$env/static/public';
 
 import { getDb } from '../db';
-import * as authSchema from '../db/schema/auth.schema';
+import * as authSchema from '$lib/schema/auth.schema';
 import { selectBorrower } from '../models/borrower.model';
 import { betterAuthOptions } from './options';
 import { withCloudflare } from 'better-auth-cloudflare';

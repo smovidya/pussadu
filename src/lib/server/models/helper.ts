@@ -2,14 +2,40 @@ import { and, Column, eq, isNotNull, isNull, Table } from 'drizzle-orm';
 import { type DrizzleClient } from '../db';
 import type { SQLiteSelect } from 'drizzle-orm/sqlite-core';
 
+export function removeStateDateFields<T extends Record<string, unknown>>(
+	data: T
+): Omit<T, 'createdAt' | 'updatedAt' | 'deletedAt'> {
+	const { createdAt: _, updatedAt: __, deletedAt: ___, ...rest } = data;
+	return rest;
+}
+
 /**
  * Inserts a new record into the specified table.
  * @param table The table to insert the record into.
  * @returns A function that takes a database client and the data to insert.
  */
 export function insertToTable<T extends Table>(table: T) {
+	/**
+	 * Inserts a new record into the specified table.
+	 * @param db The database client to use for the insert.
+	 * @param data The data to insert into the table.
+	 * @param [data.createdAt] Ignored field.
+	 * @param [data.updatedAt] Ignored field.
+	 * @param [data.deletedAt] Ignored field.
+	 * @note This function will remove any state date fields from the data before inserting.
+	 *       Eg. createdAt, updatedAt, deletedAt
+	 */
 	return async function (db: DrizzleClient, data: T['$inferInsert']) {
-		return db.insert(table).values(data);
+		if (Array.isArray(data)) {
+			data = data.map((v) => removeStateDateFields(v));
+		} else {
+			data = removeStateDateFields(data);
+		}
+		const result = await db.insert(table).values(data).returning();
+		if (result.length === 0) {
+			throw new Error('Insert failed');
+		}
+		return result[0] as T['$inferSelect'];
 	};
 }
 
@@ -22,8 +48,24 @@ export function insertToTable<T extends Table>(table: T) {
  * @returns A function that takes a database client and the ID and data to update.
  */
 export function updateToTable<T extends Table, C extends Column>(table: T, idColumn: C) {
+	/**
+	 * Updates a record in the specified table.
+	 * @param db The database client to use for the update.
+	 * @param id The ID of the record to update.
+	 * @param data The data to update the record with.
+	 * @param [data.createdAt] Ignored field.
+	 * @param [data.updatedAt] Ignored field.
+	 * @param [data.deletedAt] Ignored field.
+	 * @note This function will remove any state date fields from the data before updating.
+	 *       Eg. createdAt, updatedAt, deletedAt
+	 */
 	return async function (db: DrizzleClient, id: string, data: typeof table.$inferInsert) {
-		return db.update(table).set(data).where(eq(idColumn, id));
+		if (Array.isArray(data)) {
+			data = data.map((v) => removeStateDateFields(v));
+		} else {
+			data = removeStateDateFields(data);
+		}
+		return db.update(table).set(data).where(eq(idColumn, id)).returning();
 	};
 }
 
