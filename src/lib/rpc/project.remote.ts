@@ -1,19 +1,14 @@
-import { getRequestEvent, query } from '$app/server';
+import { query } from '$app/server';
+import { Guard } from '$lib/server/helpers/facades/guard';
+import { Locals } from '$lib/server/helpers/facades/request-event';
 import { selectAllMyProjects, selectAllProjects } from '$lib/server/models/project.model';
-import { error } from '@sveltejs/kit';
 
 export const getAllProjects = query(async () => {
-	const { locals } = getRequestEvent();
-	if (!locals.user) error(401, 'Unauthorized');
-	if (!locals.user.role?.includes('admin')) {
-		return error(403, 'Forbidden');
-	}
-	return await selectAllProjects(locals.db);
+	Guard.admin();
+	return await selectAllProjects(Locals.db);
 });
 
 export const getAllMyProjects = query(async () => {
-	const { locals } = getRequestEvent();
-	if (!locals.user) error(401, 'Unauthorized');
-
-	return selectAllMyProjects(locals.db, locals.user.id);
+	const { id } = Guard.loggedIn();
+	return selectAllMyProjects(Locals.db, id);
 });

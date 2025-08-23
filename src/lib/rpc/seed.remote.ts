@@ -1,13 +1,15 @@
 import { dev } from '$app/environment';
-import { command, getRequestEvent, query } from '$app/server';
+import { command } from '$app/server';
 import { department } from '$lib/server/db/schema';
+import { Locals } from '$lib/server/helpers/facades/request-event';
 import { error } from '@sveltejs/kit';
+
+// if (!dev) error(401, 'Unauthorized');
 
 export const seed = command(async () => {
 	if (!dev) error(401, 'Unauthorized');
 
-	const { locals } = getRequestEvent();
-	await locals.db.insert(department).values([
+	await Locals.db.insert(department).values([
 		{
 			id: 'bbtech',
 			name: 'เทคโนโลยีชีวภาพ',
