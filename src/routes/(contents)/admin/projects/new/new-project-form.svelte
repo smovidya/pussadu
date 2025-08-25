@@ -9,13 +9,13 @@
 	import Input from '$stories/shadcnui/input/input.svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { arktype } from 'sveltekit-superforms/adapters';
+	import { possibleOwnerList } from '$lib/constants';
 
 	const validators = arktype(createProjectSchema);
 	const form = superForm(defaults(validators), {
 		SPA: true,
 		validators,
 		async onUpdate({ form }) {
-			console.log(form);
 			if (!form.valid) return;
 			await createProject(form.data);
 			await goto('/admin/projects');
@@ -45,7 +45,25 @@
 				<Form.Control>
 					{#snippet children({ props })}
 						<Form.Label>ฝ่ายเจ้าของโครงการ</Form.Label>
-						<Input {...props} placeholder="อาจารย์สมชาย" bind:value={$formData.owner} />
+						<Select.Root
+							type="single"
+							onValueChange={(val) => ($formData.owner = val)}
+							value={$formData.owner}
+							name={props.name}
+						>
+							<Select.Trigger>
+								{#if $formData.owner}
+									{$formData.owner}
+								{:else}
+									เลือกฝ่ายเจ้าของโครงการ
+								{/if}
+							</Select.Trigger>
+							<Select.Content>
+								{#each possibleOwnerList as item (item)}
+									<Select.Item value={item}>{item}</Select.Item>
+								{/each}
+							</Select.Content>
+						</Select.Root>
 					{/snippet}
 				</Form.Control>
 				<Form.Description />
@@ -85,7 +103,7 @@
 						<Form.Label>สถานะโครงการ</Form.Label>
 						<Select.Root
 							type="single"
-							onValueChange={(val) => ($formData.status = val)}
+							onValueChange={(val) => ($formData.status = val as typeof $formData.status)}
 							value={$formData.status}
 							name={props.name}
 						>

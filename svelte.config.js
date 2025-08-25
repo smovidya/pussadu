@@ -22,12 +22,6 @@ const config = {
 			$stories: 'src/stories',
 			'$stories/*': 'src/stories'
 		}
-	},
-
-	compilerOptions: {
-		experimental: {
-			// async: true
-		}
 	}
 };
 

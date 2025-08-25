@@ -1,0 +1,51 @@
+import { CircleCheck, CircleDashed, CircleGauge, CircleSlash, Timer } from '@lucide/svelte';
+
+/**
+ * Used in new project form
+ */
+export const possibleOwnerList = [
+	'นายกสโมสรนิสิต',
+	'อุปนายกคนที่ 1',
+	'อุปนายกคนที่ 2',
+	'เลขานุการ',
+	'เหรัญญิก',
+	'นิสิตสัมพันธ์',
+	'ศิลปะและวัฒนธรรม',
+	'วิชาการ',
+	'กีฬา',
+	'พัฒนาสังคมและบำเพ็ญประโยชน์',
+	'อื่น ๆ'
+];
+
+export const projectOwnerOptions = possibleOwnerList.map((v) => ({
+	label: v,
+	value: v
+}));
+
+export const projectStatusOptions = [
+	{
+		label: 'ยังไม่เริ่ม',
+		value: 'notstarted',
+		icon: CircleDashed,
+		color: 'bg-stone-50 text-stone-600'
+	},
+	{
+		label: 'ดำเนินอยู่',
+		value: 'inprogress',
+		icon: Timer,
+		color: 'bg-yellow-50 text-yellow-600'
+	},
+	{
+		label: 'เสร็จสิ้น',
+		value: 'completed',
+		icon: CircleCheck,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'ประเมิน',
+		value: 'evaluated',
+		icon: CircleGauge,
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{ label: 'ถูกยกเลิก', value: 'cancelled', icon: CircleSlash, color: 'bg-red-50 text-red-600' }
+];

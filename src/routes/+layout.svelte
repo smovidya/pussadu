@@ -4,6 +4,7 @@
 	import '@fontsource-variable/anuphan';
 	import favicon from '$lib/assets/favicon.png';
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
+	import { Toaster } from '$stories/shadcnui/sonner';
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -33,3 +34,4 @@
 		</div>
 	{/snippet}
 </svelte:boundary>
+<Toaster />
