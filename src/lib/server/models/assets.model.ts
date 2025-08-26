@@ -17,14 +17,13 @@ export const selectAsset = getOneFromTable(assetTable, assetTable.id);
 export const deleteAsset = deleteFromTable(assetTable, assetTable.id);
 export const purgeAsset = purgeDeletedFromTable(assetTable);
 
-
 export async function listAssets(db: DrizzleClient, includedDeleted = false) {
-  // const { createdAt, deletedAt, updatedAt, ...columns } = getTableColumns(assetTable);
+	// const { createdAt, deletedAt, updatedAt, ...columns } = getTableColumns(assetTable);
 
-  const assets = await db
-    .select()
-    .from(tables.asset)
-    .where(includedDeleted ? undefined : isNotNull(tables.asset.deletedAt));
+	const assets = await db
+		.select()
+		.from(tables.asset)
+		.where(includedDeleted ? undefined : isNotNull(tables.asset.deletedAt));
 
-  return assets;
+	return assets;
 }

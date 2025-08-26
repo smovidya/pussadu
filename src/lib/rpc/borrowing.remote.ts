@@ -6,47 +6,34 @@ import { BorrowingRequest, ReturnStatus } from '$lib/validator/borrowing.validat
 import { type } from 'arktype';
 
 export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), async (request) => {
-  const { ouid } = Guard.loggedIn();
+	const { ouid } = Guard.loggedIn();
 
-  await borrowing.requestToBorrow(Locals.db, {
-    ...request,
-    borrowerId: ouid
-  });
+	await borrowing.requestToBorrow(Locals.db, {
+		...request,
+		borrowerId: ouid
+	});
 });
 
 export const listBorrowed = query(async () => {
-  const { ouid } = Guard.loggedIn();
-  return await borrowing.listBorrowedByUser(Locals.db, ouid);
+	const { ouid } = Guard.loggedIn();
+	return await borrowing.listBorrowedByUser(Locals.db, ouid);
 });
 
+export const approveRequest = command(type({ id: 'string' }), async ({ id }) => {
+	const { ouid } = Guard.admin();
+});
 
-export const approveRequest = command(
-  type({ id: "string" }),
-  async ({ id }) => {
-    const { ouid } = Guard.admin();
+export const rejectRequest = command(type({ id: 'string' }), async ({ id }) => {
+	const { ouid } = Guard.admin();
+});
 
-  }
-);
-
-export const rejectRequest = command(
-  type({ id: "string" }),
-  async ({ id }) => {
-    const { ouid } = Guard.admin();
-
-  }
-);
-
-export const cancelRequest = command(
-  type({ id: "string" }),
-  async ({ id }) => {
-    const { ouid } = Guard.loggedIn();
-  }
-);
+export const cancelRequest = command(type({ id: 'string' }), async ({ id }) => {
+	const { ouid } = Guard.loggedIn();
+});
 
 export const returnBorrowing = command(
-  type({ id: "string", status: ReturnStatus }),
-  async ({ id, status }) => {
-    const { ouid } = Guard.admin();
-
-  }
+	type({ id: 'string', status: ReturnStatus }),
+	async ({ id, status }) => {
+		const { ouid } = Guard.admin();
+	}
 );
