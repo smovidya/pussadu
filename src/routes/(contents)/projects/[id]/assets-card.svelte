@@ -6,7 +6,8 @@
 	import { Input } from '$stories/shadcnui/input';
 	import Label from '$stories/shadcnui/label/label.svelte';
 	import { cn } from '$stories/utils';
-	import { ShoppingCart, Package, Tag, Info } from '@lucide/svelte';
+	import { Package, Tag, Info } from '@lucide/svelte';
+	import BookingDialog from './booking-dialog.svelte';
 
 	interface Props {
 		asset: {
@@ -25,9 +26,15 @@
 			categoryId: string | null;
 			id: string;
 		};
+		project: {
+			id: string;
+			title: string;
+			status: 'notstarted' | 'inprogress' | 'completed' | 'evaluated' | 'cancelled';
+			owner: string;
+		};
 	}
 
-	let { asset }: Props = $props();
+	let { asset, project }: Props = $props();
 	const assetType = assetTypeOptions.find((option) => option.value === asset.type);
 	const assetStatus = assetStatusOptions.find((option) => option.value === asset.status);
 </script>
@@ -86,9 +93,6 @@
 
 	<!-- Footer Section -->
 	<Card.Footer class="border-t p-4">
-		<Button class="w-full">
-			<ShoppingCart class="mr-2" />
-			ยืม
-		</Button>
+		<BookingDialog {asset} {project} />
 	</Card.Footer>
 </Card.Root>
