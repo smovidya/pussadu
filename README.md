@@ -22,11 +22,6 @@
 ~~- list my project~~
 ~~- list my borrowing~~
 
-- list stock
-  - by proj
-  - global
-- ยืมของ
-
 ## admin
 
 - approve
