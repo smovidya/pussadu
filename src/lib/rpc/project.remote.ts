@@ -38,6 +38,13 @@ export const adminGetProjectInfo = query(type({ id: 'string' }), async (data) =>
 	return await getProject(Locals.db, data.id);
 });
 
+export const getProjectInfo = query(type({ id: 'string' }), async (data) => {
+	const { ouid } = Guard.loggedIn();
+	const isAllowed = await isBorrowerAlreadyAssignedToProject(Locals.db, data.id, ouid);
+	if (!isAllowed) error(403, 'คุณไม่มีสิทธิ์เข้าถึงโครงการนี้');
+	return await getProject(Locals.db, data.id);
+});
+
 export const listAllStaffsForProject = query(
 	type({
 		projectId: 'string'

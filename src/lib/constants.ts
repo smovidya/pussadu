@@ -49,3 +49,52 @@ export const projectStatusOptions = [
 	},
 	{ label: 'ถูกยกเลิก', value: 'cancelled', icon: CircleSlash, color: 'bg-red-50 text-red-600' }
 ];
+
+export const assetStatusOptions = [
+	{
+		label: 'พร้อมใช้งาน',
+		value: 'available',
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'ถูกยืม',
+		value: 'borrowed',
+		color: 'bg-yellow-50 text-yellow-600'
+	},
+	{
+		label: 'ถูกจอง',
+		value: 'reserved',
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'กำลังซ่อมบำรุง',
+		value: 'maintenance',
+		color: 'bg-orange-50 text-orange-600'
+	},
+	{
+		label: 'สูญหาย',
+		value: 'lost',
+		color: 'bg-red-50 text-red-600'
+	},
+	{
+		label: 'ชำรุด',
+		value: 'damaged',
+		color: 'bg-gray-50 text-gray-600'
+	}
+];
+
+// 'normal' | 'durable' | 'key';
+export const assetTypeOptions = [
+	{
+		label: 'พัสดุ',
+		value: 'normal'
+	},
+	{
+		label: 'ครุภัณฑ์',
+		value: 'durable'
+	},
+	{
+		label: 'กุญแจ',
+		value: 'key'
+	}
+];

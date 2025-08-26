@@ -23,7 +23,7 @@ export async function listAssets(db: DrizzleClient, includedDeleted = false) {
 	const assets = await db
 		.select()
 		.from(tables.asset)
-		.where(includedDeleted ? undefined : isNotNull(tables.asset.deletedAt));
+		.where(includedDeleted ? isNotNull(tables.asset.deletedAt) : undefined);
 
 	return assets;
 }
