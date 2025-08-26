@@ -20,11 +20,13 @@ const options = {
 } satisfies DrizzleConfig<typeof schema>;
 
 export const getDb = ({ d1Binding, libsqlBinding }: GetDbParams) => {
+	type DrizzleD1 = ReturnType<typeof drizzleD1>
+
 	if (d1Binding) {
 		return drizzleD1(d1Binding, options);
 	}
 	if (libsqlBinding) {
-		return drizzleLibsql(libsqlBinding, options);
+		return drizzleLibsql(libsqlBinding, options) as any as DrizzleD1; // yeahhhhhhhh
 	}
 	throw new Error(`No database binding provided ${JSON.stringify({ d1Binding, libsqlBinding })}`);
 };
