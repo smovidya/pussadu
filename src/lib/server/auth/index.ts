@@ -25,7 +25,7 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 							db: drizzle(env.PUSSADU_DB),
 							options: {
 								schema: authSchema,
-								usePlural: false,
+								usePlural: false
 								// debugLogs: true
 							}
 						}
