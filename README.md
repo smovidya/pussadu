@@ -15,6 +15,18 @@
 - crud พัสดุ
 - crud โครงการ
 
+# backend
+## public facing
+~~- list my project~~
+~~- list my borrowing~~
+- list stock
+  - by proj
+  - global
+- ยืมของ
+
+## admin
+- approve
+
 ## Developing
 
 Once you've created a project and installed dependencies with `bun install`, start a development server:
