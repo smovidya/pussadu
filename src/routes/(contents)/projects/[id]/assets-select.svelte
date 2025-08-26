@@ -5,6 +5,7 @@
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 	import AssetsCard from './assets-card.svelte';
+	import ConsentContent from './consent-content.svelte';
 
 	interface Props {
 		project: {
@@ -20,7 +21,7 @@
 </script>
 
 <PageWrapper groupTitle="ยืมพัสดุ" groupUrl="/projects" pageTitle="ยืมพัสดุใหม่">
-	<div class="sticky top-0 z-10 bg-background py-5">
+	<header class="sticky top-0 z-10 bg-background py-5">
 		<span class="text-muted-foreground"> คุณกำลังยืมพัสดุสำหรับโครงการ </span>
 		<h1 class="flex items-center gap-2 text-2xl font-bold">
 			<span>
@@ -29,20 +30,26 @@
 
 			<Badge class={status?.color}>{status?.label}</Badge>
 		</h1>
-	</div>
-	{#await listAssets()}
-		<div class="flex flex-wrap gap-2">
-			<Skeleton class="h-20 w-3/4" />
-			<Skeleton class="h-20 w-3/4" />
-			<Skeleton class="h-20 w-3/4" />
-			<Skeleton class="h-20 w-3/4" />
-			<Skeleton class="h-20 w-3/4" />
-		</div>
-	{:then assets}
-		<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-			{#each assets as asset}
-				<AssetsCard {asset} />
-			{/each}
-		</div>
-	{/await}
+	</header>
+	<section>
+		<ConsentContent />
+	</section>
+
+	<article>
+		{#await listAssets()}
+			<div class="flex flex-wrap gap-2">
+				<Skeleton class="h-20 w-3/4" />
+				<Skeleton class="h-20 w-3/4" />
+				<Skeleton class="h-20 w-3/4" />
+				<Skeleton class="h-20 w-3/4" />
+				<Skeleton class="h-20 w-3/4" />
+			</div>
+		{:then assets}
+			<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+				{#each assets as asset}
+					<AssetsCard {asset} />
+				{/each}
+			</div>
+		{/await}
+	</article>
 </PageWrapper>
