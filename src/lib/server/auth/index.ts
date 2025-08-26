@@ -49,6 +49,13 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 			appName: PUBLIC_APP_TITLE,
 			baseURL: PUBLIC_BETTER_AUTH_URL,
 			basePath: '/api/auth',
+			trustedOrigins(request) {
+				const url = new URL(request.url);
+				if (url.origin.endsWith('.vidyachula.org')) {
+					return [url.origin, PUBLIC_BETTER_AUTH_URL];
+				}
+				return [PUBLIC_BETTER_AUTH_URL];
+			},
 			secret: BETTER_AUTH_SECRET,
 			logger: {
 				level: dev ? 'debug' : 'info',
