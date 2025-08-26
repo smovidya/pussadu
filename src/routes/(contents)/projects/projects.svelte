@@ -19,7 +19,7 @@
 	<section class="container mx-auto my-4">
 		<h2 class="text-2xl font-bold">เลือกโครงการ</h2>
 		{#if myBorrowerData.current}
-		{@const data = myBorrowerData.current}
+			{@const data = myBorrowerData.current}
 			<p class="">
 				ยินดีต้อนรับ <span class="font-semibold text-yellow-600">{data.name}</span>
 				({data.email}) เลือกโครงการที่ต้องการยืมด้านล่าง หากไม่เจอโครงการที่ต้องการ

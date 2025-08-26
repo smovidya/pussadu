@@ -16,15 +16,19 @@
 - crud โครงการ
 
 # backend
+
 ## public facing
+
 ~~- list my project~~
 ~~- list my borrowing~~
+
 - list stock
   - by proj
   - global
 - ยืมของ
 
 ## admin
+
 - approve
 
 ## Developing

@@ -31,6 +31,6 @@ export const getDb = ({ d1Binding, libsqlBinding }: GetDbParams) => {
 	throw new Error(`No database binding provided ${JSON.stringify({ d1Binding, libsqlBinding })}`);
 };
 
-export type Tx = Parameters<Parameters<ReturnType<typeof getDb>["transaction"]>[0]>[0]
+export type Tx = Parameters<Parameters<ReturnType<typeof getDb>['transaction']>[0]>[0];
 export type DrizzleClient = ReturnType<typeof getDb> | Tx;
 export const tables = schema;
