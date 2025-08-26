@@ -3,9 +3,12 @@ import { insertNewLog } from '$lib/server/models/audit.model';
 import {
 	assignBorrower,
 	deleteProject,
+	getProject,
 	insertNewProject,
+	isBorrowerAlreadyAssignedToProject,
 	selectAllMyProjects,
 	selectAllProjects,
+	unassignBorrower,
 	updateProject
 } from '$lib/server/models/project.model';
 import {
@@ -17,6 +20,8 @@ import { Guard } from '$lib/server/helpers/facades/guard';
 import { Locals } from '$lib/server/helpers/facades/request-event';
 import { error } from '@sveltejs/kit';
 import { type } from 'arktype';
+import { getBorrowerInfo } from './borrower.remote';
+import { insertNewBorrower, updateBorrower } from '$lib/server/models/borrower.model';
 
 export const getAllProjects = query(async () => {
 	Guard.admin();
@@ -27,6 +32,33 @@ export const getAllMyProjects = query(async () => {
 	const { ouid } = Guard.loggedIn();
 	return selectAllMyProjects(Locals.db, ouid);
 });
+
+export const adminGetProjectInfo = query(type({ id: 'string' }), async (data) => {
+	Guard.admin();
+	return await getProject(Locals.db, data.id);
+});
+
+export const listAllStaffsForProject = query(
+	type({
+		projectId: 'string'
+	}),
+	async (data) => {
+		Guard.allows({
+			permission: {
+				user: ['list']
+			}
+		});
+
+		const staffs = await Locals.db.query.projectToBorrower.findMany({
+			where: (projectToBorrower, { eq }) => eq(projectToBorrower.projectId, data.projectId),
+			with: {
+				borrower: true
+			}
+		});
+
+		return staffs;
+	}
+);
 
 export const createProject = command(createProjectSchema, async (data) => {
 	const { ouid } = Guard.admin();
@@ -47,19 +79,66 @@ export const createProject = command(createProjectSchema, async (data) => {
 export const assignBorrowerToProject = command(assignBorrowerToProjectSchema, async (data) => {
 	const { ouid } = Guard.admin();
 
-	const project = await assignBorrower(Locals.db, data.projectId, data.borrowerId);
+	const isAlreadyAssigned = await isBorrowerAlreadyAssignedToProject(
+		Locals.db,
+		data.relations.projectId,
+		data.relations.borrowerId
+	);
+
+	if (isAlreadyAssigned) {
+		error(400, 'โครงการนี้มีสตาฟนี้อยู่แล้ว');
+	}
+
+	const borrower = await getBorrowerInfo({
+		ouid: data.relations.borrowerId
+	});
+
+	if (!borrower) {
+		await insertNewBorrower(Locals.db, data.borrowerData);
+	} else {
+		await updateBorrower(Locals.db, borrower.ouid, data.borrowerData);
+	}
+
+	const project = await assignBorrower(
+		Locals.db,
+		data.relations.projectId,
+		data.relations.borrowerId
+	);
 
 	await insertNewLog(Locals.db, {
 		action: 'assign-borrower-to-project',
 		actor: ouid,
 		target: project.projectId,
-		comment: `Assigned borrower "${data.borrowerId}" to project "${data.projectId}"`
+		comment: `Assigned borrower "${data.relations.borrowerId}" to project "${data.relations.projectId}"`
 	});
 
 	await getAllMyProjects().refresh();
 
 	return project;
 });
+
+export const removeBorrowerFromProject = command(
+	type({
+		projectId: 'string',
+		borrowerId: 'string'
+	}),
+	async (data) => {
+		const { ouid } = Guard.admin();
+
+		const project = await unassignBorrower(Locals.db, data.projectId, data.borrowerId);
+
+		await insertNewLog(Locals.db, {
+			action: 'unassign-borrower',
+			actor: ouid,
+			target: project.projectId,
+			comment: `Unassigned borrower "${data.borrowerId}" from project "${data.projectId}"`
+		});
+
+		await getAllMyProjects().refresh();
+
+		return project;
+	}
+);
 
 export const setProjectInfo = command(updateProjectSchema, async (data) => {
 	const { ouid } = Guard.admin();

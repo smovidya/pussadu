@@ -41,6 +41,8 @@
 	import { formatDate } from '$lib/utils/datetime';
 	import { removeProject, setProjectInfo } from '$lib/rpc/project.remote';
 	import { toast } from 'svelte-sonner';
+	import { ChevronRight } from '@lucide/svelte';
+	import { goto } from '$app/navigation';
 
 	type Project = {
 		id: string;
@@ -51,6 +53,10 @@
 		deletedAt: Date | null;
 		title: string;
 		isPublished: boolean | null;
+		staffs: {
+			borrowerId: string;
+			projectId: string;
+		}[];
 	};
 
 	let { data }: { data: Project[] } = $props();
@@ -131,6 +137,21 @@
 			filterFn: (row, id, value) => {
 				return value.includes(row.getValue(id));
 			}
+		},
+		{
+			accessorKey: 'staffs',
+			header: ({ column }) =>
+				renderSnippet(ColumnHeader, {
+					column,
+					title: 'ผู้ยืม'
+				}),
+			cell: ({ row }) => {
+				return renderSnippet(StaffCell, {
+					count: row.original.staffs.length,
+					id: row.original.id
+				});
+			},
+			enableColumnFilter: false
 		},
 		{
 			accessorKey: 'createdAt',
@@ -294,6 +315,13 @@
 	{/if}
 {/snippet}
 
+{#snippet StaffCell({ count, id }: { count: number; id: string })}
+	<Button variant="ghost" class="text-muted-foreground" href="/admin/projects/{id}">
+		<span>{count} คน</span>
+		<ChevronRight />
+	</Button>
+{/snippet}
+
 {#snippet CreatedAtCell({ value }: { value: Date | null })}
 	<div class="flex w-[100px] items-center">
 		<span>{value ? formatDate(value) : '?'}</span>
@@ -320,7 +348,11 @@
 				{/snippet}
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-[160px]" align="end">
-				<DropdownMenu.Item>แก้ไข</DropdownMenu.Item>
+				<DropdownMenu.Item
+					onclick={() => {
+						goto(`/admin/projects/${row.original.id}`);
+					}}>แก้ไข</DropdownMenu.Item
+				>
 				<DropdownMenu.Separator />
 				<AlertDialog.Trigger>
 					{#snippet child({ props })}

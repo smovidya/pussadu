@@ -90,7 +90,7 @@ export function getOneFromTable<T extends Table & { deletedAt: Column }>(
 				)
 			);
 		if (result.length === 0) {
-			throw new Error(`Record with ID ${id} not found.`);
+			return null;
 		}
 		return result[0];
 	};
