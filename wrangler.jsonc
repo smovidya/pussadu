@@ -6,7 +6,11 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "vidya-chula-pussadu",
 	"compatibility_date": "2025-08-05",
-	"pages_build_output_dir": ".svelte-kit/cloudflare",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"assets": {
+		"directory": ".svelte-kit/cloudflare/static",
+		"binding": "ASSETS"
+	},
 	"observability": {
 		"enabled": true
 	},
