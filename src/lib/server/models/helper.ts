@@ -59,11 +59,11 @@ export function updateToTable<T extends Table, C extends Column>(table: T, idCol
 	 * @note This function will remove any state date fields from the data before updating.
 	 *       Eg. createdAt, updatedAt, deletedAt
 	 */
-	return async function (db: DrizzleClient, id: string, data: typeof table.$inferInsert) {
+	return async function (db: DrizzleClient, id: string, data: Partial<T["$inferInsert"]>) {
 		if (Array.isArray(data)) {
 			data = data.map((v) => removeStateDateFields(v));
 		} else {
-			data = removeStateDateFields(data);
+			data = removeStateDateFields(data) as any;
 		}
 		return db.update(table).set(data).where(eq(idColumn, id)).returning();
 	};
