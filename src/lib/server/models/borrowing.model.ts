@@ -5,31 +5,13 @@
 import { type } from "arktype";
 import { tables, type DrizzleClient } from "../db";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
+import type { BorrowingRequest, ReturnStatus } from "$lib/validator/borrowing.validator";
 
-export const BorrowingRequest = type({
-  projectId: 'string',
-  assetId: 'string',
-  amount: 'number',
-  ouid: 'string',
-  startDate: 'string.date.iso.parse',
-  endDate: 'string.date.iso.parse',
-  'note?': 'string'
-});
-
-export type BorrowingRequest = (typeof BorrowingRequest)['infer'];
 
 export async function requestToBorrow(db: DrizzleClient, request: BorrowingRequest) {
-  const { amount, assetId, ouid, startDate, endDate, projectId, note } = request;
+  const { amount, assetId, startDate, endDate, projectId, note, borrowerId } = request;
   await db.transaction(async (tx) => {
-    await tx.insert(tables.assetToProject).values({
-      assetId,
-      borrowerId: ouid,
-      startDate,
-      endDate,
-      amount,
-      projectId,
-      note
-    });
+    await tx.insert(tables.assetToProject).values(request);
 
     // updateAsset(tx, assetId, { amount: sql`${tables.asset.amount} - 1  })
     await tx
@@ -56,7 +38,7 @@ export async function cancelRequest(db: DrizzleClient, id: string) {
 }
 
 // used by admin
-export async function returnBorrowing(db: DrizzleClient, id: string) {
+export async function returnBorrowing(db: DrizzleClient, id: string, status: ReturnStatus) {
 
 }
 
