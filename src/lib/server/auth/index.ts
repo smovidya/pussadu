@@ -26,7 +26,7 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 							options: {
 								schema: authSchema,
 								usePlural: false,
-								debugLogs: true
+								// debugLogs: true
 							}
 						}
 					: undefined,
