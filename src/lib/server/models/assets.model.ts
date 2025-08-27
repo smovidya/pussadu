@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, isNotNull, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, isNotNull, isNull, sql } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -17,13 +17,13 @@ export const selectAsset = getOneFromTable(assetTable, assetTable.id);
 export const deleteAsset = deleteFromTable(assetTable, assetTable.id);
 export const purgeAsset = purgeDeletedFromTable(assetTable);
 
-export async function listAssets(db: DrizzleClient, includedDeleted = false) {
+export async function listAssets(db: DrizzleClient, includeDeleted = false) {
 	// const { createdAt, deletedAt, updatedAt, ...columns } = getTableColumns(assetTable);
 
 	const assets = await db
 		.select()
 		.from(tables.asset)
-		.where(includedDeleted ? isNotNull(tables.asset.deletedAt) : undefined);
+		.where(includeDeleted ? undefined : isNull(tables.asset.deletedAt));
 
 	return assets;
 }

@@ -75,18 +75,18 @@ export function updateToTable<T extends Table, C extends Column>(table: T, idCol
  * @param idColumn The column to use as the ID for lookup.
  * @returns A function that takes a database client and the ID of the record to retrieve.
  */
-export function getOneFromTable<T extends Table & { deletedAt: Column }>(
+export function getOneFromTable<T extends Table & { deletedAt: Column; }>(
 	table: T,
 	idColumn: Column
 ) {
-	return async function (db: DrizzleClient, id: string, options?: { includeDeleted?: boolean }) {
+	return async function (db: DrizzleClient, id: string, options?: { includeDeleted?: boolean; }) {
 		const result = await db
 			.select()
 			.from(table)
 			.where(
 				and(
 					eq(idColumn, id),
-					options?.includeDeleted ? isNotNull(table.deletedAt) : isNull(table.deletedAt)
+					options?.includeDeleted ? undefined : isNull(table.deletedAt)
 				)
 			);
 		if (result.length === 0) {
@@ -102,11 +102,11 @@ export function getOneFromTable<T extends Table & { deletedAt: Column }>(
  * @param idColumn The column to use as the ID for lookup.
  * @returns A function that takes a database client and the ID of the record to delete.
  */
-export function deleteFromTable<T extends Table & { deletedAt: Column }>(
+export function deleteFromTable<T extends Table & { deletedAt: Column; }>(
 	table: T,
 	idColumn: Column
 ) {
-	return async function (db: DrizzleClient, id: string, options?: { force?: boolean }) {
+	return async function (db: DrizzleClient, id: string, options?: { force?: boolean; }) {
 		if (options?.force) {
 			return db.delete(table).where(eq(idColumn, id));
 		}
@@ -130,7 +130,7 @@ export function deleteFromTable<T extends Table & { deletedAt: Column }>(
  * @param idColumn The column to use as the ID for lookup.
  * @returns A function that takes a database client and the ID of the record to purge.
  */
-export function purgeDeletedFromTable<T extends Table & { deletedAt: Column }>(table: T) {
+export function purgeDeletedFromTable<T extends Table & { deletedAt: Column; }>(table: T) {
 	return async function (db: DrizzleClient) {
 		return db.delete(table).where(isNotNull(table.deletedAt));
 	};
