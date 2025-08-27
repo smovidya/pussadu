@@ -34,7 +34,6 @@ export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
 		.fullJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
 		.where(or(eq(tables.projectToBorrower.borrowerId, ouid), eq(tables.project.isPinned, true)))
 		.orderBy(tables.project.id);
-	console.log(JSON.stringify({ projects }));
 	return projects;
 };
 
