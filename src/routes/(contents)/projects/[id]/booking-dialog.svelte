@@ -12,6 +12,7 @@
 	import type { DateRange } from 'bits-ui';
 	import { requestToBorrow } from '$lib/rpc/borrowing.remote';
 	import { toast } from 'svelte-sonner';
+	import { listAssets } from '$lib/rpc/assets.remote';
 
 	interface Props {
 		asset: {
@@ -47,6 +48,7 @@
 		end: now('Asia/Bangkok').add({ days: 7 })
 	});
 	let startValue: DateValue | undefined = $state(undefined);
+	let isDialogOpen = $state(false);
 
 	const df = new DateFormatter('th-TH', {
 		dateStyle: 'long'
@@ -67,10 +69,27 @@
 		});
 
 		toast.success(`ส่งคำขอยืม ${asset.name} สำหรับโครงการ ${project.title} เรียบร้อยแล้ว`);
+		isDialogOpen = false;
+		resetBookingInfo();
+		listAssets().refresh();
+	}
+
+	function resetBookingInfo() {
+		bookingInfoValue = {
+			amount: 1,
+			note: '',
+			startDate: new Date(),
+			endDate: new Date()
+		};
+		dateValue = {
+			start: now('Asia/Bangkok'),
+			end: now('Asia/Bangkok').add({ days: 7 })
+		};
+		startValue = undefined;
 	}
 </script>
 
-<Dialog.Root>
+<Dialog.Root bind:open={isDialogOpen}>
 	<Dialog.Trigger>
 		{#snippet child({ props })}
 			<Button class="w-full" {...props}>
@@ -160,7 +179,7 @@
 										{#if dateValue.end}
 											{df.format(dateValue.start.toDate(getLocalTimeZone()))} - {df.format(
 												dateValue.end.toDate(getLocalTimeZone())
-											)} ({dateValue.end.compare(dateValue.start) / (1000 * 60 * 60 * 24)} วัน)
+											)} ({~~(dateValue.end.compare(dateValue.start) / (1000 * 60 * 60 * 24))} วัน)
 										{:else}
 											{df.format(dateValue.start.toDate(getLocalTimeZone()))}
 										{/if}

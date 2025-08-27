@@ -1,1 +1,5 @@
-<h1 class="text-2xl">My borrowing</h1>
+<script lang="ts">
+	import MyCurrentBorrowingList from './my-current-borrowing-list.svelte';
+</script>
+
+<MyCurrentBorrowingList />

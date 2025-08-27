@@ -4,8 +4,10 @@
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
-	import AssetsCard from './assets-card.svelte';
+	import AssetsList from './assets-list.svelte';
 	import ConsentContent from './consent-content.svelte';
+	import * as Card from '$stories/shadcnui/card';
+	import { Input } from '$stories/shadcnui/input';
 
 	interface Props {
 		project: {
@@ -17,6 +19,9 @@
 	}
 
 	let { project }: Props = $props();
+	let assetFilters = {
+		search: ''
+	};
 	const status = projectStatusOptions.find((option) => option.value === project.status);
 </script>
 
@@ -34,6 +39,16 @@
 	<section>
 		<ConsentContent />
 	</section>
+	<section>
+		<Card.Root>
+			<Card.Header>
+				<Card.Title>ค้นหา</Card.Title>
+			</Card.Header>
+			<Card.Content>
+				<Input placeholder="ค้นหาพัสดุ" bind:value={assetFilters.search} />
+			</Card.Content>
+		</Card.Root>
+	</section>
 
 	<article>
 		{#await listAssets()}
@@ -45,11 +60,7 @@
 				<Skeleton class="h-20 w-3/4" />
 			</div>
 		{:then assets}
-			<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{#each assets as asset}
-					<AssetsCard {asset} {project} />
-				{/each}
-			</div>
+			<AssetsList {assets} {project} search={assetFilters.search} />
 		{/await}
 	</article>
 </PageWrapper>
