@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, isNotNull, isNull, or, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, isNotNull, isNull, or, is } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -40,11 +40,8 @@ export async function listAssetsForProject(
 		.rightJoin(tables.assetToProject, eq(tables.asset.id, tables.assetToProject.assetId))
 		.where(
 			and(
-				includeDeleted ? undefined : isNull(tables.asset.deletedAt),
-				or(
-					eq(tables.asset, projectId),
-					project?.isPinned ? eq(tables.asset.type, 'key') : undefined
-				)
+				!includeDeleted ? isNull(tables.asset.deletedAt) : undefined,
+				project?.isPinned ? eq(tables.asset.type, 'key') : undefined
 			)
 		);
 	return assets.map((row) => row.asset);
