@@ -2,10 +2,10 @@
 	import Button, { buttonVariants } from '$stories/shadcnui/button/button.svelte';
 	import * as Dialog from '$stories/shadcnui/dialog';
 	import * as Popover from '$stories/shadcnui/popover';
+	import * as Card from '$stories/shadcnui/card/card.svelte';
 	import Input from '$stories/shadcnui/input/input.svelte';
 	import Label from '$stories/shadcnui/label/label.svelte';
 	import { CalendarIcon, Minus, Plus, ShoppingCart } from '@lucide/svelte';
-	import Calendar from '$stories/shadcnui/calendar/calendar.svelte';
 	import { cn } from '$stories/utils';
 	import { DateFormatter, getLocalTimeZone, now, type DateValue } from '@internationalized/date';
 	import RangeCalendar from '$stories/shadcnui/range-calendar/range-calendar.svelte';
@@ -13,6 +13,7 @@
 	import { requestToBorrow } from '$lib/rpc/borrowing.remote';
 	import { toast } from 'svelte-sonner';
 	import { listAssets } from '$lib/rpc/assets.remote';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		asset: {
@@ -34,9 +35,16 @@
 			status: 'notstarted' | 'inprogress' | 'completed' | 'evaluated' | 'cancelled';
 			owner: string;
 		};
+		trigger?: Snippet<
+			[
+				{
+					props: Record<string, unknown>;
+				}
+			]
+		>;
 	}
 
-	let { asset, project }: Props = $props();
+	let { asset, project, trigger }: Props = $props();
 	let bookingInfoValue = $state({
 		amount: 1,
 		note: '',
@@ -75,7 +83,9 @@
 		toast.success(`ส่งคำขอยืม ${asset.name} สำหรับโครงการ ${project.title} เรียบร้อยแล้ว`);
 		isDialogOpen = false;
 		resetBookingInfo();
-		listAssets().refresh();
+		listAssets({
+			projectId: project.id
+		}).refresh();
 	}
 
 	function resetBookingInfo() {
@@ -95,11 +105,15 @@
 
 <Dialog.Root bind:open={isDialogOpen}>
 	<Dialog.Trigger>
-		{#snippet child({ props })}
-			<Button class="w-full" {...props}>
-				<ShoppingCart class="mr-2" />
-				ยืม
-			</Button>
+		{#snippet child(args)}
+			{#if trigger}
+				{@render trigger(args)}
+			{:else}
+				<Button class="w-full" {...args.props}>
+					<ShoppingCart class="mr-2" />
+					ยืม
+				</Button>
+			{/if}
 		{/snippet}
 	</Dialog.Trigger>
 	<Dialog.Content>

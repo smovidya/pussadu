@@ -1,12 +1,9 @@
 <script lang="ts">
 	import { assetStatusOptions, assetTypeOptions } from '$lib/constants';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
-	import Button from '$stories/shadcnui/button/button.svelte';
 	import * as Card from '$stories/shadcnui/card';
-	import { Input } from '$stories/shadcnui/input';
-	import Label from '$stories/shadcnui/label/label.svelte';
 	import { cn } from '$stories/utils';
-	import { Package, Tag, Info } from '@lucide/svelte';
+	import { Package, Tag, Info, KeyIcon } from '@lucide/svelte';
 	import BookingDialog from './booking-dialog.svelte';
 
 	interface Props {
@@ -39,60 +36,75 @@
 	const assetStatus = assetStatusOptions.find((option) => option.value === asset.status);
 </script>
 
-<Card.Root
-	class="group relative flex h-full w-full flex-col overflow-hidden border py-0 shadow-sm transition-all hover:shadow-lg"
->
-	<!-- Image Section -->
-	<div class="relative h-48 w-full overflow-hidden">
-		<img
-			src={asset.image_url ?? '/placeholder/grey.png'}
-			alt={asset.name}
-			class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
-		/>
-		<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
-		<!-- Status Badge -->
-		<Badge class={cn('absolute top-3 right-3 text-xs font-semibold', assetStatus?.color)}>
-			{assetStatus?.label}
-		</Badge>
-	</div>
-
-	<!-- Content Section -->
-	<Card.Content class="flex flex-1 flex-col p-4">
-		<!-- Title and Category -->
-		<div class="mb-2">
-			<h3 class="text-lg leading-tight font-bold">{asset.name}</h3>
-			<div class="mt-1 flex items-center text-xs text-muted-foreground">
-				<Tag class="mr-1 h-3 w-3" />
-				<span>{asset.category || 'ไม่มีหมวดหมู่'}</span>
+<BookingDialog {asset} {project}>
+	{#snippet trigger({ props })}
+		<Card.Root
+			{...props}
+			class={cn(
+				'group relative flex h-full w-full cursor-pointer flex-col gap-0 overflow-hidden border py-0 shadow-sm transition-all hover:shadow-lg',
+				asset.amount <= 0 && 'pointer-events-none opacity-50',
+				asset.status === 'maintenance' && 'opacity-75',
+				asset.status === 'lost' && 'pointer-events-none opacity-50',
+				asset.status === 'damaged' && 'pointer-events-none opacity-50'
+			)}
+		>
+			<!-- Image Section -->
+			<div class="relative h-40 w-full overflow-hidden">
+				<img
+					src={asset.image_url ?? '/placeholder/grey.png'}
+					alt={asset.name}
+					class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+				/>
+				<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+				<!-- Status Badge -->
+				<Badge class={cn('absolute top-3 right-3 text-xs font-semibold', assetStatus?.color)}>
+					{assetStatus?.label}
+				</Badge>
 			</div>
-		</div>
 
-		<!-- Description -->
-		<p class="mb-4 flex-1 text-sm text-muted-foreground">
-			{asset.description || 'ไม่มีคำอธิบาย'}
-		</p>
+			<!-- Content Section -->
+			<Card.Content class="flex flex-1 flex-col p-4">
+				<!-- Title and Category -->
+				<div class="mb-2">
+					<h3 class="text-lg leading-tight font-bold">{asset.name}</h3>
+					<div class="mt-1 flex items-center text-xs text-muted-foreground">
+						<Tag class="mr-1 size-3" />
+						<span>{asset.category || 'ไม่มีหมวดหมู่'}</span>
+					</div>
+				</div>
 
-		<!-- Details -->
-		<div class="space-y-2 text-sm">
-			<div class="flex items-center justify-between">
-				<span class="flex items-center text-muted-foreground">
-					<Package class="mr-2 h-4 w-4" />
-					ประเภท
-				</span>
-				<Badge variant="outline">{assetType?.label}</Badge>
-			</div>
-			<div class="flex items-center justify-between">
-				<span class="flex items-center text-muted-foreground">
-					<Info class="mr-2 h-4 w-4" />
-					จำนวนที่มี
-				</span>
-				<span class="font-semibold">{asset.amount} {asset.unitTerm}</span>
-			</div>
-		</div>
-	</Card.Content>
+				<!-- Description -->
+				<p class="mb-4 flex-1 text-sm text-muted-foreground">
+					{asset.description || 'ไม่มีคำอธิบาย'}
+				</p>
 
-	<!-- Footer Section -->
-	<Card.Footer class="border-t p-4">
+				<!-- Details -->
+				<div class="space-y-2 text-sm">
+					<div class="flex items-center justify-between">
+						<span class="flex items-center text-muted-foreground">
+							<Package class="mr-2 size-4" />
+							ประเภท
+						</span>
+						<Badge variant="outline">
+							{#if assetType?.value === 'key'}
+								<KeyIcon />
+							{/if}
+							{assetType?.label}</Badge
+						>
+					</div>
+					<div class="flex items-center justify-between">
+						<span class="flex items-center text-muted-foreground">
+							<Info class="mr-2 size-4" />
+							จำนวนที่มี
+						</span>
+						<span class="font-semibold">{asset.amount} {asset.unitTerm}</span>
+					</div>
+				</div>
+			</Card.Content>
+			<!-- Footer Section -->
+			<!-- <Card.Footer class="border-t p-4">
 		<BookingDialog {asset} {project} />
-	</Card.Footer>
-</Card.Root>
+	</Card.Footer> -->
+		</Card.Root>
+	{/snippet}
+</BookingDialog>
