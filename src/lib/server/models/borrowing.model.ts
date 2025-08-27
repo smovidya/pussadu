@@ -5,7 +5,7 @@
 import { type } from 'arktype';
 import { tables, type DrizzleClient } from '../db';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
-import type { BorrowingRequest, ReturnStatus } from '$lib/validator/borrowing.validator';
+import type { BorrowingRequest, BorrowingStatus, ReturnStatus } from '$lib/validator/borrowing.validator';
 import { assetToBorrower } from '$lib/schema';
 
 export async function requestToBorrow(db: DrizzleClient, request: BorrowingRequest) {
@@ -31,30 +31,54 @@ export async function requestToBorrow(db: DrizzleClient, request: BorrowingReque
 		.where(eq(tables.asset.id, assetId));
 }
 
-export async function approveRequest(db: DrizzleClient, id: string) {}
+/**
+ * Factory to create a status-updating function that transitions from allowed 'from' statuses to 'to'.
+ */
+function updateStatusIf(from: BorrowingStatus[], to: BorrowingStatus) {
+	return async (db: DrizzleClient, id: string) => {
+		// return db.transaction(async db => {
+			const borrowings = await db
+				.select({ status: tables.assetToProject.status })
+				.from(tables.assetToProject)
+				.where(eq(tables.assetToProject.id, id));
+
+			if (borrowings.length !== 1) {
+				return "not-found";
+			}
+
+			const { status } = borrowings[0];
+			if (!from.includes(status)) {
+				return "invalid-state";
+			}
+
+			await db
+				.update(tables.assetToProject)
+				.set({ status: to })
+				.where(eq(tables.assetToProject.id, id));
+
+			return "ok";
+		// });
+	};
+}
 
 // used by admin
-export async function rejectRequest(db: DrizzleClient, id: string, reason?: string) {}
+export const approveRequest = updateStatusIf(['pending'], 'approved');
+
+// used by admin
+export const rejectRequest = updateStatusIf(['pending'], 'rejected');
 
 // used by requester
-export async function cancelRequest(db: DrizzleClient, id: string) {}
+export const cancelRequest = updateStatusIf(['pending', 'approved'], 'cancelled');
 
 // used by admin
-export async function returnBorrowing(db: DrizzleClient, id: string, status: ReturnStatus) {}
+export async function returnBorrowing(db: DrizzleClient, id: string, status: ReturnStatus) {
+	return updateStatusIf(['pending', 'approved'], status)(db, id);
+}
 
 export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
 	const { asset, assetToProject } = tables;
 
 	// const { createdAt, deletedAt, ...columns } = getTableColumns(asset);
-	// const items = await db
-	// 	.select()
-	// 	.from(asset)
-	// 	.where(
-	// 		and(
-	// 			eq(asset.id, db.select().from(assetToProject).where(eq(assetToProject.borrowerId, ouid))),
-	// 			isNotNull(asset.deletedAt)
-	// 		)
-	// 	);
 	const items = await db.query.assetToBorrower.findMany({
 		where: (asset, { eq, and, isNotNull }) => eq(assetToBorrower.borrowerId, ouid),
 		with: {
