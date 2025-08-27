@@ -43,5 +43,5 @@ export async function listAssetsForProject(
 				project?.isPinned ? eq(tables.asset.type, 'key') : undefined
 			)
 		);
-	return assets
+	return assets;
 }

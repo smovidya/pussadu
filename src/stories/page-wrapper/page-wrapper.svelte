@@ -36,6 +36,6 @@
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
 </header>
-<div class="flex flex-1 flex-col gap-4 p-4">
+<div class="container flex flex-1 flex-col gap-4 p-4 mx-auto">
 	{@render children?.()}
 </div>
