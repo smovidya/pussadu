@@ -52,6 +52,14 @@
 		} catch (err) {
 			if (isHttpError(err) && err.status === 404) {
 				toast.error(`ไม่พบข้อมูลสำหรับ ${newStaffValue.ouid}`);
+				loadedStaffInfo = {
+					ouid: newStaffValue.ouid,
+					name: '',
+					email: '',
+					line_id: '',
+					phone: '',
+					departmentId: ''
+				};
 				return;
 			}
 			toast.error(`เกิดข้อผิดพลาดในการค้นหา: ${err.message}`);
