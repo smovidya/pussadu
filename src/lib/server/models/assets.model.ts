@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, isNotNull, isNull, or, sql } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -7,7 +7,7 @@ import {
 	purgeDeletedFromTable,
 	updateToTable
 } from './helper';
-import { type } from 'arktype';
+import * as projectModel from '$lib/server/models/project.model';
 
 const assetTable = tables.asset;
 
@@ -26,4 +26,26 @@ export async function listAssets(db: DrizzleClient, includeDeleted = false) {
 		.where(includeDeleted ? undefined : isNull(tables.asset.deletedAt));
 
 	return assets;
+}
+
+export async function listAssetsForProject(
+	db: DrizzleClient,
+	projectId: string,
+	includeDeleted = false
+) {
+	const project = await projectModel.getProject(db, projectId);
+	const assets = await db
+		.select()
+		.from(tables.asset)
+		.rightJoin(tables.assetToProject, eq(tables.asset.id, tables.assetToProject.assetId))
+		.where(
+			and(
+				includeDeleted ? undefined : isNull(tables.asset.deletedAt),
+				or(
+					eq(tables.asset, projectId),
+					project?.isPinned ? eq(tables.asset.type, 'key') : undefined
+				)
+			)
+		);
+	return assets.map((row) => row.asset);
 }
