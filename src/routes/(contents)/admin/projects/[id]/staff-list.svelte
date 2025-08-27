@@ -2,6 +2,7 @@
 	import Button from '$stories/shadcnui/button/button.svelte';
 	import * as Card from '$stories/shadcnui/card';
 	import * as Table from '$stories/shadcnui/table';
+	import * as Select from '$stories/shadcnui/select';
 	import Input from '$stories/shadcnui/input/input.svelte';
 	import { ArrowLeft, Trash2, UserSearch } from '@lucide/svelte';
 	import { getBorrowerInfo } from '$lib/rpc/borrower.remote';
@@ -12,6 +13,8 @@
 		removeBorrowerFromProject
 	} from '$lib/rpc/project.remote';
 	import { isHttpError } from '@sveltejs/kit';
+	import { listDepartment } from '$lib/rpc/department.remote';
+	import { Skeleton } from '$stories/shadcnui/skeleton';
 
 	let {
 		projectId
@@ -51,7 +54,7 @@
 			loadedStaffInfo = await getBorrowerInfo({ ouid: newStaffValue.ouid });
 		} catch (err) {
 			if (isHttpError(err) && err.status === 404) {
-				toast.error(`ไม่พบข้อมูลสำหรับ ${newStaffValue.ouid}`);
+				toast.error(`ไม่พบข้อมูลสำหรับ ${newStaffValue.ouid} โปรดกรอกข้อมูลเพิ่มเติม`);
 				loadedStaffInfo = {
 					ouid: newStaffValue.ouid,
 					name: '',
@@ -84,14 +87,24 @@
 			});
 			await listAllStaffsForProject({ projectId }).refresh();
 		} catch (err) {
+			console.log('here', err);
 			if (isHttpError(err) && err.status === 400) {
-				toast.error(err);
+				toast.error(err.body.message);
+				await listAllStaffsForProject({ projectId }).refresh();
 				return;
 			}
 			toast.error(`เกิดข้อผิดพลาดในการบันทึก: ${err.message}`);
 		}
 
 		loadedStaffInfo = {
+			ouid: '',
+			name: '',
+			email: '',
+			line_id: '',
+			phone: '',
+			departmentId: ''
+		};
+		newStaffValue = {
 			ouid: '',
 			name: '',
 			email: '',
@@ -188,7 +201,33 @@
 				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.phone} />
 			</Table.Cell>
 			<Table.Cell>
-				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.departmentId} />
+				{#await listDepartment()}
+					<Skeleton class="w-[180px]" />
+				{:then departments}
+					<Select.Root
+						type="single"
+						value={loadedStaffInfo.departmentId}
+						onValueChange={(value) => (loadedStaffInfo.departmentId = value)}
+					>
+						<Select.Trigger class="w-[180px]">
+							{#if loadedStaffInfo.departmentId}
+								{loadedStaffInfo.departmentId}
+							{:else}
+								เลือกภาควิชา
+							{/if}
+						</Select.Trigger>
+						<Select.Content>
+							{#each departments as department}
+								<Select.Item value={department.id}>{department.name}</Select.Item>
+							{/each}
+						</Select.Content>
+					</Select.Root>
+				{/await}
+				<Input
+					hidden
+					class="w-full min-w-[130px] text-sm"
+					bind:value={loadedStaffInfo.departmentId}
+				/>
 			</Table.Cell>
 			<Table.Cell>
 				<Button onclick={async () => await saveStaff()}>บันทึก</Button>

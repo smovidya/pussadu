@@ -56,7 +56,7 @@
 						</Table.Row>
 					{:else}
 						<Table.Row>
-							<Table.Cell colSpan={5} class="text-center">ไม่มีรายการยืม</Table.Cell>
+							<Table.Cell colSpan={6} class="text-center">ไม่มีรายการยืม</Table.Cell>
 						</Table.Row>
 					{/each}
 				</Table.Body>

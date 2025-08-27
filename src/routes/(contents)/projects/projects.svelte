@@ -41,7 +41,7 @@
 			<ul class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
 				{#each projects as project (project.project.id)}
 					<div class="flex flex-col flex-wrap p-1">
-						<ProjectCard project={project.project} />
+						<ProjectCard {project} />
 					</div>
 				{/each}
 			</ul>

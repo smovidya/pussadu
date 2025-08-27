@@ -70,31 +70,33 @@
 				<Form.FieldErrors />
 			</Form.Field>
 
-			<Form.Field {form} name="isPublished">
+			<Form.Field {form} name="isPinned">
 				<Form.Control>
 					{#snippet children({ props })}
-						<Form.Label>สถานะเผยแพร่</Form.Label>
+						<Form.Label>ใครมีสิทธื์ยืมบ้าง</Form.Label>
 						<Select.Root
 							type="single"
 							name={props.name}
-							onValueChange={(val) => ($formData.isPublished = val === 'true')}
-							value={$formData.isPublished ? 'true' : 'false'}
+							onValueChange={(val) => ($formData.isPinned = val === 'true')}
+							value={$formData.isPinned ? 'true' : 'false'}
 						>
 							<Select.Trigger class="w-[180px]">
-								{#if $formData.isPublished}
-									เผยแพร่
+								{#if $formData.isPinned}
+									ทุกคนยืมได้
 								{:else}
-									ไม่เผยแพร่
+									เฉพาะสตาฟงาน
 								{/if}
 							</Select.Trigger>
 							<Select.Content>
-								<Select.Item value="true">เผยแพร่</Select.Item>
-								<Select.Item value="false">ไม่เผยแพร่</Select.Item>
+								<Select.Item value="true">ทุกคนยืมได้</Select.Item>
+								<Select.Item value="false">เฉพาะสตาฟงาน</Select.Item>
 							</Select.Content>
 						</Select.Root>
 					{/snippet}
 				</Form.Control>
-				<Form.Description />
+				<Form.Description
+					>เช่น กุญแจบางห้อง หากเลือก เฉพาะสตาฟงาน จะต้องเพิ่มชื่อในโครงการก่อนจึงจะยืมได้</Form.Description
+				>
 				<Form.FieldErrors />
 			</Form.Field>
 			<Form.Field {form} name="status">

@@ -12,9 +12,9 @@ const options = {
 	schema,
 	logger: {
 		logQuery(query, params) {
-			// console.debug(
-			// 	`\x1b[32m[drizzle]\x1b[0m Executing query: ${query} with params: ${JSON.stringify(params)}`
-			// );
+			console.debug(
+				`\x1b[32m[drizzle]\x1b[0m Executing query: ${query} with params: ${JSON.stringify(params)}`
+			);
 		}
 	}
 } satisfies DrizzleConfig<typeof schema>;

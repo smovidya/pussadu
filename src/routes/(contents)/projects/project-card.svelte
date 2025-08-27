@@ -24,9 +24,9 @@
 
 <a
 	class="flex flex-col gap-2 rounded-md border p-3 underline-offset-2 transition duration-100 hover:bg-muted hover:shadow"
-	href="/projects/{project.projectId}"
+	href="/projects/{project.project.id}"
 >
-	{@render ProjectStatus(project.project.status)}
+	<!-- {@render ProjectStatus(project.project.status)} -->
 	<h2 class="text-xl font-bold">{project.project.title}</h2>
 	<p class="text-sm text-muted-foreground">{project.project.id}</p>
 </a>

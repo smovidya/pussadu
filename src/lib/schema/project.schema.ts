@@ -13,7 +13,7 @@ export const project = sqliteTable('project', {
 		.notNull()
 		.default('notstarted'),
 	owner: text('owner').notNull().default('etc'),
-	isPublished: integer('is_published', { mode: 'boolean' }).default(true),
+	isPinned: integer('is_pinned', { mode: 'boolean' }).default(false),
 	...timestamps
 });
 

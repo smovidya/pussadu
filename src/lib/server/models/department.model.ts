@@ -1,4 +1,5 @@
-import { tables } from '../db';
+import { isNull } from 'drizzle-orm';
+import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
 	getOneFromTable,
@@ -14,3 +15,12 @@ export const updateDepartment = updateToTable(departmentTable, departmentTable.i
 export const getDepartment = getOneFromTable(departmentTable, departmentTable.id);
 export const deleteDepartment = deleteFromTable(departmentTable, departmentTable.id);
 export const purgeDepartment = purgeDeletedFromTable(departmentTable);
+
+export const listDepartments = async (db: DrizzleClient, includeDeleted = false) => {
+	const departments = await db
+		.select()
+		.from(departmentTable)
+		.where(includeDeleted ? undefined : isNull(departmentTable.deletedAt));
+
+	return departments;
+};

@@ -32,6 +32,9 @@ async function main() {
 				status: f.valuesFromArray({
 					values: projectStatusOptions.map((status) => status.value)
 				}),
+				isPinned: f.default({
+					defaultValue: false
+				}),
 				deletedAt: deletedAtGenerator(f)
 			}
 		}

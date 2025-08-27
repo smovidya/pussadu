@@ -20,8 +20,7 @@ import { Guard } from '$lib/server/helpers/facades/guard';
 import { Locals } from '$lib/server/helpers/facades/request-event';
 import { error } from '@sveltejs/kit';
 import { type } from 'arktype';
-import { getBorrowerInfo } from './borrower.remote';
-import { insertNewBorrower, updateBorrower } from '$lib/server/models/borrower.model';
+import * as borrowerModel from '$lib/server/models/borrower.model';
 
 export const getAllProjects = query(async () => {
 	Guard.admin();
@@ -96,14 +95,12 @@ export const assignBorrowerToProject = command(assignBorrowerToProjectSchema, as
 		error(400, 'โครงการนี้มีสตาฟนี้อยู่แล้ว');
 	}
 
-	const borrower = await getBorrowerInfo({
-		ouid: data.relations.borrowerId
-	});
+	const borrower = await borrowerModel.selectBorrower(Locals.db, data.relations.borrowerId);
 
 	if (!borrower) {
-		await insertNewBorrower(Locals.db, data.borrowerData);
+		await borrowerModel.insertNewBorrower(Locals.db, data.borrowerData);
 	} else {
-		await updateBorrower(Locals.db, borrower.ouid, data.borrowerData);
+		await borrowerModel.updateBorrower(Locals.db, borrower.ouid, data.borrowerData);
 	}
 
 	const project = await assignBorrower(

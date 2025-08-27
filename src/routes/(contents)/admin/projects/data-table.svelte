@@ -52,7 +52,7 @@
 		updatedAt: Date | null;
 		deletedAt: Date | null;
 		title: string;
-		isPublished: boolean | null;
+		isPinned: boolean | null;
 		staffs: {
 			borrowerId: string;
 			projectId: string;
@@ -148,7 +148,8 @@
 			cell: ({ row }) => {
 				return renderSnippet(StaffCell, {
 					count: row.original.staffs.length,
-					id: row.original.id
+					id: row.original.id,
+					isPinned: row.original.isPinned
 				});
 			},
 			enableColumnFilter: false
@@ -315,11 +316,26 @@
 	{/if}
 {/snippet}
 
-{#snippet StaffCell({ count, id }: { count: number; id: string })}
-	<Button variant="ghost" class="text-muted-foreground" href="/admin/projects/{id}">
-		<span>{count} คน</span>
-		<ChevronRight />
-	</Button>
+{#snippet StaffCell({
+	count,
+	id,
+	isPinned
+}: {
+	count: number;
+	id: string;
+	isPinned: boolean | null;
+})}
+	{#if isPinned}
+		<Button variant="ghost" class="text-muted-foreground" href="/admin/projects/{id}">
+			<span>ทุกคน</span>
+			<ChevronRight />
+		</Button>
+	{:else}
+		<Button variant="ghost" class="text-muted-foreground" href="/admin/projects/{id}">
+			<span>{count} คน</span>
+			<ChevronRight />
+		</Button>
+	{/if}
 {/snippet}
 
 {#snippet CreatedAtCell({ value }: { value: Date | null })}

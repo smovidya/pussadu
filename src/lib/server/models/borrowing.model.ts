@@ -100,6 +100,5 @@ export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
 			project: true
 		}
 	});
-	console.log(items);
 	return items;
 }
