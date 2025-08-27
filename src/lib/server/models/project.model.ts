@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, or } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -7,6 +7,7 @@ import {
 	purgeDeletedFromTable,
 	updateToTable
 } from './helper';
+import { project } from '$lib/schema';
 
 const projectTable = tables.project;
 
@@ -27,19 +28,14 @@ export const selectAllProjects = async (db: DrizzleClient) => {
 };
 
 export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
-	// return await db.query.projectToBorrower.findMany({
-	// 	where: (projectToBorrower, { eq, or }) => or(eq(projectToBorrower.borrowerId, ouid)),
-	// 	with: {
-	// 		project: true
-	// 	},
-	// 	orderBy: (projectToBorrower) => projectToBorrower.projectId
-	// });
-	return await db
+	const projects = await db
 		.select()
 		.from(tables.projectToBorrower)
-		.innerJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
-		.where(eq(tables.projectToBorrower.borrowerId, ouid))
+		.fullJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
+		.where(or(eq(tables.projectToBorrower.borrowerId, ouid), eq(tables.project.isPinned, true)))
 		.orderBy(tables.project.id);
+	console.log(JSON.stringify({ projects }));
+	return projects;
 };
 
 export const assignBorrower = async (db: DrizzleClient, projectId: string, borrowerId: string) => {
@@ -85,9 +81,22 @@ export const isBorrowerAlreadyAssignedToProject = async (
 	projectId: string,
 	borrowerId: string
 ) => {
-	const result = await db.query.projectToBorrower.findFirst({
-		where: (projectToBorrower, { eq, and }) =>
-			and(eq(projectToBorrower.projectId, projectId), eq(projectToBorrower.borrowerId, borrowerId))
-	});
+	// const result = await db.query.projectToBorrower.findFirst({
+	// 	where: (projectToBorrower, { eq, and }) =>
+	// 		or(
+	// 			and(
+	// 				eq(projectToBorrower.projectId, projectId),
+	// 				eq(projectToBorrower.borrowerId, borrowerId)
+	// 			),
+	// 			eq(project.isPinned, true)
+	// 		)
+	// });
+	const result = await db
+		.select()
+		.from(tables.projectToBorrower)
+		.rightJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
+		.where(
+			or(eq(tables.projectToBorrower.borrowerId, borrowerId), eq(tables.project.isPinned, true))
+		);
 	return !!result;
 };
