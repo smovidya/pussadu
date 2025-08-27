@@ -90,12 +90,16 @@ export const isBorrowerAlreadyAssignedToProject = async (
 	// 			eq(project.isPinned, true)
 	// 		)
 	// });
-	const result = await db
-		.select()
-		.from(tables.projectToBorrower)
-		.rightJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
-		.where(
-			or(eq(tables.projectToBorrower.borrowerId, borrowerId), eq(tables.project.isPinned, true))
-		);
+	const project = await db.query.project.findFirst({
+		where: (project, { eq }) => eq(project.id, projectId)
+	});
+
+	if (project?.isPinned) return true;
+
+	const result = await db.query.projectToBorrower.findFirst({
+		where: (projectToBorrower, { eq }) =>
+			and(eq(projectToBorrower.projectId, projectId), eq(projectToBorrower.borrowerId, borrowerId))
+	});
+
 	return !!result;
 };

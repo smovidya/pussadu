@@ -5,14 +5,9 @@
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import ProjectCard from './project-card.svelte';
+	import * as Alert from '$stories/shadcnui/alert';
 
 	const myBorrowerData = getMyBorrowerData();
-	const projects = getAllMyProjects();
-
-	// interface Props {
-	// 	authClient: AuthClient;
-	// }
-	// let { authClient }: Props = $props();
 </script>
 
 <PageWrapper pageTitle="เลือกโครงการ" groupTitle="ยืมพัสดุ" groupUrl="/projects">
@@ -38,15 +33,45 @@
 			<Skeleton class="h-3 w-72" />
 			<Skeleton class="h-3 w-72" />
 		{:then projects}
-			<ul class="mt-3 grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
-				{#each projects as project (project.project.id)}
+			{@const inprogressProjects = projects.filter(
+				(v) =>
+					v.project?.status === 'inprogress' ||
+					v.project?.status === 'evaluated' ||
+					v.project?.status === 'notstarted'
+			)}
+			{@const endedProjects = projects.filter(
+				(v) => v.project?.status === 'completed' || v.project?.status === 'cancelled'
+			)}
+
+			{#if inprogressProjects.length === 0}
+				<Alert.Root>
+					<Alert.Title>คุณยังไม่มีโครงการที่ยืมได้ในขณะนี้</Alert.Title>
+					<Alert.Description>
+						ยังไม่มีโครงการที่คุณสามารถยืมได้ หากไม่เจอโครงการที่ต้องการ
+						โปรดติดต่อฝ่ายพัสดุสโมสรนิสิต</Alert.Description
+					>
+				</Alert.Root>
+			{/if}
+			<ul class="my-3 grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
+				{#each inprogressProjects ?? [] as project (project.project?.id)}
 					<div class="flex flex-col flex-wrap p-1">
 						<ProjectCard {project} />
 					</div>
 				{/each}
 			</ul>
+
+			{#if endedProjects.length > 0}
+				<h2 class="mt-10 font-bold">โครงการที่สิ้นสุดแล้ว</h2>
+				<ul class="my-3 grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))]">
+					{#each endedProjects ?? [] as project (project.project?.id)}
+						<div class="flex flex-col flex-wrap p-1">
+							<ProjectCard {project} />
+						</div>
+					{/each}
+				</ul>
+			{/if}
 		{:catch error}
-			<p>ไม่สามารถโหลดข้อมูลโครงการได้: {error.message}</p>
+			<p>ไม่สามารถโหลดข้อมูลโครงการได้: {error.body.message}</p>
 		{/await}
 	</section>
 </PageWrapper>

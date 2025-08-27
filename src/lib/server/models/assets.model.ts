@@ -37,12 +37,11 @@ export async function listAssetsForProject(
 	const assets = await db
 		.select()
 		.from(tables.asset)
-		.rightJoin(tables.assetToProject, eq(tables.asset.id, tables.assetToProject.assetId))
 		.where(
 			and(
 				!includeDeleted ? isNull(tables.asset.deletedAt) : undefined,
 				project?.isPinned ? eq(tables.asset.type, 'key') : undefined
 			)
 		);
-	return assets.map((row) => row.asset);
+	return assets
 }
