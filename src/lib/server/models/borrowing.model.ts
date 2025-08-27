@@ -18,7 +18,7 @@ export async function requestToBorrow(db: DrizzleClient, request: BorrowingReque
 	// 	await tx
 	// 		.update(tables.asset)
 	// 		.set({
-	// 			amount: sql`${tables.asset.amount} - 1`
+	// 			amount: sql`${tables.asset.amount} - ${amount}`
 	// 		})
 	// 		.where(eq(tables.asset.id, assetId));
 	// });
@@ -26,7 +26,7 @@ export async function requestToBorrow(db: DrizzleClient, request: BorrowingReque
 	await db
 		.update(tables.asset)
 		.set({
-			amount: sql`${tables.asset.amount} - 1`
+			amount: sql`${tables.asset.amount} - ${amount}`
 		})
 		.where(eq(tables.asset.id, assetId));
 }
