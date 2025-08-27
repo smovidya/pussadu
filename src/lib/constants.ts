@@ -83,7 +83,6 @@ export const assetStatusOptions = [
 	}
 ];
 
-// 'normal' | 'durable' | 'key';
 export const assetTypeOptions = [
 	{
 		label: 'พัสดุ',
@@ -98,3 +97,47 @@ export const assetTypeOptions = [
 		value: 'key'
 	}
 ];
+
+// status: "lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned";
+export const borrowingStatus = [
+	{
+		label: 'สูญหาย',
+		value: 'lost',
+		color: 'bg-red-50 text-black'
+	},
+	{
+		label: 'ชำรุด',
+		value: 'damaged',
+		color: 'bg-gray-50 text-gray-600'
+	},
+	{
+		label: 'ถูกยกเลิก',
+		value: 'cancelled',
+		color: 'bg-red-50 text-red-600'
+	},
+	{
+		label: 'รอดำเนินการ',
+		value: 'pending',
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'อนุมัติ',
+		value: 'approved',
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'ถูกปฏิเสธ',
+		value: 'rejected',
+		color: 'bg-red-50 text-red-600'
+	},
+	{
+		label: 'กำลังใช้งาน',
+		value: 'inuse',
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'ส่งคืนแล้ว',
+		value: 'returned',
+		color: 'bg-gray-50 text-gray-600'
+	}
+]

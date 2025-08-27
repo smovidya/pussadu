@@ -5,7 +5,11 @@
 import { type } from 'arktype';
 import { tables, type DrizzleClient } from '../db';
 import { and, eq, isNotNull, sql } from 'drizzle-orm';
-import type { BorrowingRequest, BorrowingStatus, ReturnStatus } from '$lib/validator/borrowing.validator';
+import type {
+	BorrowingRequest,
+	BorrowingStatus,
+	ReturnStatus
+} from '$lib/validator/borrowing.validator';
 import { assetToBorrower } from '$lib/schema';
 
 export async function requestToBorrow(db: DrizzleClient, request: BorrowingRequest) {
@@ -29,6 +33,16 @@ export async function requestToBorrow(db: DrizzleClient, request: BorrowingReque
 			amount: sql`${tables.asset.amount} - ${amount}`
 		})
 		.where(eq(tables.asset.id, assetId));
+	await db.insert(tables.assetToProject).values({
+		amount,
+		assetId,
+		startDate,
+		endDate,
+		projectId,
+		note,
+		borrowerId,
+		status: 'pending'
+	});
 }
 
 /**
@@ -37,26 +51,26 @@ export async function requestToBorrow(db: DrizzleClient, request: BorrowingReque
 function updateStatusIf(from: BorrowingStatus[], to: BorrowingStatus) {
 	return async (db: DrizzleClient, id: string) => {
 		// return db.transaction(async db => {
-			const borrowings = await db
-				.select({ status: tables.assetToProject.status })
-				.from(tables.assetToProject)
-				.where(eq(tables.assetToProject.id, id));
+		const borrowings = await db
+			.select({ status: tables.assetToProject.status })
+			.from(tables.assetToProject)
+			.where(eq(tables.assetToProject.id, id));
 
-			if (borrowings.length !== 1) {
-				return "not-found";
-			}
+		if (borrowings.length !== 1) {
+			return 'not-found';
+		}
 
-			const { status } = borrowings[0];
-			if (!from.includes(status)) {
-				return "invalid-state";
-			}
+		const { status } = borrowings[0];
+		if (!from.includes(status)) {
+			return 'invalid-state';
+		}
 
-			await db
-				.update(tables.assetToProject)
-				.set({ status: to })
-				.where(eq(tables.assetToProject.id, id));
+		await db
+			.update(tables.assetToProject)
+			.set({ status: to })
+			.where(eq(tables.assetToProject.id, id));
 
-			return "ok";
+		return 'ok';
 		// });
 	};
 }
@@ -79,12 +93,13 @@ export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
 	const { asset, assetToProject } = tables;
 
 	// const { createdAt, deletedAt, ...columns } = getTableColumns(asset);
-	const items = await db.query.assetToBorrower.findMany({
-		where: (asset, { eq, and, isNotNull }) => eq(assetToBorrower.borrowerId, ouid),
+	const items = await db.query.assetToProject.findMany({
+		where: (asset, { eq }) => eq(assetToProject.borrowerId, ouid),
 		with: {
-			asset: true
+			asset: true,
+			project: true
 		}
 	});
-
+	console.log(items);
 	return items;
 }
