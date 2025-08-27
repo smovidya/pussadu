@@ -27,13 +27,19 @@ export const selectAllProjects = async (db: DrizzleClient) => {
 };
 
 export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
-	return await db.query.projectToBorrower.findMany({
-		where: (projectToBorrower, { eq, and }) => and(eq(projectToBorrower.borrowerId, ouid)),
-		with: {
-			project: true
-		},
-		orderBy: (projectToBorrower) => projectToBorrower.projectId
-	});
+	// return await db.query.projectToBorrower.findMany({
+	// 	where: (projectToBorrower, { eq, or }) => or(eq(projectToBorrower.borrowerId, ouid)),
+	// 	with: {
+	// 		project: true
+	// 	},
+	// 	orderBy: (projectToBorrower) => projectToBorrower.projectId
+	// });
+	return await db
+		.select()
+		.from(tables.projectToBorrower)
+		.innerJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
+		.where(eq(tables.projectToBorrower.borrowerId, ouid))
+		.orderBy(tables.project.id);
 };
 
 export const assignBorrower = async (db: DrizzleClient, projectId: string, borrowerId: string) => {

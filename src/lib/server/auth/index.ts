@@ -1,9 +1,8 @@
 import { betterAuth } from 'better-auth';
 import { admin, oneTap } from 'better-auth/plugins';
 
-import { BETTER_AUTH_SECRET } from '$env/static/private';
 import { dev } from '$app/environment';
-import { PUBLIC_APP_TITLE, PUBLIC_BETTER_AUTH_URL } from '$env/static/public';
+// import { env as dynamicEnv } from '$env/dynamic/public';
 
 import { getDb } from '../db';
 import * as authSchema from '$lib/schema/auth.schema';
@@ -46,17 +45,17 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 			{}
 		),
 		...{
-			appName: PUBLIC_APP_TITLE,
-			baseURL: PUBLIC_BETTER_AUTH_URL,
+			appName: env.PUBLIC_APP_TITLE,
+			baseURL: env.PUBLIC_BETTER_AUTH_URL,
 			basePath: '/api/auth',
 			trustedOrigins(request) {
 				const url = new URL(request.url);
 				if (url.origin.endsWith('.vidyachula.org')) {
-					return [url.origin, PUBLIC_BETTER_AUTH_URL];
+					return [url.origin, env.PUBLIC_BETTER_AUTH_URL];
 				}
-				return [PUBLIC_BETTER_AUTH_URL];
+				return [env.PUBLIC_BETTER_AUTH_URL];
 			},
-			secret: BETTER_AUTH_SECRET,
+			secret: env.BETTER_AUTH_SECRET,
 			logger: {
 				level: dev ? 'debug' : 'info',
 				log: (level, message, ...args) => {

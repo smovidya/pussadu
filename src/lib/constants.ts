@@ -140,4 +140,4 @@ export const borrowingStatus = [
 		value: 'returned',
 		color: 'bg-gray-50 text-gray-600'
 	}
-]
+];
