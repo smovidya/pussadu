@@ -20,7 +20,7 @@ export const assetToProject = sqliteTable('asset_to_project', {
 	note: text('note'),
 	status: text('status', {
 		enum: ['pending', 'approved', 'rejected', 'inuse', 'returned', 'lost', 'damaged', 'cancelled']
-	}),
+	}).notNull(),
 	startDate: integer('start_date', {
 		mode: 'timestamp'
 	}).notNull(),
