@@ -51,7 +51,7 @@
 	</section>
 
 	<article>
-		{#await listAssets()}
+		{#await listAssets({ projectId: project.id })}
 			<div class="flex flex-wrap gap-2">
 				<Skeleton class="h-20 w-3/4" />
 				<Skeleton class="h-20 w-3/4" />

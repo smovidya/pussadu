@@ -45,7 +45,7 @@
 	<!-- Image Section -->
 	<div class="relative h-48 w-full overflow-hidden">
 		<img
-			src={asset.image_url ?? '/placeholder-image.png'}
+			src={asset.image_url ?? '/placeholder/grey.png'}
 			alt={asset.name}
 			class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
 		/>

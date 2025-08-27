@@ -59,6 +59,10 @@
 			toast.error('กรุณาเลือกช่วงวันที่ยืม');
 			return;
 		}
+		if (bookingInfoValue.amount < 1 || bookingInfoValue.amount > asset.amount) {
+			toast.error(`กรุณาเลือกจำนวนที่ยืมระหว่าง 1 ถึง ${asset.amount} ${asset.unitTerm}`);
+			return;
+		}
 		await requestToBorrow({
 			assetId: asset.id,
 			projectId: project.id,
