@@ -3,7 +3,8 @@ import { createInsertSchema } from 'drizzle-arktype';
 
 export const BorrowingRequest = createInsertSchema(assetToProject, {
 	startDate: (it) => it.or('string.date.iso.parse'),
-	endDate: (it) => it.or('string.date.iso.parse')
+	endDate: (it) => it.or('string.date.iso.parse'),
+	amount: (it) => it.or('number.integer>=1')
 }).omit('createdAt', 'updatedAt', 'deletedAt', 'status', 'id');
 
 export type BorrowingRequest = (typeof BorrowingRequest)['infer'];
