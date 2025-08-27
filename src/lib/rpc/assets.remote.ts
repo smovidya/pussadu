@@ -2,9 +2,15 @@ import { query } from '$app/server';
 import { Guard } from '$lib/server/helpers/facades/guard';
 import { Locals } from '$lib/server/helpers/facades/request-event';
 import * as assets from '$lib/server/models/assets.model';
+import { type } from 'arktype';
 
-export const listAssets = query(async () => {
-	Guard.loggedIn();
+export const listAssets = query(
+	type({
+		projectId: 'string'
+	}),
+	async (data) => {
+		Guard.loggedIn();
 
-	return await assets.listAssets(Locals.db);
-});
+		return await assets.listAssetsForProject(Locals.db, data.projectId);
+	}
+);
