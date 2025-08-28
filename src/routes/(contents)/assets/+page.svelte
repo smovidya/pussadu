@@ -1,1 +1,5 @@
-<h1 class="text-2xl">Assets</h1>
+<script>
+	import AssetsList from './assets-list.svelte';
+</script>
+
+<AssetsList />

@@ -116,14 +116,14 @@ export const borrowingStatus = [
 		color: 'bg-red-50 text-red-600'
 	},
 	{
-		label: 'รอดำเนินการ',
+		label: 'รออนุญาต',
 		value: 'pending',
 		color: 'bg-blue-50 text-blue-600'
 	},
 	{
-		label: 'อนุมัติ',
+		label: 'อนุมัติแล้ว',
 		value: 'approved',
-		color: 'bg-green-50 text-green-600'
+		color: 'bg-green-700 text-green-200'
 	},
 	{
 		label: 'ถูกปฏิเสธ',
@@ -133,7 +133,7 @@ export const borrowingStatus = [
 	{
 		label: 'กำลังใช้งาน',
 		value: 'inuse',
-		color: 'bg-blue-50 text-blue-600'
+		color: 'bg-purple-800 text-purple-200'
 	},
 	{
 		label: 'ส่งคืนแล้ว',

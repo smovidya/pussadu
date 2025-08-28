@@ -1,5 +1,5 @@
 <script lang="ts">
-	import AssetsSelect from './assets-select.svelte';
+	import AssetsSelect from '$stories/assets/assets-select.svelte';
 	import { page } from '$app/state';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 	import { getProjectInfo } from '$lib/rpc/project.remote';

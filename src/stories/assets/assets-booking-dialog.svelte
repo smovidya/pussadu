@@ -2,7 +2,6 @@
 	import Button, { buttonVariants } from '$stories/shadcnui/button/button.svelte';
 	import * as Dialog from '$stories/shadcnui/dialog';
 	import * as Popover from '$stories/shadcnui/popover';
-	import * as Card from '$stories/shadcnui/card/card.svelte';
 	import Input from '$stories/shadcnui/input/input.svelte';
 	import Label from '$stories/shadcnui/label/label.svelte';
 	import { CalendarIcon, Minus, Plus, ShoppingCart } from '@lucide/svelte';
@@ -130,16 +129,16 @@
 							class="mb-4 h-32 rounded-2xl object-cover"
 						/>
 					</div>
-					<div>
+					<div class="flex flex-col gap-1 text-start">
 						<p>{asset.description}</p>
 						<p>ประเภท: {asset.type}</p>
 						<p>สถานะ: {asset.status}</p>
-						<p class="font-bold">จำนวน: {asset.amount} {asset.unitTerm}</p>
 						<p>หมวดหมู่: {asset.category}</p>
 						<p>เจ้าของ: {asset.owner}</p>
+						<p class="font-bold">พร้อมยืม: {asset.amount} {asset.unitTerm}</p>
 					</div>
 				</div>
-				<div class="mt-6 flex flex-col gap-2 border-t pt-4">
+				<div class="mt-6 flex flex-col gap-2 border-t pt-4 text-start">
 					<div class="flex flex-col gap-1">
 						<Label>โครงการ</Label>
 						<p class="text-lg font-semibold text-gray-900">{project.title}</p>

@@ -4,8 +4,8 @@
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
-	import AssetsList from './assets-list.svelte';
-	import ConsentContent from './consent-content.svelte';
+	import AssetsList from './assets-booking-list.svelte';
+	import ConsentContent from './assets-consent-content.svelte';
 	import * as Card from '$stories/shadcnui/card';
 	import { Input } from '$stories/shadcnui/input';
 

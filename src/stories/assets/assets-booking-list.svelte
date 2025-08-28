@@ -1,4 +1,5 @@
 <script lang="ts">
+	import AssetsBookingDialog from './assets-booking-dialog.svelte';
 	import AssetsCard from './assets-card.svelte';
 	import Fuse from 'fuse.js';
 
@@ -36,13 +37,13 @@
 			categoryId: string | null;
 			id: string;
 		}[];
-		project: {
+		project?: {
 			id: string;
 			title: string;
 			status: 'notstarted' | 'inprogress' | 'completed' | 'evaluated' | 'cancelled';
 			owner: string;
 		};
-		search: string;
+		search?: string;
 	}
 
 	let { assets, project, search = $bindable() }: Props = $props();
@@ -60,6 +61,14 @@
 {search}
 <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each filteredAssets as asset}
-		<AssetsCard {asset} {project} />
+		{#if project}
+			<AssetsBookingDialog {asset} {project}>
+				{#snippet trigger({ props })}
+					<AssetsCard {asset} {props}></AssetsCard>
+				{/snippet}
+			</AssetsBookingDialog>
+		{:else}
+			<AssetsCard {asset}></AssetsCard>
+		{/if}
 	{/each}
 </div>

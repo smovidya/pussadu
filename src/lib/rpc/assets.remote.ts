@@ -6,11 +6,12 @@ import { type } from 'arktype';
 
 export const listAssets = query(
 	type({
-		projectId: 'string'
+		'projectId?': 'string'
 	}),
 	async (data) => {
 		Guard.loggedIn();
 
-		return await assets.listAssetsForProject(Locals.db, data.projectId);
+		if (!data.projectId) return assets.listAssets(Locals.db);
+		return assets.listAssetsForProject(Locals.db, data.projectId);
 	}
 );
