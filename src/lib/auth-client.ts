@@ -1,4 +1,4 @@
-import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
+import { env } from '$env/dynamic/public';
 import { adminClient, inferAdditionalFields, oneTapClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/svelte';
 import type { createAuth } from './server/auth';
@@ -7,7 +7,7 @@ export const authClient = createAuthClient({
 	plugins: [
 		adminClient(),
 		oneTapClient({
-			clientId: PUBLIC_GOOGLE_CLIENT_ID,
+			clientId: env.PUBLIC_GOOGLE_CLIENT_ID,
 			// Optional client configuration:
 			autoSelect: false,
 			cancelOnTapOutside: true,

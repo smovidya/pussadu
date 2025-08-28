@@ -2,8 +2,6 @@ import { betterAuth } from 'better-auth';
 import { admin, oneTap } from 'better-auth/plugins';
 
 import { dev } from '$app/environment';
-// import { env as dynamicEnv } from '$env/dynamic/public';
-
 import { getDb } from '../db';
 import * as authSchema from '$lib/schema/auth.schema';
 import { selectBorrower } from '../models/borrower.model';
