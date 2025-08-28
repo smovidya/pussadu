@@ -1,6 +1,5 @@
 import { betterAuth } from 'better-auth';
 import { admin, oneTap } from 'better-auth/plugins';
-
 import { dev } from '$app/environment';
 import { getDb } from '../db';
 import * as authSchema from '$lib/schema/auth.schema';
@@ -66,14 +65,12 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 				google: {
 					clientId: env.PUBLIC_GOOGLE_CLIENT_ID,
 					clientSecret: env.GOOGLE_CLIENT_SECRET,
-					scopes: ['email', 'profile'],
 					// Optional configuration:
+					scopes: ['email', 'profile'],
 					autoSelect: false,
 					cancelOnTapOutside: true,
 					context: 'signin',
-					additionalOptions: {
-						hd: '*' // Restrict to Chula domain
-					}
+					hd: 'student.chula.ac.th' // Restrict to Chula domain
 				}
 			},
 

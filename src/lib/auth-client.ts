@@ -13,7 +13,7 @@ export const authClient = createAuthClient({
 			cancelOnTapOutside: true,
 			context: 'signin',
 			additionalOptions: {
-				hd: 'chula.ac.th' // Restrict to Chula domain
+				hd: 'student.chula.ac.th' // Restrict to Chula domain
 			},
 			// Configure prompt behavior and exponential backoff:
 			promptOptions: {
