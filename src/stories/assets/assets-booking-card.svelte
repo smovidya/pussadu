@@ -29,4 +29,3 @@
 
 	let { asset, project }: Props = $props();
 </script>
-
