@@ -29,6 +29,13 @@
       "when": 1756279217484,
       "tag": "0003_slippery_scourge",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1756456062131,
+      "tag": "0004_optimal_longshot",
+      "breakpoints": true
     }
   ]
 }
