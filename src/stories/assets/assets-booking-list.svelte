@@ -68,7 +68,7 @@
 </script>
 
 <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-	{#each filteredAssets as asset}
+	{#each filteredAssets as asset (asset.id)}
 		{#if project}
 			<AssetsBookingDialog {asset} {project}>
 				{#snippet trigger({ props })}

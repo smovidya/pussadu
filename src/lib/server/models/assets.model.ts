@@ -1,4 +1,4 @@
-import { and, eq, getTableColumns, isNotNull, isNull, or, is } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,

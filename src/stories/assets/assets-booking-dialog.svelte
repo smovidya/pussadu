@@ -25,14 +25,11 @@
 			image_url: string | null;
 			category: string;
 			owner: string;
-			categoryId: string | null;
 			id: string;
 		};
 		project: {
 			id: string;
 			title: string;
-			status: 'notstarted' | 'inprogress' | 'completed' | 'evaluated' | 'cancelled';
-			owner: string;
 		};
 		trigger?: Snippet<
 			[

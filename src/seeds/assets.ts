@@ -3,7 +3,6 @@ import { drizzle } from 'drizzle-orm/libsql';
 import { seed } from 'drizzle-seed';
 import * as schema from '$lib/schema';
 import { deletedAtGenerator } from './helper';
-import { assetStatusOptions } from '$lib/constants';
 
 async function main() {
 	const db = drizzle({

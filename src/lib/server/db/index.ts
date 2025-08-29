@@ -26,7 +26,7 @@ export const getDb = ({ d1Binding, libsqlBinding }: GetDbParams) => {
 		return drizzleD1(d1Binding, options);
 	}
 	if (libsqlBinding) {
-		return drizzleLibsql(libsqlBinding, options) as any as DrizzleD1; // yeahhhhhhhh
+		return drizzleLibsql(libsqlBinding, options) as unknown as DrizzleD1;
 	}
 	throw new Error(`No database binding provided ${JSON.stringify({ d1Binding, libsqlBinding })}`);
 };

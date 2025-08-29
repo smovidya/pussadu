@@ -9,7 +9,7 @@
 		class?: string;
 	}
 
-	let { project, class: className }: Props = $props();
+	let { project, class: _className }: Props = $props();
 
 	const status = projectStatusOptions.find((option) => option.value === project.project?.status);
 </script>

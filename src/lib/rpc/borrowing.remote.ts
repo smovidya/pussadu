@@ -4,8 +4,7 @@ import { Locals } from '$lib/server/helpers/facades/request-event';
 import * as borrowingModel from '$lib/server/models/borrowing.model';
 import * as assetModel from '$lib/server/models/assets.model';
 import * as projectModel from '$lib/server/models/project.model';
-import { BorrowingRequest, ReturnStatus } from '$lib/validator/borrowing.validator';
-import { type } from 'arktype';
+import { BorrowingRequest } from '$lib/validator/borrowing.validator';
 import { error } from '@sveltejs/kit';
 
 export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), async (data) => {
@@ -49,21 +48,21 @@ export const listBorrowed = query(async () => {
 	return await borrowingModel.listBorrowedByUser(Locals.db, ouid);
 });
 
-export const approveRequest = command(type({ id: 'string' }), async ({ id }) => {
-	const { ouid } = Guard.admin();
-});
+// export const approveRequest = command(type({ id: 'string' }), async ({ id }) => {
+// 	const { ouid } = Guard.admin();
+// });
 
-export const rejectRequest = command(type({ id: 'string' }), async ({ id }) => {
-	const { ouid } = Guard.admin();
-});
+// export const rejectRequest = command(type({ id: 'string' }), async ({ id }) => {
+// 	const { ouid } = Guard.admin();
+// });
 
-export const cancelRequest = command(type({ id: 'string' }), async ({ id }) => {
-	const { ouid } = Guard.loggedIn();
-});
+// export const cancelRequest = command(type({ id: 'string' }), async ({ id }) => {
+// 	const { ouid } = Guard.loggedIn();
+// });
 
-export const returnBorrowing = command(
-	type({ id: 'string', status: ReturnStatus }),
-	async ({ id, status }) => {
-		const { ouid } = Guard.admin();
-	}
-);
+// export const returnBorrowing = command(
+// 	type({ id: 'string', status: ReturnStatus }),
+// 	async ({ id, status }) => {
+// 		const { ouid } = Guard.admin();
+// 	}
+// );

@@ -7,7 +7,6 @@ import {
 	purgeDeletedFromTable,
 	updateToTable
 } from './helper';
-import { project } from '$lib/schema';
 
 const projectTable = tables.project;
 

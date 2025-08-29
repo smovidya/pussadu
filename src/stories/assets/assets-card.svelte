@@ -7,9 +7,6 @@
 
 	interface Props {
 		asset: {
-			createdAt: Date | null;
-			updatedAt: Date | null;
-			deletedAt: Date | null;
 			name: string;
 			description: string | null;
 			type: 'normal' | 'durable' | 'key';
@@ -18,9 +15,6 @@
 			unitTerm: string;
 			image_url: string | null;
 			category: string;
-			owner: string;
-			categoryId: string | null;
-			id: string;
 		};
 		props?: Record<string, unknown>;
 	}

@@ -2,9 +2,8 @@
  * @see {@link file://./../../../../docs/borrowing-status.png}
  */
 
-import { type } from 'arktype';
 import { tables, type DrizzleClient } from '../db';
-import { and, eq, isNotNull, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import type {
 	BorrowingRequest,
 	BorrowingStatus,
@@ -92,11 +91,11 @@ export async function returnBorrowing(db: DrizzleClient, id: string, status: Ret
 }
 
 export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
-	const { asset, assetToProject } = tables;
+	const { asset: _, assetToProject } = tables;
 
 	// const { createdAt, deletedAt, ...columns } = getTableColumns(asset);
 	const items = await db.query.assetToProject.findMany({
-		where: (asset, { eq }) => eq(assetToProject.borrowerId, ouid),
+		where: (_asset, { eq }) => eq(assetToProject.borrowerId, ouid),
 		with: {
 			asset: true,
 			project: true

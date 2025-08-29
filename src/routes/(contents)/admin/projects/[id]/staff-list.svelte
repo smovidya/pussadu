@@ -219,7 +219,7 @@
 							{/if}
 						</Select.Trigger>
 						<Select.Content>
-							{#each departments as department}
+							{#each departments as department (department.id)}
 								<Select.Item value={department.id}>{department.name}</Select.Item>
 							{/each}
 						</Select.Content>

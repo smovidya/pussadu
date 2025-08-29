@@ -6,8 +6,6 @@
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 	import AssetsList from './assets-booking-list.svelte';
 	import ConsentContent from './assets-consent-content.svelte';
-	import * as Card from '$stories/shadcnui/card';
-	import { Input } from '$stories/shadcnui/input';
 	import AssetsFilters from './assets-filters.svelte';
 
 	interface Props {

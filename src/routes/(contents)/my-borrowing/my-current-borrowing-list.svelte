@@ -30,7 +30,7 @@
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
-					{#each borrowedItems as item}
+					{#each borrowedItems as item (item.id)}
 						{@const status = borrowingStatus.find((s) => s.value === item.status)}
 						{@const projectStatus = projectStatusOptions.find(
 							(s) => s.value === item.project.status

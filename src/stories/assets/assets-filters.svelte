@@ -22,7 +22,7 @@
 	<Card.Content class="flex flex-col gap-2">
 		<Input placeholder="ค้นหาพัสดุ" bind:value={searchTerm} />
 		<ToggleGroup.Root variant="outline" type="multiple" bind:value={selectedTypes}>
-			{#each assetTypeOptions as { value, label }}
+			{#each assetTypeOptions as { value, label } (value)}
 				<ToggleGroup.Item
 					{value}
 					aria-label={`แสดง ${label}`}
