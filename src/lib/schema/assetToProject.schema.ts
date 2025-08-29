@@ -28,7 +28,7 @@ export const assetToProject = sqliteTable('asset_to_project', {
 		mode: 'timestamp'
 	}).notNull(),
 	...timestamps,
-	adminNote: text('note').default(""),
+	adminNote: text('note').default('')
 });
 
 export const assetToProjectRelations = relations(assetToProject, ({ one }) => ({

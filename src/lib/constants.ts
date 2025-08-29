@@ -96,7 +96,7 @@ export const assetTypeOptions = [
 		label: 'กุญแจ',
 		value: 'key'
 	}
-];
+] as const;
 
 // status: "lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned";
 export const borrowingStatus = [

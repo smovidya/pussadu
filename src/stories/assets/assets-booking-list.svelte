@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { assetTypeOptions } from '$lib/constants';
 	import AssetsBookingDialog from './assets-booking-dialog.svelte';
 	import AssetsCard from './assets-card.svelte';
 	import Fuse from 'fuse.js';
@@ -44,9 +45,10 @@
 			owner: string;
 		};
 		search?: string;
+		selectedTypes?: (typeof assetTypeOptions)[number]['value'][];
 	}
 
-	let { assets, project, search = $bindable() }: Props = $props();
+	const { assets, project, search = $bindable(), selectedTypes = $bindable() }: Props = $props();
 
 	const fuse = new Fuse(assets, {
 		keys: ['name', 'description', 'category'],
@@ -54,11 +56,17 @@
 	});
 
 	const filteredAssets = $derived(
-		search ? fuse.search(search).map((result) => result.item) : assets
+		// Search term
+		(search ? fuse.search(search).map((result) => result.item) : assets)
+			// Filter by asset type
+			.filter(
+				(v) => selectedTypes && (selectedTypes.length === 0 || selectedTypes.includes(v.type))
+			)
+			// Move zero-amount assets to the end
+			.toSorted((a, b) => (a.amount === 0 ? 1 : b.amount === 0 ? -1 : 0))
 	);
 </script>
 
-{search}
 <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 	{#each filteredAssets as asset}
 		{#if project}
@@ -70,5 +78,9 @@
 		{:else}
 			<AssetsCard {asset}></AssetsCard>
 		{/if}
+	{:else}
+		<div class="col-span-full">
+			<p class="text-center text-muted-foreground">ไม่พบพัสดุที่ตรงกับเงื่อนไขการค้นหา :(</p>
+		</div>
 	{/each}
 </div>

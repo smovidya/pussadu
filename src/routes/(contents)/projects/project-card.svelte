@@ -16,7 +16,7 @@
 
 <a
 	class={cn(
-		'flex flex-col gap-2 rounded-md border p-3 underline-offset-2 transition duration-100 hover:bg-muted hover:shadow',
+		'flex h-full flex-col gap-2 rounded-md border p-3 underline-offset-2 transition duration-100 hover:bg-muted hover:shadow',
 		status?.color
 	)}
 	href="/projects/{project.project?.id}"
@@ -27,7 +27,7 @@
 			<span class="text-sm">{status?.label}</span>
 		</div>
 	{/if}
-	<h2 class="flex flex-row items-center gap-2 text-xl leading-tight font-bold">
+	<h2 class="flex h-full flex-row items-start gap-2 text-xl leading-tight font-bold">
 		<span>
 			{project.project?.title}
 		</span>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { projectStatusOptions } from '$lib/constants';
+	import { assetTypeOptions, projectStatusOptions } from '$lib/constants';
 	import { listAssets } from '$lib/rpc/assets.remote';
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
@@ -8,6 +8,7 @@
 	import ConsentContent from './assets-consent-content.svelte';
 	import * as Card from '$stories/shadcnui/card';
 	import { Input } from '$stories/shadcnui/input';
+	import AssetsFilters from './assets-filters.svelte';
 
 	interface Props {
 		project: {
@@ -19,9 +20,10 @@
 	}
 
 	let { project }: Props = $props();
-	let assetFilters = {
-		search: ''
-	};
+	let assetFilters = $state({
+		search: '',
+		selectedTypes: [] as (typeof assetTypeOptions)[number]['value'][]
+	});
 	const status = projectStatusOptions.find((option) => option.value === project.status);
 </script>
 
@@ -40,14 +42,10 @@
 		<ConsentContent />
 	</section>
 	<section>
-		<Card.Root>
-			<Card.Header>
-				<Card.Title>ค้นหา</Card.Title>
-			</Card.Header>
-			<Card.Content>
-				<Input placeholder="ค้นหาพัสดุ" bind:value={assetFilters.search} />
-			</Card.Content>
-		</Card.Root>
+		<AssetsFilters
+			bind:searchTerm={assetFilters.search}
+			bind:selectedTypes={assetFilters.selectedTypes}
+		/>
 	</section>
 
 	<article>
@@ -60,7 +58,12 @@
 				<Skeleton class="h-20 w-3/4" />
 			</div>
 		{:then assets}
-			<AssetsList {assets} {project} search={assetFilters.search} />
+			<AssetsList
+				{assets}
+				{project}
+				search={assetFilters.search}
+				selectedTypes={assetFilters.selectedTypes}
+			/>
 		{/await}
 	</article>
 </PageWrapper>

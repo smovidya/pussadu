@@ -7,4 +7,4 @@
 	<title>เลือกโครงการ | SMO Vidya Chula</title>
 </svelte:head>
 
-<Projects {authClient} />
+<Projects />

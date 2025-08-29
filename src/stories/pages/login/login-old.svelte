@@ -4,6 +4,7 @@
 	import BgImage from '$lib/assets/bg.jpg';
 	import { Card } from '$stories/shadcnui/card';
 	import { Package } from '@lucide/svelte';
+	import { Skeleton } from '$stories/shadcnui/skeleton';
 
 	interface Props {
 		authClient: AuthClient;
@@ -26,8 +27,14 @@
 			<h1 class="text-2xl font-bold">ระบบพัสดุ</h1>
 			<span>สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</span>
 			{#if $auth.data?.user}
-				<Button href="/projects" class="mt-4 w-full">ไปยังแดชบอร์ด</Button>
-			{:else}
+				<Button href="/projects" class="mt-4 flex h-auto flex-row gap-3 rounded-xl px-3.5 py-2.5">
+					<img src={$auth.data.user.image} alt="" class="size-8 rounded-sm" />
+					<div class="flex flex-col">
+						<span class="text-xs">ดำเนินการต่อในฐานะ</span>
+						<span class="text-sm font-bold">{$auth.data.user.name}</span>
+					</div>
+				</Button>
+			{:else if !$auth.data}
 				<Button
 					class="mt-4 w-full"
 					onclick={() =>
@@ -38,6 +45,8 @@
 				>
 					เข้าสู่ระบบ
 				</Button>
+			{:else if $auth.isPending}
+				<Skeleton class="h-9 w-full border" />
 			{/if}
 		</div>
 	</Card>
