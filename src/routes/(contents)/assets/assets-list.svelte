@@ -2,6 +2,13 @@
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import AssetsBookingList from '$stories/assets/assets-booking-list.svelte';
 	import { listAssets } from '$lib/rpc/assets.remote';
+	import AssetsFilters from '$stories/assets/assets-filters.svelte';
+	import type { assetTypeOptions } from '$lib/constants';
+
+	let assetFilters = $state({
+		search: '',
+		selectedType: [] as (typeof assetTypeOptions)[number]['value'][]
+	});
 </script>
 
 <PageWrapper groupTitle="ยืมพัสดุ" pageTitle="รายการพัสดุ" groupUrl="/projects">
@@ -10,7 +17,18 @@
 		<p>รายการพัสดุที่สามารถยืมได้</p>
 	</div>
 
+	<section>
+		<AssetsFilters
+			bind:searchTerm={assetFilters.search}
+			bind:selectedTypes={assetFilters.selectedType}
+		/>
+	</section>
+
 	{#await listAssets({}) then assets}
-		<AssetsBookingList {assets} />
+		<AssetsBookingList
+			{assets}
+			bind:search={assetFilters.search}
+			bind:selectedTypes={assetFilters.selectedType}
+		/>
 	{/await}
 </PageWrapper>
