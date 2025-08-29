@@ -88,7 +88,7 @@
 			>
 				<Package2Icon class="size-4 text-white" />
 			</div>
-			<div class="hidden sm:block">
+			<div>
 				<h2
 					class="bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-lg font-bold text-transparent"
 				>
