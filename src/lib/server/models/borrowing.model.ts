@@ -26,6 +26,8 @@ export async function requestToBorrow(db: DrizzleClient, request: BorrowingReque
 	// 		})
 	// 		.where(eq(tables.asset.id, assetId));
 	// });
+
+	// TODO: delete this record when it's returned??? 
 	await db.insert(assetToBorrower).values(request);
 	await db
 		.update(tables.asset)
