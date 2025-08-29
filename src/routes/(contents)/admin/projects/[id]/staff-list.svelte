@@ -132,6 +132,8 @@
 			departmentId: ''
 		};
 	}
+
+	const staffQuery = listAllStaffsForProject({ projectId });
 </script>
 
 {#snippet StaffRow({
@@ -266,7 +268,7 @@
 				</Table.Row>
 			</Table.Header>
 			<Table.Body>
-				{#each listAllStaffsForProject({ projectId }).current ?? [] as staff (staff.borrowerId)}
+				{#each staffQuery.current ?? [] as staff (staff.borrowerId)}
 					{@render StaffRow({ staffInfo: staff.borrower })}
 				{/each}
 				{@render NewStaffRow()}
