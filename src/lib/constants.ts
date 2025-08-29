@@ -116,7 +116,7 @@ export const borrowingStatus = [
 		color: 'bg-red-50 text-red-600'
 	},
 	{
-		label: 'รออนุญาต',
+		label: 'รอการอนุมัติ',
 		value: 'pending',
 		color: 'bg-blue-50 text-blue-600'
 	},
