@@ -2,6 +2,7 @@ import { env } from '$env/dynamic/public';
 import { adminClient, inferAdditionalFields, oneTapClient } from 'better-auth/client/plugins';
 import { createAuthClient } from 'better-auth/svelte';
 import type { createAuth } from './server/auth';
+import { cloudflareClient } from 'better-auth-cloudflare/client';
 
 export const authClient = createAuthClient({
 	plugins: [
@@ -21,7 +22,8 @@ export const authClient = createAuthClient({
 				maxAttempts: 5 // Maximum number of attempts before triggering onPromptNotification (default: 5)
 			}
 		}),
-		inferAdditionalFields<ReturnType<typeof createAuth>>()
+		inferAdditionalFields<ReturnType<typeof createAuth>>(),
+		cloudflareClient()
 	]
 });
 

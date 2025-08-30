@@ -4,6 +4,8 @@
 	import { listAssets } from '$lib/rpc/assets.remote';
 	import AssetsFilters from '$stories/assets/assets-filters.svelte';
 	import type { assetTypeOptions } from '$lib/constants';
+	import AssetsNewButton from '$stories/assets/assets-new-button.svelte';
+	import { authClient } from '$lib/auth-client';
 
 	let assetFilters = $state({
 		search: '',
@@ -12,10 +14,17 @@
 </script>
 
 <PageWrapper groupTitle="ยืมพัสดุ" pageTitle="รายการพัสดุ" groupUrl="/projects">
-	<div>
-		<h1 class="text-2xl font-bold">รายการพัสดุ</h1>
-		<p>รายการพัสดุที่สามารถยืมได้</p>
-	</div>
+	<header class="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+		<div>
+			<h1 class="text-2xl font-bold">รายการพัสดุ</h1>
+			<p>รายการพัสดุที่สามารถยืมได้</p>
+		</div>
+		{#await authClient.admin.hasPermission({ role: 'admin' }) then result}
+			{#if result.data?.success}
+				<AssetsNewButton />
+			{/if}
+		{/await}
+	</header>
 
 	<section>
 		<AssetsFilters

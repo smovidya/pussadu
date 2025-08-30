@@ -17,10 +17,76 @@ export const possibleOwnerList = [
 	'อื่น ๆ'
 ];
 
-export const projectOwnerOptions = possibleOwnerList.map((v) => ({
-	label: v,
-	value: v
-}));
+export const projectOwnerOptions = [
+	{
+		value: 'president',
+		label: 'นายกสโมสรนิสิต'
+	},
+	{
+		value: 'vice1',
+		label: 'อุปนายกคนที่ 1'
+	},
+	{
+		value: 'vice2',
+		label: 'อุปนายกคนที่ 2'
+	},
+	{
+		value: 'secretary',
+		label: 'เลขานุการ'
+	},
+	{
+		value: 'treasurer',
+		label: 'เหรัญญิก'
+	},
+	{
+		value: 'student_relation',
+		label: 'นิสิตสัมพันธ์'
+	},
+	{
+		value: 'arts',
+		label: 'ศิลปะและวัฒนธรรม'
+	},
+	{
+		value: 'academic',
+		label: 'วิชาการ'
+	},
+	{
+		value: 'sport',
+		label: 'กีฬา'
+	},
+	{
+		value: 'social_development',
+		label: 'พัฒนาสังคมและบำเพ็ญประโยชน์'
+	},
+	{
+		value: 'korkor_club',
+		label: 'ชมรม กก.'
+	},
+	{
+		value: 'sciren_club',
+		label: 'ชมรมไซเรน'
+	},
+	{
+		value: 'vata_club',
+		label: 'ชมรมวาทศิลป์'
+	},
+	{
+		value: 'education_club',
+		label: 'ชมรมการศึกษา'
+	},
+	{
+		value: 'anurak_club',
+		label: 'ชมรมอนุรักษ์'
+	},
+	{
+		value: 'asa_club',
+		label: 'ชมรมอาสา'
+	},
+	{
+		value: 'etc',
+		label: 'อื่น ๆ'
+	}
+];
 
 export const projectStatusOptions = [
 	{
@@ -86,15 +152,18 @@ export const assetStatusOptions = [
 export const assetTypeOptions = [
 	{
 		label: 'พัสดุ',
-		value: 'normal'
+		value: 'normal',
+		desc: 'ของใช้ที่ใช้แล้วหมดไป เช่น กระดาษ'
 	},
 	{
 		label: 'ครุภัณฑ์',
-		value: 'durable'
+		value: 'durable',
+		desc: 'ของใช้ที่มีอายุการใช้งานยาวนาน เช่น โต๊ะ เก้าอี้'
 	},
 	{
 		label: 'กุญแจ',
-		value: 'key'
+		value: 'key',
+		desc: 'ก็กุญแจ'
 	}
 ] as const;
 

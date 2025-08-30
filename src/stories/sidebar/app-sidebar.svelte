@@ -54,10 +54,6 @@
 			allowRoles: ['admin'],
 			items: [
 				{
-					title: 'รายการพัสดุ',
-					url: '/admin/assets'
-				},
-				{
 					title: 'หมวดหมู่พัสดุ',
 					url: '/admin/categories'
 				}
