@@ -19,11 +19,7 @@
 			<h1 class="text-2xl font-bold">รายการพัสดุ</h1>
 			<p>รายการพัสดุที่สามารถยืมได้</p>
 		</div>
-		{#await authClient.admin.hasPermission({ role: 'admin' }) then result}
-			{#if result.data?.success}
-				<AssetsNewButton />
-			{/if}
-		{/await}
+		<AssetsNewButton />
 	</header>
 
 	<section>
