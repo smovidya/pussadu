@@ -17,9 +17,10 @@
 			category: string;
 		};
 		props?: Record<string, unknown>;
+		alwaysDisplay?: boolean;
 	}
 
-	let { asset, props }: Props = $props();
+	let { asset, props, alwaysDisplay }: Props = $props();
 	const assetType = assetTypeOptions.find((option) => option.value === asset.type);
 	const assetStatus = assetStatusOptions.find((option) => option.value === asset.status);
 </script>
@@ -28,10 +29,10 @@
 	{...props}
 	class={cn(
 		'group relative flex h-full w-full cursor-pointer flex-col gap-0 overflow-hidden border py-0 shadow-sm transition-all hover:shadow-lg',
-		asset.amount <= 0 && 'pointer-events-none opacity-50',
-		asset.status === 'maintenance' && 'opacity-75',
-		asset.status === 'lost' && 'pointer-events-none opacity-50',
-		asset.status === 'damaged' && 'pointer-events-none opacity-50'
+		!alwaysDisplay && asset.amount <= 0 && 'pointer-events-none opacity-50',
+		!alwaysDisplay && asset.status === 'maintenance' && 'opacity-75',
+		!alwaysDisplay && asset.status === 'lost' && 'pointer-events-none opacity-50',
+		!alwaysDisplay && asset.status === 'damaged' && 'pointer-events-none opacity-50'
 	)}
 >
 	<!-- Image Section -->

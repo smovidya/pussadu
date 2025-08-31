@@ -3,6 +3,7 @@
 	import AssetsBookingDialog from './assets-booking-dialog.svelte';
 	import AssetsCard from './assets-card.svelte';
 	import Fuse from 'fuse.js';
+	import AssetsDetailsDialog from './assets-details-dialog.svelte';
 
 	interface Props {
 		assets: {
@@ -76,7 +77,11 @@
 				{/snippet}
 			</AssetsBookingDialog>
 		{:else}
-			<AssetsCard {asset}></AssetsCard>
+			<AssetsDetailsDialog {asset}>
+				{#snippet trigger({ props })}
+					<AssetsCard alwaysDisplay={true} {asset} {props}></AssetsCard>
+				{/snippet}
+			</AssetsDetailsDialog>
 		{/if}
 	{:else}
 		<div class="col-span-full">

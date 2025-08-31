@@ -72,7 +72,8 @@ export function updateToTable<T extends Table, C extends Column>(table: T, idCol
 			| Omit<Partial<T['$inferInsert']>, 'createdAt' | 'updatedAt' | 'deletedAt'>
 	) {
 		data = removeStateDataFromValues(data);
-		return db.update(table).set(data).where(eq(idColumn, id)).returning();
+		const result = await db.update(table).set(data).where(eq(idColumn, id)).returning();
+		return result[0];
 	};
 }
 
