@@ -3,10 +3,18 @@ import { adminClient, inferAdditionalFields, oneTapClient } from 'better-auth/cl
 import { createAuthClient } from 'better-auth/svelte';
 import type { createAuth } from './server/auth';
 import { cloudflareClient } from 'better-auth-cloudflare/client';
+import * as perm from './permission';
 
 export const authClient = createAuthClient({
 	plugins: [
-		adminClient(),
+		adminClient({
+			ac: perm.ac,
+			roles: {
+				admin: perm.admin,
+				user: perm.user,
+				staff: perm.staff
+			}
+		}),
 		oneTapClient({
 			clientId: env.PUBLIC_GOOGLE_CLIENT_ID,
 			// Optional client configuration:

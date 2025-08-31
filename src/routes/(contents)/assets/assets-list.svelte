@@ -5,7 +5,9 @@
 	import AssetsFilters from '$stories/assets/assets-filters.svelte';
 	import type { assetTypeOptions } from '$lib/constants';
 	import AssetsNewButton from '$stories/assets/assets-new-button.svelte';
-	// import { authClient } from '$lib/auth-client';
+	import { authClient } from '$lib/auth-client';
+
+	const auth = authClient.useSession();
 
 	let assetFilters = $state({
 		search: '',
@@ -19,7 +21,9 @@
 			<h1 class="text-2xl font-bold">รายการพัสดุ</h1>
 			<p>รายการพัสดุที่สามารถยืมได้</p>
 		</div>
-		<AssetsNewButton />
+		{#if $auth.data?.user.role?.split(',').includes('admin')}
+			<AssetsNewButton />
+		{/if}
 	</header>
 
 	<section>

@@ -7,6 +7,7 @@ import { selectBorrower } from '../models/borrower.model';
 import { betterAuthOptions } from './options';
 import { withCloudflare } from 'better-auth-cloudflare';
 import { drizzle } from 'drizzle-orm/d1';
+import * as perm from '../../permission';
 
 export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 	const db = getDb({ d1Binding: env.PUSSADU_DB! }); // this is the name of the binding in wrangler.jsonc
@@ -41,6 +42,9 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 						before: async (file, ctx) => {
 							// Only allow authenticated users to upload files
 							if (ctx.session === null) {
+								return null;
+							}
+							if (!ctx.session.user.role.split(',').includes('admin')) {
 								return null;
 							}
 							// Track your analytics (for example)
@@ -148,7 +152,17 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 
 			// Keep ./better-auth.config.ts in sync with this!!!
 			// run auth:generate to update the schema
-			plugins: [admin(), oneTap()],
+			plugins: [
+				admin({
+					ac: perm.ac,
+					roles: {
+						admin: perm.admin,
+						user: perm.user,
+						staff: perm.staff
+					}
+				}),
+				oneTap()
+			],
 
 			advanced: {
 				ipAddress: {

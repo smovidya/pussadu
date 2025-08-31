@@ -6,6 +6,7 @@ import * as assetModel from '$lib/server/models/assets.model';
 import * as projectModel from '$lib/server/models/project.model';
 import { BorrowingRequest } from '$lib/validator/borrowing.validator';
 import { error } from '@sveltejs/kit';
+import { insertNewLog } from '$lib/server/models/audit.model';
 
 export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), async (data) => {
 	const { ouid } = Guard.loggedIn();
@@ -40,6 +41,13 @@ export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), asyn
 	await borrowingModel.requestToBorrow(Locals.db, {
 		...data,
 		borrowerId: ouid
+	});
+
+	await insertNewLog(Locals.db, {
+		action: 'request-borrow',
+		actor: ouid,
+		target: asset.id,
+		comment: `Requested to borrow ${asset.name} (${asset.id})`
 	});
 });
 
