@@ -5,7 +5,7 @@
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 	import AssetsList from './assets-booking-list.svelte';
-	import ConsentContent from './assets-consent-content.svelte';
+	import ConsentContent from './asset-consent-content.svelte';
 	import AssetsFilters from './assets-filters.svelte';
 
 	interface Props {

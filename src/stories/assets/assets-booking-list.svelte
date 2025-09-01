@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { assetTypeOptions } from '$lib/constants';
-	import AssetsBookingDialog from './assets-booking-dialog.svelte';
-	import AssetsCard from './assets-card.svelte';
+	import AssetsBookingDialog from './asset-booking-dialog.svelte';
+	import AssetsCard from './asset-card.svelte';
 	import Fuse from 'fuse.js';
-	import AssetsDetailsDialog from './assets-details-dialog.svelte';
+	import AssetsDetailsDialog from './asset-details-dialog.svelte';
 
 	interface Props {
 		assets: {

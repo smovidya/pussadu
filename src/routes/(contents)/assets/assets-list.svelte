@@ -4,7 +4,7 @@
 	import { listAssets } from '$lib/rpc/assets.remote';
 	import AssetsFilters from '$stories/assets/assets-filters.svelte';
 	import type { assetTypeOptions } from '$lib/constants';
-	import AssetsNewButton from '$stories/assets/assets-new-button.svelte';
+	import AssetsNewButton from '$stories/assets/asset-new-button.svelte';
 	import { authClient } from '$lib/auth-client';
 
 	const auth = authClient.useSession();
