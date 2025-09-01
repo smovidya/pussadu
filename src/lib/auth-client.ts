@@ -35,4 +35,6 @@ export const authClient = createAuthClient({
 	]
 });
 
+export const hasPerm = authClient.admin.hasPermission;
+
 export type AuthClient = typeof authClient;
