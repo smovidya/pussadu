@@ -6,6 +6,7 @@
 	import type { assetTypeOptions } from '$lib/constants';
 	import AssetsNewButton from '$stories/assets/asset-new-button.svelte';
 	import { authClient } from '$lib/auth-client';
+	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
 
 	const auth = authClient.useSession();
 
@@ -13,6 +14,8 @@
 		search: '',
 		selectedType: [] as (typeof assetTypeOptions)[number]['value'][]
 	});
+
+	const listAssetsLoader = listAssets({});
 </script>
 
 <PageWrapper groupTitle="ยืมพัสดุ" pageTitle="รายการพัสดุ" groupUrl="/projects">
@@ -26,18 +29,20 @@
 		{/if}
 	</header>
 
-	<section>
-		<AssetsFilters
-			bind:searchTerm={assetFilters.search}
-			bind:selectedTypes={assetFilters.selectedType}
-		/>
-	</section>
+	<AsyncHttpBoundary dataLoader={listAssetsLoader}>
+		{#snippet children(assets)}
+			<section>
+				<AssetsFilters
+					bind:searchTerm={assetFilters.search}
+					bind:selectedTypes={assetFilters.selectedType}
+				/>
+			</section>
 
-	{#await listAssets({}) then assets}
-		<AssetsBookingList
-			{assets}
-			bind:search={assetFilters.search}
-			bind:selectedTypes={assetFilters.selectedType}
-		/>
-	{/await}
+			<AssetsBookingList
+				{assets}
+				bind:search={assetFilters.search}
+				bind:selectedTypes={assetFilters.selectedType}
+			/>
+		{/snippet}
+	</AsyncHttpBoundary>
 </PageWrapper>
