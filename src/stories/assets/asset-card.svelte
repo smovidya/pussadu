@@ -1,26 +1,40 @@
 <script lang="ts">
 	import { assetStatusOptions, assetTypeOptions } from '$lib/constants';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
+	import Button from '$stories/shadcnui/button/button.svelte';
 	import * as Card from '$stories/shadcnui/card';
+	import * as DropdownMenu from '$stories/shadcnui/dropdown-menu';
 	import { cn } from '$stories/utils';
-	import { Package, Tag, Info, KeyIcon } from '@lucide/svelte';
+	import { Package, Tag, Info, KeyIcon, Ellipsis } from '@lucide/svelte';
+	import type { Snippet } from 'svelte';
 
-	interface Props {
-		asset: {
-			name: string;
-			description: string | null;
-			type: 'normal' | 'durable' | 'key';
-			status: 'available' | 'borrowed' | 'reserved' | 'maintenance' | 'lost' | 'damaged';
-			amount: number;
-			unitTerm: string;
-			image_url: string | null;
-			category: string;
-		};
-		props?: Record<string, unknown>;
-		alwaysDisplay?: boolean;
+	interface AssetProps {
+		id: string;
+		name: string;
+		description: string | null;
+		type: 'normal' | 'durable' | 'key';
+		status: 'available' | 'borrowed' | 'reserved' | 'maintenance' | 'lost' | 'damaged';
+		amount: number;
+		unitTerm: string;
+		image_url: string | null;
+		category: string;
 	}
 
-	let { asset, props, alwaysDisplay }: Props = $props();
+	interface Props {
+		asset: AssetProps;
+		props?: Record<string, unknown>;
+		alwaysDisplay?: boolean;
+		actionDropdownMenuContent?: Snippet<
+			[
+				{
+					asset: AssetProps;
+					DropdownMenu: typeof DropdownMenu;
+				}
+			]
+		>;
+	}
+
+	let { asset, props, alwaysDisplay, actionDropdownMenuContent }: Props = $props();
 	const assetType = assetTypeOptions.find((option) => option.value === asset.type);
 	const assetStatus = assetStatusOptions.find((option) => option.value === asset.status);
 </script>
@@ -52,17 +66,36 @@
 	<!-- Content Section -->
 	<Card.Content class="flex flex-1 flex-col p-4">
 		<!-- Title and Category -->
-		<div class="mb-2">
-			<h3 class="text-lg leading-tight font-bold">{asset.name}</h3>
-			<div class="mt-1 flex items-center text-xs text-muted-foreground">
-				<Tag class="mr-1 size-3" />
-				<span>{asset.category || 'ไม่มีหมวดหมู่'}</span>
+		<div class="flex flex-row items-start justify-between">
+			<div class="mb-2">
+				<h3 class="text-lg leading-tight font-bold">{asset.name || '(ไม่มีชื่อ)'}</h3>
+				<div class="mt-1 flex items-center text-xs text-muted-foreground">
+					<Tag class="mr-1 size-3" />
+					<span>{asset.category || '(ไม่มีหมวดหมู่)'}</span>
+				</div>
 			</div>
+			{#if actionDropdownMenuContent}
+				<div>
+					<DropdownMenu.Root>
+						<DropdownMenu.Trigger>
+							{#snippet child({ props })}
+								<Button variant="ghost" size="icon" {...props}>
+									<Ellipsis />
+									<span class="sr-only"> เปิดเมนู </span>
+								</Button>
+							{/snippet}
+						</DropdownMenu.Trigger>
+						<DropdownMenu.Content>
+							{@render actionDropdownMenuContent({ asset, DropdownMenu })}
+						</DropdownMenu.Content>
+					</DropdownMenu.Root>
+				</div>
+			{/if}
 		</div>
 
 		<!-- Description -->
 		<p class="mb-4 flex-1 text-sm text-muted-foreground">
-			{asset.description || 'ไม่มีคำอธิบาย'}
+			{asset.description || '(ไม่มีคำอธิบาย)'}
 		</p>
 
 		<!-- Details -->

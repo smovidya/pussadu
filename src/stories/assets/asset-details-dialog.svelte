@@ -59,6 +59,7 @@
 
 	const validators = arktype(updateAssetSchema);
 	const form = superForm(defaults(asset, validators), {
+		id: `asset-details-${asset.id}`,
 		SPA: true,
 		validators,
 		async onUpdate({ form }) {
