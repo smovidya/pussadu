@@ -45,3 +45,7 @@ export async function listAssetsForProject(
 		);
 	return assets;
 }
+
+export async function removeAsset(db: DrizzleClient, assetId: string) {
+	await db.delete(tables.asset).where(eq(tables.asset.id, assetId));
+}

@@ -59,3 +59,22 @@ export const updateAsset = command(assetsValidator.updateAssetSchema, async (dat
 	});
 	return asset;
 });
+
+export const removeAsset = command(type({ assetId: 'string' }), async (data) => {
+	const { ouid } = Guard.admin();
+
+	if (!data.assetId) error(400, 'Missing asset ID');
+
+	const asset = await assetsModel.selectAsset(Locals.db, data.assetId);
+
+	if (!asset) error(404, 'Asset not found');
+
+	await assetsModel.removeAsset(Locals.db, data.assetId);
+	await insertNewLog(Locals.db, {
+		action: 'remove-asset',
+		actor: ouid,
+		target: asset.id,
+		comment: `Removed asset ${asset.name} (${asset.id})`
+	});
+	return asset;
+});
