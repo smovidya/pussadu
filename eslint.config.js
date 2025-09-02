@@ -14,6 +14,9 @@ const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
 export default ts.config(
 	includeIgnoreFile(gitignorePath),
+	{
+		ignores: ['src/worker-configuration.d.ts']
+	},
 	js.configs.recommended,
 	...ts.configs.recommended,
 	...svelte.configs.recommended,
@@ -44,8 +47,5 @@ export default ts.config(
 			}
 		}
 	},
-	storybook.configs['flat/recommended'],
-	{
-		ignores: ['src/worker-configuration.d.ts']
-	}
+	storybook.configs['flat/recommended']
 );
