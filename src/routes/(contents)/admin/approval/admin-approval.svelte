@@ -194,6 +194,10 @@
 							</Card.Root>
 						{/snippet}
 					</AdminApprovalSidesheet>
+				{:else}
+					<div class="text-muted-foreground text-sm text-center col-span-full">
+						ไม่มีคำขอที่ตรงกับตัวกรอง
+					</div>
 				{/each}
 			</div>
 			<Alert.Root class="mt-4 flex flex-col items-center justify-center">
