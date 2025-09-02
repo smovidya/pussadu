@@ -2,6 +2,7 @@ import { command, query } from '$app/server';
 import { Guard } from '$lib/server/helpers/facades/guard';
 import { Locals } from '$lib/server/helpers/facades/request-event';
 import * as borrowingModel from '$lib/server/models/borrowing.model';
+import * as borrowingValidators from '$lib/validator/borrowing.validator';
 import * as assetModel from '$lib/server/models/assets.model';
 import * as projectModel from '$lib/server/models/project.model';
 import { BorrowingRequest } from '$lib/validator/borrowing.validator';
@@ -56,21 +57,31 @@ export const listBorrowed = query(async () => {
 	return await borrowingModel.listBorrowedByUser(Locals.db, ouid);
 });
 
-// export const approveRequest = command(type({ id: 'string' }), async ({ id }) => {
-// 	const { ouid } = Guard.admin();
-// });
+export const listBorrowingRequests = query(
+	borrowingValidators.borrowingFilterSchema,
+	async (data) => {
+		Guard.admin();
+		const requests = await borrowingModel.listBorrowingRequests(Locals.db, data);
+		return requests;
+	}
+);
 
-// export const rejectRequest = command(type({ id: 'string' }), async ({ id }) => {
-// 	const { ouid } = Guard.admin();
-// });
-
-// export const cancelRequest = command(type({ id: 'string' }), async ({ id }) => {
-// 	const { ouid } = Guard.loggedIn();
-// });
-
-// export const returnBorrowing = command(
-// 	type({ id: 'string', status: ReturnStatus }),
-// 	async ({ id, status }) => {
-// 		const { ouid } = Guard.admin();
-// 	}
-// );
+export const updateBorrowingRequest = command(
+	borrowingValidators.borrowingUpdateSchema,
+	async (data) => {
+		const { ouid } = Guard.admin();
+		const request = await borrowingModel.getBorrowingRequest(Locals.db, data.id);
+		if (!request) {
+			error(404, {
+				message: 'ไม่พบคำขอนี้'
+			});
+		}
+		await borrowingModel.updateBorrowingRequest(Locals.db, data.id, data);
+		await insertNewLog(Locals.db, {
+			action: 'update-borrowing-request',
+			actor: ouid,
+			target: request.id,
+			comment: `Updated borrowing request ${request.id} from ${JSON.stringify(request)} to ${JSON.stringify(data)}`
+		});
+	}
+);
