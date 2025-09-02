@@ -3,13 +3,16 @@
  */
 
 import { tables, type DrizzleClient } from '../db';
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNull, like, lte, or, sql } from 'drizzle-orm';
 import type {
+	borrowingFilterSchema,
 	BorrowingRequest,
 	BorrowingStatus,
-	ReturnStatus
+	ReturnStatus,
+	borrowingUpdateSchema
 } from '$lib/validator/borrowing.validator';
-import { assetToBorrower } from '$lib/schema';
+import { asset, assetToBorrower, assetToProject, borrower, project } from '$lib/schema';
+import * as helper from './helper';
 
 export async function requestToBorrow(db: DrizzleClient, request: BorrowingRequest) {
 	const { amount, assetId, startDate, endDate, projectId, note, borrowerId } = request;
@@ -102,4 +105,64 @@ export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
 		}
 	});
 	return items;
+}
+
+export const getBorrowingRequest = helper.getOneFromTable(
+	tables.assetToProject,
+	tables.assetToProject.id
+);
+
+export async function listBorrowingRequests(
+	db: DrizzleClient,
+	{
+		searchTerm,
+		statuses,
+		startDate,
+		endDate,
+		projectIds,
+		projectStatus
+	}: typeof borrowingFilterSchema.infer
+) {
+	const projectProgress = {
+		inprogress: ['notstarted', 'inprogress'],
+		ended: ['completed', 'evaluated', 'cancelled']
+	} as const;
+	const selectedProjectStatus = (projectStatus || [])
+		.map((status) => projectProgress[status])
+		.flat();
+	const borrowings = await db
+		.select()
+		.from(assetToProject)
+		.leftJoin(asset, eq(assetToProject.assetId, asset.id))
+		.leftJoin(borrower, eq(assetToProject.borrowerId, borrower.ouid))
+		.leftJoin(project, eq(assetToProject.projectId, project.id))
+		.where(
+			and(
+				searchTerm
+					? or(
+							like(assetToProject.note, `%${searchTerm}%`),
+							like(asset.name, `%${searchTerm}%`),
+							like(asset.description, `%${searchTerm}%`),
+							like(borrower.name, `%${searchTerm}%`),
+							like(borrower.ouid, `%${searchTerm}%`)
+						)
+					: undefined,
+				projectStatus?.length ? inArray(project.status, selectedProjectStatus) : undefined,
+				projectIds?.length ? inArray(assetToProject.projectId, projectIds) : undefined,
+				statuses?.length ? inArray(assetToProject.status, statuses) : undefined,
+				startDate ? gte(assetToProject.startDate, startDate) : undefined,
+				endDate ? lte(assetToProject.endDate, endDate) : undefined,
+				isNull(assetToProject.deletedAt)
+			)
+		)
+		.limit(50);
+	return borrowings;
+}
+
+export async function updateBorrowingRequest(
+	db: DrizzleClient,
+	id: string,
+	data: typeof borrowingUpdateSchema.infer
+) {
+	return await db.update(tables.assetToProject).set(data).where(eq(assetToProject.id, id));
 }
