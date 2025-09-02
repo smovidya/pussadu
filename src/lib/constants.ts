@@ -167,7 +167,6 @@ export const assetTypeOptions = [
 	}
 ] as const;
 
-// status: "lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned";
 export const borrowingStatus = [
 	{
 		label: 'สูญหาย',
