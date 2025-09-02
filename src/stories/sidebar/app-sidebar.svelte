@@ -50,19 +50,13 @@
 			]
 		},
 		{
-			title: 'จัดการพัสดุ',
+			title: 'แอดมิน',
 			allowRoles: ['admin'],
 			items: [
 				{
-					title: 'หมวดหมู่พัสดุ',
-					url: '/admin/categories'
-				}
-			]
-		},
-		{
-			title: 'จัดการโครงการ',
-			allowRoles: ['admin'],
-			items: [
+					title: 'รออนุมัติ',
+					url: '/admin/approval'
+				},
 				{
 					title: 'รายการโครงการ',
 					url: '/admin/projects',
