@@ -1,4 +1,5 @@
 import { assetToProject } from '$lib/schema';
+import { type } from 'arktype';
 import { createInsertSchema } from 'drizzle-arktype';
 
 export const BorrowingRequest = createInsertSchema(assetToProject, {
@@ -16,3 +17,24 @@ export type BorrowingStatus = (typeof BorrowingStatus)['infer'];
 
 export const ReturnStatus = BorrowingStatus.extract('"lost" | "damaged" | "returned"');
 export type ReturnStatus = (typeof ReturnStatus)['infer'];
+
+export const borrowingFilterSchema = type({
+	searchTerm: 'string',
+	statuses:
+		'("lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned")[]',
+	'startDate?': 'Date | undefined',
+	'endDate?': 'Date | undefined',
+	'projectIds?': 'string[]',
+	projectStatus: '("inprogress" | "ended")[]'
+});
+
+export const borrowingUpdateSchema = type({
+	id: 'string',
+	adminNote: 'string | null',
+	amount: 'number | undefined',
+	startDate: 'Date',
+	endDate: 'Date',
+	status:
+		'"lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned"',
+	'+': 'delete'
+});
