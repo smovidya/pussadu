@@ -1,19 +1,13 @@
 import { tables, type DrizzleClient } from '../db';
-import {
-	deleteFromTable,
-	getOneFromTable,
-	insertToTable,
-	purgeDeletedFromTable,
-	updateToTable
-} from './helper';
+import * as helper from './helper';
 
 const borrowerTable = tables.borrower;
 
-export const insertNewBorrower = insertToTable(borrowerTable);
-export const updateBorrower = updateToTable(borrowerTable, borrowerTable.ouid);
-export const selectBorrower = getOneFromTable(borrowerTable, borrowerTable.ouid);
-export const deleteBorrower = deleteFromTable(borrowerTable, borrowerTable.ouid);
-export const purgeBorrower = purgeDeletedFromTable(borrowerTable);
+export const insertNewBorrower = helper.insertToTable(borrowerTable);
+export const updateBorrower = helper.updateToTable(borrowerTable, borrowerTable.ouid);
+export const selectBorrower = helper.getOneFromTable(borrowerTable, borrowerTable.ouid);
+export const deleteBorrower = helper.deleteFromTable(borrowerTable, borrowerTable.ouid);
+export const purgeBorrower = helper.purgeDeletedFromTable(borrowerTable);
 
 export const selectAllBorrowers = async (
 	db: DrizzleClient,
