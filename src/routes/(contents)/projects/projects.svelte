@@ -14,9 +14,9 @@
 		<h2 class="text-2xl font-bold">เลือกโครงการ</h2>
 		<AsyncHttpBoundary dataLoader={getMyBorrowerData()}>
 			{#snippet children(myBorrowerData)}
-				{#if myBorrowerData?.current}
-					{@const data = myBorrowerData.current}
-					<p class="">
+				{#if myBorrowerData}
+					{@const data = myBorrowerData}
+					<p class="my-2">
 						ยินดีต้อนรับ <span class="font-semibold text-yellow-600">{data.name}</span>
 						({data.email}) เลือกโครงการที่ต้องการยืมด้านล่าง หากไม่เจอโครงการที่ต้องการ
 						ติดต่อฝ่ายพัสดุสโมสรนิสิตฯ

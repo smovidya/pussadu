@@ -1,4 +1,5 @@
 <script lang="ts">
+	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import Button from '$stories/shadcnui/button/button.svelte';
 	import { Card } from '$stories/shadcnui/card';
 	import { ChevronRight, User } from '@lucide/svelte';
@@ -34,7 +35,7 @@
 	</Card>
 {/snippet}
 
-<article class="container mx-auto my-5">
+<PageWrapper groupTitle="การจัดการ" pageTitle="แดชบอร์ดผู้ดูแลระบบ" groupUrl="/admin">
 	<h1 class="text-2xl font-bold">แดชบอร์ดผู้ดูแลระบบ</h1>
 	<p>
 		ยินดีต้อนรับสู่แดชบอร์ดผู้ดูแลระบบ ที่นี่คุณสามารถจัดการผู้ใช้ โครงการ และงานด้านการบริหารอื่นๆ
@@ -46,4 +47,4 @@
 			{@render adminPageCard(card.title, card.description, card.href, card.icon)}
 		{/each}
 	</div>
-</article>
+</PageWrapper>
