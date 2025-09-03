@@ -37,7 +37,7 @@
 			defaults: {
 				id: request.asset_to_project.id,
 				adminNote: request.asset_to_project.adminNote || '',
-				amount: request.asset?.amount || 0,
+				amount: request.asset_to_project.amount || 0,
 				startDate: request.asset_to_project.startDate || '',
 				endDate: request.asset_to_project.endDate || '',
 				status: request.asset_to_project.status || 'pending'
@@ -99,7 +99,7 @@
 				/>
 			</div>
 			<div>
-				<h2 class="text-lg font-semibold">{request.asset?.name} (x{request.asset?.amount})</h2>
+				<h2 class="text-lg font-semibold">{request.asset?.name} (x{$formData.amount})</h2>
 				<p class="text-sm text-muted-foreground">{request.asset?.description}</p>
 			</div>
 			<div class="flex flex-col gap-1">
@@ -162,6 +162,8 @@
 											placeholder="จำนวน"
 											type="number"
 											bind:value={$formData.amount}
+											min={1}
+											max={(request.asset?.amount || 0) + request.asset_to_project.amount}
 											{...props}
 											class="w-full"
 										/>
@@ -174,9 +176,13 @@
 							<Form.FieldErrors />
 						</Form.Field>
 					</div>
+					<span class="text-xs text-muted-foreground">
+						พร้อมยืม {(request.asset?.amount || 0) + request.asset_to_project.amount}
+						{request.asset?.unitTerm}
+					</span>
 				</div>
 				<div class="flex flex-col gap-1">
-					<span class="text-sm text-muted-foreground"> รวมจำนวน </span>
+					<span class="text-sm text-muted-foreground"> เป็นเวลา </span>
 					<p class="text-lg font-bold">
 						{#if $formData.startDate && $formData.endDate}
 							{dayDiff(new Date($formData.startDate), new Date($formData.endDate))} วัน
