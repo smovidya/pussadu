@@ -54,7 +54,7 @@
 			allowRoles: ['admin'],
 			items: [
 				{
-					title: 'รออนุมัติ',
+					title: 'รายการยืม',
 					url: '/admin/approval'
 				},
 				{
