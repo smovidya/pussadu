@@ -31,7 +31,7 @@ export const borrowingFilterSchema = type({
 export const borrowingUpdateSchema = type({
 	id: 'string',
 	adminNote: 'string | null',
-	amount: 'number | undefined',
+	amount: 'number',
 	startDate: 'Date',
 	endDate: 'Date',
 	status:
