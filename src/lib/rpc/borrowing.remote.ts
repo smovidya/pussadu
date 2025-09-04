@@ -76,6 +76,56 @@ export const updateBorrowingRequest = command(
 				message: 'ไม่พบคำขอนี้'
 			});
 		}
+
+		const asset = await assetModel.selectAsset(Locals.db, request.assetId);
+
+		if (!asset) {
+			error(404, 'ไม่พบพัสดุนี้');
+		}
+
+		if (
+			request.status === 'inuse' &&
+			(data.status === 'returned' ||
+				data.status === 'damaged' ||
+				data.status === 'lost' ||
+				data.status === 'cancelled' ||
+				data.status === 'rejected')
+		) {
+			// คืนของเข้าสต็อก
+			await assetModel.updateAsset(Locals.db, request.assetId, {
+				amount: asset.amount + data.amount
+			});
+			await insertNewLog(Locals.db, {
+				action: 'add-to-stock',
+				actor: ouid,
+				target: request.assetId,
+				comment: `Returned ${request.amount} of ${request.assetId} to stock`
+			});
+		}
+
+		if (
+			(request.status === 'returned' ||
+				request.status === 'damaged' ||
+				request.status === 'lost' ||
+				request.status === 'cancelled' ||
+				request.status === 'rejected') &&
+			(data.status === 'approved' || data.status === 'inuse' || data.status === 'pending')
+		) {
+			if (asset.amount < data.amount) {
+				error(400, {
+					message: `จำนวนที่ยืมมากกว่าจำนวนที่มีอยู่ (มี ${asset.amount} แต่ขอ ${data.amount} ${asset.unitTerm})`
+				});
+			}
+			await assetModel.updateAsset(Locals.db, request.assetId, {
+				amount: asset.amount - data.amount
+			});
+			await insertNewLog(Locals.db, {
+				action: 'remove-from-stock',
+				actor: ouid,
+				target: request.assetId,
+				comment: `Removed ${data.amount} of ${request.assetId} from stock`
+			});
+		}
 		await borrowingModel.updateBorrowingRequest(Locals.db, data.id, data);
 		await insertNewLog(Locals.db, {
 			action: 'update-borrowing-request',
