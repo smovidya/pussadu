@@ -17,6 +17,7 @@
 	import { BadgeAlert } from '@lucide/svelte';
 	import Textarea from '$stories/shadcnui/textarea/textarea.svelte';
 	import DatePicker from '$stories/date/date-picker.svelte';
+	import { isHttpError } from '@sveltejs/kit';
 
 	interface Props {
 		trigger?: Snippet<
@@ -56,8 +57,10 @@
 					await updateBorrowingRequest(form.data);
 					toast.success('บันทึกข้อมูลเรียบร้อย');
 				} catch (e) {
-					console.error(e);
-					toast.error('เกิดข้อผิดพลาด ไม่สามารถบันทึกข้อมูลได้');
+					if (isHttpError(e)) {
+						toast.error(`เกิดข้อผิดพลาด: ${e.body.message}`);
+					}
+					toast.error(`เกิดข้อผิดพลาด: ${e.message}`);
 					return;
 				}
 			}

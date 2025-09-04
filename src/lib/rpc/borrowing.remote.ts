@@ -83,17 +83,26 @@ export const updateBorrowingRequest = command(
 			error(404, 'ไม่พบพัสดุนี้');
 		}
 
+		if (request.status === data.status) {
+			error(400, 'มีการดำเนินการนี้ไปแล้ว โปรดรีเฟรชหน้า');
+		}
+
+		console.log({ request, data });
+
 		if (
-			request.status === 'inuse' &&
+			(request.status === 'approved' ||
+				request.status === 'inuse' ||
+				request.status === 'pending') &&
 			(data.status === 'returned' ||
 				data.status === 'damaged' ||
 				data.status === 'lost' ||
 				data.status === 'cancelled' ||
 				data.status === 'rejected')
 		) {
+			console.log('return back to stock');
 			// คืนของเข้าสต็อก
-			await assetModel.updateAsset(Locals.db, request.assetId, {
-				amount: asset.amount + data.amount
+			await assetModel.updateAsset(Locals.db, asset.id, {
+				amount: asset.amount + request.amount
 			});
 			await insertNewLog(Locals.db, {
 				action: 'add-to-stock',
@@ -111,6 +120,7 @@ export const updateBorrowingRequest = command(
 				request.status === 'rejected') &&
 			(data.status === 'approved' || data.status === 'inuse' || data.status === 'pending')
 		) {
+			console.log('get from stock');
 			if (asset.amount < data.amount) {
 				error(400, {
 					message: `จำนวนที่ยืมมากกว่าจำนวนที่มีอยู่ (มี ${asset.amount} แต่ขอ ${data.amount} ${asset.unitTerm})`
