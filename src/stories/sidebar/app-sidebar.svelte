@@ -3,7 +3,7 @@
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Button from '$stories/shadcnui/button/button.svelte';
-	import { Package2Icon, PlusIcon } from '@lucide/svelte';
+	import { LifeBuoy, Package2Icon, PlusIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
 	import * as DropdownMenu from '../shadcnui/dropdown-menu';
 	import * as Sidebar from '../shadcnui/sidebar';
@@ -118,12 +118,21 @@
 		{/each}
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<div class="mb-2 flex flex-col items-start gap-0.5">
-			<span class="text-xs text-muted-foreground"
-				>Version: {__APP_VERSION__}{dev ? ' (dev)' : ''}</span
-			><br />
-			<span class="text-xs text-muted-foreground">Last Modified: {__APP_LASTMOD__}</span>
-		</div>
+		<Sidebar.Menu>
+			<Sidebar.MenuItem>
+				<Sidebar.MenuButton>
+					{#snippet child({ props })}
+						<a
+							href="https://it-smovidya-chula.notion.site/26781e17c554805696a0c3a496fbf9d4"
+							{...props}
+						>
+							<LifeBuoy />
+							คู่มือการใช้งาน
+						</a>
+					{/snippet}
+				</Sidebar.MenuButton>
+			</Sidebar.MenuItem>
+		</Sidebar.Menu>
 		{#if $auth.data?.user}
 			<div class="flex flex-row justify-between">
 				<div class="flex flex-row gap-2">
@@ -174,6 +183,11 @@
 				}}>เข้าสู่ระบบ</Button
 			>
 		{/if}
+		<div
+			class="w-full content-center items-start justify-center text-center text-xs text-muted-foreground/70"
+		>
+			{__APP_VERSION__}{dev ? ' (dev)' : ''} - {__APP_LASTMOD__}
+		</div>
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
