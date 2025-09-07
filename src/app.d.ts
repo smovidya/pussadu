@@ -20,4 +20,7 @@ declare global {
 	}
 }
 
+declare const __APP_LASTMOD__: string;
+declare const __APP_VERSION__: string;
+
 export {};

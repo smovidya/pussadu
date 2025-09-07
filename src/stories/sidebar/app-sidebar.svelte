@@ -1,6 +1,5 @@
-<script lang="ts" module></script>
-
 <script lang="ts">
+	import { dev } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { page } from '$app/state';
 	import Button from '$stories/shadcnui/button/button.svelte';
@@ -119,6 +118,12 @@
 		{/each}
 	</Sidebar.Content>
 	<Sidebar.Footer>
+		<div class="mb-2 flex flex-col items-start gap-0.5">
+			<span class="text-xs text-muted-foreground"
+				>Version: {__APP_VERSION__}{dev ? ' (dev)' : ''}</span
+			><br />
+			<span class="text-xs text-muted-foreground">Last Modified: {__APP_LASTMOD__}</span>
+		</div>
 		{#if $auth.data?.user}
 			<div class="flex flex-row justify-between">
 				<div class="flex flex-row gap-2">
