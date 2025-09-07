@@ -5,6 +5,8 @@
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import DataTable from './data-table.svelte';
 	import { CirclePlus } from '@lucide/svelte';
+
+	const getAllProjectsQuery = getAllProjects();
 </script>
 
 <PageWrapper groupTitle="การจัดการโครงการ" pageTitle="รายการโครงการ" groupUrl="/admin/projects">
@@ -16,9 +18,9 @@
 			<span> เพิ่มโครงการใหม่ </span>
 		</Button>
 	</div>
-	{#await getAllProjects()}
+	{#await getAllProjectsQuery}
 		<Skeleton class="h-40 w-full" />
 	{:then _}
-		<DataTable data={getAllProjects().current ?? []} />
+		<DataTable {getAllProjectsQuery} />
 	{/await}
 </PageWrapper>

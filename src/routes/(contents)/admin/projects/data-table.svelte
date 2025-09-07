@@ -39,7 +39,7 @@
 	import { cn } from '$stories/utils.js';
 	import { projectOwnerOptions, projectStatusOptions } from '$lib/constants';
 	import { formatDate } from '$lib/utils/datetime';
-	import { removeProject, setProjectInfo } from '$lib/rpc/project.remote';
+	import { getAllProjects, removeProject, setProjectInfo } from '$lib/rpc/project.remote';
 	import { toast } from 'svelte-sonner';
 	import { ChevronRight } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
@@ -59,7 +59,13 @@
 		}[];
 	};
 
-	let { data }: { data: Project[] } = $props();
+	interface Props {
+		getAllProjectsQuery: typeof getAllProjects;
+	}
+
+	const { getAllProjectsQuery } = $props();
+
+	const data = getAllProjectsQuery.current ?? [];
 	let dialogRemoveOpen = $state(false);
 
 	let rowSelection = $state<RowSelectionState>({});
@@ -261,6 +267,7 @@
 				});
 				const newStatus = projectStatusOptions.find((status) => status.value === val);
 				toast.success(`อัปเดต "${title}" เป็น ${newStatus?.label}`);
+				await getAllProjectsQuery.refresh();
 			}}
 			{value}
 		>
@@ -297,6 +304,7 @@
 				});
 				const newOwner = projectOwnerOptions.find((owner) => owner.value === val);
 				toast.success(`อัปเดตฝ่ายเจ้าของโครง "${title}" เป็น ${newOwner?.label}`);
+				await getAllProjectsQuery.refresh();
 			}}
 			{value}
 		>
@@ -395,6 +403,7 @@
 						onclick={async () => {
 							await removeProject({ id: row.original.id });
 							toast.success(`ลบโครงการ "${row.original.title}" เรียบร้อยแล้ว`);
+							await getAllProjectsQuery.refresh();
 							dialogRemoveOpen = false;
 						}}>ลบเลย</AlertDialog.Action
 					>
