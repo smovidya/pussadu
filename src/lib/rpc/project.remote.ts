@@ -153,15 +153,12 @@ export const setProjectInfo = command(updateProjectSchema, async (data) => {
 	if (!data.id) error(403, 'โปรดระบุ ID ของโครงการ');
 
 	const project = await updateProject(Locals.db, data.id, data);
-
 	await insertNewLog(Locals.db, {
 		action: 'update-project',
 		actor: ouid,
-		target: project[0].id,
-		comment: `Updated project "${project[0].id}": ${JSON.stringify(data)}`
+		target: project.id,
+		comment: `Updated project "${project.id}": ${JSON.stringify(data)}`
 	});
-
-	await getAllProjects().refresh();
 
 	return project;
 });

@@ -99,7 +99,6 @@ export const updateBorrowingRequest = command(
 				data.status === 'cancelled' ||
 				data.status === 'rejected')
 		) {
-			console.log('return back to stock');
 			// คืนของเข้าสต็อก
 			await assetModel.updateAsset(Locals.db, asset.id, {
 				amount: asset.amount + request.amount
@@ -121,13 +120,13 @@ export const updateBorrowingRequest = command(
 			(data.status === 'approved' || data.status === 'inuse' || data.status === 'pending')
 		) {
 			console.log('get from stock');
-			if (asset.amount < data.amount) {
+			if (asset.amount + request.amount < data.amount) {
 				error(400, {
-					message: `จำนวนที่ยืมมากกว่าจำนวนที่มีอยู่ (มี ${asset.amount} แต่ขอ ${data.amount} ${asset.unitTerm})`
+					message: `จำนวนที่ยืมมากกว่าจำนวนที่มีอยู่ (มี ${asset.amount + request.amount} แต่ขอ ${data.amount} ${asset.unitTerm})`
 				});
 			}
 			await assetModel.updateAsset(Locals.db, request.assetId, {
-				amount: asset.amount - data.amount
+				amount: asset.amount - (request.amount - data.amount)
 			});
 			await insertNewLog(Locals.db, {
 				action: 'remove-from-stock',
