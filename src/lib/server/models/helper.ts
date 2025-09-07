@@ -9,15 +9,6 @@ export function removeStateDateFields<T extends Record<string, unknown>>(
 	return rest;
 }
 
-export function removeStateDataFromValues<T extends Record<string, unknown>>(
-	data: T | T[]
-): Omit<T, 'createdAt' | 'updatedAt' | 'deletedAt'>[] {
-	if (Array.isArray(data)) {
-		return data.map(removeStateDateFields);
-	}
-	return [removeStateDateFields(data)];
-}
-
 /**
  * Inserts a new record into the specified table.
  * @param table The table to insert the record into.
@@ -35,7 +26,7 @@ export function insertToTable<T extends Table>(table: T) {
 	 *       Eg. createdAt, updatedAt, deletedAt
 	 */
 	return async function (db: DrizzleClient, data: T['$inferInsert']) {
-		data = removeStateDataFromValues(data);
+		data = removeStateDateFields(data);
 		const result = await db.insert(table).values(data).returning();
 		if (result.length === 0) {
 			throw new Error('Insert failed');
@@ -64,15 +55,12 @@ export function updateToTable<T extends Table, C extends Column>(table: T, idCol
 	 * @note This function will remove any state date fields from the data before updating.
 	 *       Eg. createdAt, updatedAt, deletedAt
 	 */
-	return async function (
-		db: DrizzleClient,
-		id: string,
-		data:
-			| Partial<T['$inferInsert']>
-			| Omit<Partial<T['$inferInsert']>, 'createdAt' | 'updatedAt' | 'deletedAt'>
-	) {
-		data = removeStateDataFromValues(data);
-		const result = await db.update(table).set(data).where(eq(idColumn, id)).returning();
+	return async function (db: DrizzleClient, id: string, data: Partial<T['$inferInsert']>) {
+		const result = await db
+			.update(table)
+			.set(removeStateDateFields(data) as Partial<T['$inferInsert']>)
+			.where(eq(idColumn, id))
+			.returning();
 		return result[0];
 	};
 }
