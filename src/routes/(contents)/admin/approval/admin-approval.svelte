@@ -37,6 +37,10 @@
 			state: { searchTerm: '', statuses: ['approved'], projectIds: [], projectStatus: [] }
 		},
 		{
+			label: 'กำลังใช้งาน',
+			state: { searchTerm: '', statuses: ['inuse'], projectIds: [], projectStatus: [] }
+		},
+		{
 			label: 'โครงจบแต่ยังไม่คืน/ยังยืมอยู่',
 			state: {
 				searchTerm: '',
