@@ -101,7 +101,15 @@
 		"zod": "^4.1.5"
 	},
 	"trustedDependencies": [
-		"@tailwindcss/oxide"
+		"@prisma/client",
+		"@prisma/engines",
+		"@tailwindcss/oxide",
+		"better-sqlite3",
+		"esbuild",
+		"lefthook",
+		"prisma",
+		"sharp",
+		"workerd"
 	],
 	"patchedDependencies": {
 		"better-auth-cloudflare@0.2.4": "patches/better-auth-cloudflare@0.2.4.patch"
