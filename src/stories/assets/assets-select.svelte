@@ -18,6 +18,8 @@
 	}
 
 	let { project }: Props = $props();
+
+	const listAssetsQuery = listAssets({ projectId: project.id });
 	let assetFilters = $state({
 		search: '',
 		selectedTypes: [] as (typeof assetTypeOptions)[number]['value'][]
@@ -47,7 +49,7 @@
 	</section>
 
 	<article>
-		{#await listAssets({ projectId: project.id })}
+		{#await listAssetsQuery}
 			<div class="flex flex-wrap gap-2">
 				<Skeleton class="h-20 w-3/4" />
 				<Skeleton class="h-20 w-3/4" />
@@ -57,6 +59,7 @@
 			</div>
 		{:then assets}
 			<AssetsList
+				{listAssetsQuery}
 				{assets}
 				{project}
 				search={assetFilters.search}

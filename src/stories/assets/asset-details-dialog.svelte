@@ -52,9 +52,10 @@
 			]
 		>;
 		mode: 'edit' | 'view';
+		listAssetsQuery?: ReturnType<typeof listAssets>;
 	}
 
-	let { asset, trigger, mode }: Props = $props();
+	let { asset, trigger, mode, listAssetsQuery }: Props = $props();
 	let isOpen = $state(false);
 
 	const validators = arktype(updateAssetSchema);
@@ -67,7 +68,8 @@
 				console.log(form.errors);
 				return;
 			}
-			await updateAsset(form.data).updates(listAssets({}));
+			await updateAsset(form.data);
+			await listAssetsQuery?.refresh();
 			toast.success('อัปเดตข้อมูลพัสดุแล้ว');
 			isOpen = false;
 		}

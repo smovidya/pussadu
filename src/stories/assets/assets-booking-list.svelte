@@ -50,9 +50,16 @@
 		};
 		search?: string;
 		selectedTypes?: (typeof assetTypeOptions)[number]['value'][];
+		listAssetsQuery?: ReturnType<typeof listAssets>;
 	}
 
-	const { assets, project, search = $bindable(), selectedTypes = $bindable() }: Props = $props();
+	const {
+		assets,
+		project,
+		search = $bindable(),
+		selectedTypes = $bindable(),
+		listAssetsQuery
+	}: Props = $props();
 
 	const fuse = new Fuse(assets, {
 		keys: ['name', 'description', 'category'],
@@ -76,7 +83,7 @@
 				assetId
 			});
 			toast.success('ลบพัสดุเรียบร้อยแล้ว');
-			listAssets({}).refresh();
+			await listAssetsQuery?.refresh();
 		} catch (error) {
 			console.error('Error removing asset:', error);
 			toast.error('เกิดข้อผิดพลาดในการลบพัสดุ');
@@ -96,7 +103,11 @@
 					{/snippet}
 				</AssetsBookingDialog>
 			{:else}
-				<AssetsDetailsDialog mode={canEdit.data?.success ? 'edit' : 'view'} {asset}>
+				<AssetsDetailsDialog
+					{listAssetsQuery}
+					mode={canEdit.data?.success ? 'edit' : 'view'}
+					{asset}
+				>
 					{#snippet trigger({ props })}
 						<AssetsCard alwaysDisplay={true} {asset} {props}>
 							{#snippet actionDropdownMenuContent({ DropdownMenu })}
