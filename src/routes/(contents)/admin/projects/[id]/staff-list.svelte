@@ -4,7 +4,7 @@
 	import * as Table from '$stories/shadcnui/table';
 	import * as Select from '$stories/shadcnui/select';
 	import Input from '$stories/shadcnui/input/input.svelte';
-	import { ArrowLeft, Trash2, UserSearch } from '@lucide/svelte';
+	import { ArrowLeft, UserRoundPlus, UserRoundX, UserSearch } from '@lucide/svelte';
 	import { getBorrowerInfo } from '$lib/rpc/borrower.remote';
 	import { toast } from 'svelte-sonner';
 	import {
@@ -15,6 +15,7 @@
 	import { isHttpError } from '@sveltejs/kit';
 	import { listDepartment } from '$lib/rpc/department.remote';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
+	import Label from '$stories/shadcnui/label/label.svelte';
 
 	let {
 		projectId
@@ -38,6 +39,31 @@
 		line_id: '',
 		phone: '',
 		departmentId: ''
+	});
+
+	// Simple Quality of Life for OUID input
+	const ouidReplaceCharMap = new Map([
+		['ๅ', '1'],
+		['/', '2'],
+		['-', '3'],
+		['ภ', '4'],
+		['ถ', '5'],
+		['ุ', '6'],
+		['ึ', '7'],
+		['ค', '8'],
+		['ต', '9'],
+		['จ', '0']
+	]);
+
+	$effect(() => {
+		if (/^\d*$/.test(newStaffValue.ouid)) return;
+		newStaffValue.ouid = newStaffValue.ouid
+			.split('')
+			.map((char) => {
+				const replaceChar = ouidReplaceCharMap.get(char);
+				return replaceChar ? replaceChar : char;
+			})
+			.join('');
 	});
 
 	async function unassignBorrower(ouid: string) {
@@ -156,8 +182,8 @@
 		<Table.Cell>{staffInfo.ouid}</Table.Cell>
 		<Table.Cell>{staffInfo.name}</Table.Cell>
 		<Table.Cell>{staffInfo.email}</Table.Cell>
-		<Table.Cell>{staffInfo.line_id}</Table.Cell>
-		<Table.Cell>{staffInfo.phone}</Table.Cell>
+		<Table.Cell>{staffInfo.line_id || '-'}</Table.Cell>
+		<Table.Cell>{staffInfo.phone || '-'}</Table.Cell>
 		<Table.Cell>{staffInfo.departmentId}</Table.Cell>
 		<Table.Cell>
 			<Button
@@ -165,44 +191,60 @@
 				size="icon"
 				onclick={async () => await unassignBorrower(staffInfo.ouid)}
 			>
-				<Trash2 class="h-4 w-4" />
+				<UserRoundX />
 			</Button>
 		</Table.Cell>
 	</Table.Row>
 {/snippet}
 
 {#snippet NewStaffRow()}
-	<Table.Row>
+	<div class="mt-4 flex flex-col gap-2 rounded-md border p-3">
+		<h3 class="text-md col-span-full mb-2 leading-none font-medium">เพิ่มสตาฟใหม่</h3>
 		{#if !loadedStaffInfo.ouid}
-			<Table.Cell colspan={6}>
-				<div class="flex flex-row gap-2">
-					<Input class="w-[140px]" bind:value={newStaffValue.ouid} placeholder="683xxxxx23" />
-					<Button onclick={async () => await searchStaff()}>
+			<div class="flex flex-col gap-2">
+				<form
+					class="flex flex-row gap-2"
+					onsubmit={async (e) => {
+						e.preventDefault();
+						await searchStaff();
+					}}
+				>
+					<Input class="max-w-72" bind:value={newStaffValue.ouid} placeholder="683xxxxx23" />
+					<Button type="submit">
 						<UserSearch />
 						ค้นหา
 					</Button>
-				</div>
-				<span class="mt-3 text-sm text-muted-foreground">
-					ระบุเลขนิสิต 10 หลักเพื่อเพิ่มเข้าโครง
-				</span>
-			</Table.Cell>
+				</form>
+				<span class="text-sm text-muted-foreground"> ระบุเลขนิสิต 10 หลักเพื่อเพิ่มเข้าโครง </span>
+			</div>
 		{:else if loadedStaffInfo.ouid}
-			<Table.Cell>
+			<p class="text-sm text-muted-foreground">
+				แก้ไขหรือบันทึกข้อมูลติดต่อของผู้ยืม ยังตรงกับข้อมูลที่ได้รับมาหรือไม่ หากไม่
+				แก้ไขด้านล่างแล้วกดบันทึก
+			</p>
+			<p class="text-sm text-muted-foreground">
+				กรณี<u>ไม่มีข้อมูลแสดง</u> เพราะ (1) ยังไม่มีข้อมูลคนนี้ ให้เพิ่มข้อมูลใหม่ก่อนบันทึก หรือ (2)
+				เลขนิสิตผิด? กดยกเลิกแล้วกรอกใหม่
+			</p>
+			<form
+				class="grid grid-cols-1 gap-2 md:grid-cols-[fit-content_1fr]"
+				onsubmit={async (e) => {
+					e.preventDefault();
+					await saveStaff();
+				}}
+			>
+				<Label>เลขนิสิต</Label>
 				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.ouid} disabled />
-			</Table.Cell>
-			<Table.Cell>
+				<Label>ชื่อ</Label>
 				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.name} />
-			</Table.Cell>
-			<Table.Cell>
+				<Label>อีเมล</Label>
 				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.email} />
-			</Table.Cell>
-			<Table.Cell>
+				<Label>ไลน์ ID</Label>
 				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.line_id} />
-			</Table.Cell>
-			<Table.Cell>
+				<Label>เบอร์โทร</Label>
 				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.phone} />
-			</Table.Cell>
-			<Table.Cell>
+
+				<Label>ภาควิชา</Label>
 				{#await listDepartment()}
 					<Skeleton class="w-[180px]" />
 				{:then departments}
@@ -230,13 +272,16 @@
 					class="w-full min-w-[130px] text-sm"
 					bind:value={loadedStaffInfo.departmentId}
 				/>
-			</Table.Cell>
-			<Table.Cell>
-				<Button onclick={async () => await saveStaff()}>บันทึก</Button>
-				<Button variant="outline" onclick={async () => await resetNewStaff()}>ยกเลิก</Button>
-			</Table.Cell>
+				<div class="col-span-full mt-2 flex gap-2">
+					<Button type="submit">
+						<UserRoundPlus />
+						เพิ่มนิสิต
+					</Button>
+					<Button variant="outline" onclick={async () => await resetNewStaff()}>ยกเลิก</Button>
+				</div>
+			</form>
 		{/if}
-	</Table.Row>
+	</div>
 {/snippet}
 
 <Card.Root class="w-full">
@@ -245,7 +290,7 @@
 			<div>
 				<Card.Title>สตาฟโครงการ</Card.Title>
 				<Card.Description class="mt-2">
-					แก้ไขรายชื่อสตาฟที่มีสิทธิ์ยืมของภายใต้โครงการนี้ (คลิกที่เซลล์เพื่อแก้ไข)
+					จัดการสตาฟที่มีสิทธิ์เข้าถึงและแก้ไขโครงการนี้
 				</Card.Description>
 			</div>
 			<Button variant="outline" href="/admin/projects" class="flex items-center gap-2">
@@ -255,24 +300,34 @@
 		</div>
 	</Card.Header>
 	<Card.Content>
-		<Table.Root>
-			<Table.Header>
-				<Table.Row>
-					<Table.Cell>เลขนิสิต</Table.Cell>
-					<Table.Cell>ชื่อ</Table.Cell>
-					<Table.Cell>อีเมล</Table.Cell>
-					<Table.Cell>ไลน์ ID</Table.Cell>
-					<Table.Cell>เบอร์โทร</Table.Cell>
-					<Table.Cell>ภาควิชา</Table.Cell>
-					<Table.Cell></Table.Cell>
-				</Table.Row>
-			</Table.Header>
-			<Table.Body>
-				{#each staffQuery.current ?? [] as staff (staff.borrowerId)}
-					{@render StaffRow({ staffInfo: staff.borrower })}
-				{/each}
-				{@render NewStaffRow()}
-			</Table.Body>
-		</Table.Root>
+		<div class="rounded-sm border">
+			<Table.Root>
+				<Table.Header>
+					<Table.Row>
+						<Table.Cell>เลขนิสิต</Table.Cell>
+						<Table.Cell>ชื่อ</Table.Cell>
+						<Table.Cell>อีเมล</Table.Cell>
+						<Table.Cell>ไลน์ ID</Table.Cell>
+						<Table.Cell>เบอร์โทร</Table.Cell>
+						<Table.Cell>ภาควิชา</Table.Cell>
+						<Table.Cell></Table.Cell>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#each staffQuery.current ?? [] as staff (staff.borrowerId)}
+						{@render StaffRow({ staffInfo: staff.borrower })}
+					{:else}
+						<Table.Row>
+							<Table.Cell colspan={7}>
+								<p class="py-4 text-center text-sm text-muted-foreground">
+									Owo<br />ยังไม่มีสตาฟในโครงการนี้
+								</p>
+							</Table.Cell>
+						</Table.Row>
+					{/each}
+				</Table.Body>
+			</Table.Root>
+		</div>
+		{@render NewStaffRow()}
 	</Card.Content>
 </Card.Root>

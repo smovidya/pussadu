@@ -19,71 +19,71 @@ export const possibleOwnerList = [
 
 export const projectOwnerOptions = [
 	{
-		value: 'president',
+		value: 'นายกสโมสรนิสิต',
 		label: 'นายกสโมสรนิสิต'
 	},
 	{
-		value: 'vice1',
+		value: 'อุปนายกคนที่ 1',
 		label: 'อุปนายกคนที่ 1'
 	},
 	{
-		value: 'vice2',
+		value: 'อุปนายกคนที่ 2',
 		label: 'อุปนายกคนที่ 2'
 	},
 	{
-		value: 'secretary',
+		value: 'เลขานุการ',
 		label: 'เลขานุการ'
 	},
 	{
-		value: 'treasurer',
+		value: 'เหรัญญิก',
 		label: 'เหรัญญิก'
 	},
 	{
-		value: 'student_relation',
+		value: 'นิสิตสัมพันธ์',
 		label: 'นิสิตสัมพันธ์'
 	},
 	{
-		value: 'arts',
+		value: 'ศิลปะและวัฒนธรรม',
 		label: 'ศิลปะและวัฒนธรรม'
 	},
 	{
-		value: 'academic',
+		value: 'วิชาการ',
 		label: 'วิชาการ'
 	},
 	{
-		value: 'sport',
+		value: 'กีฬา',
 		label: 'กีฬา'
 	},
 	{
-		value: 'social_development',
+		value: 'พัฒนาสังคมและบำเพ็ญประโยชน์',
 		label: 'พัฒนาสังคมและบำเพ็ญประโยชน์'
 	},
 	{
-		value: 'korkor_club',
+		value: 'ชมรม กก.',
 		label: 'ชมรม กก.'
 	},
 	{
-		value: 'sciren_club',
+		value: 'ชมรมไซเรน',
 		label: 'ชมรมไซเรน'
 	},
 	{
-		value: 'vata_club',
+		value: 'ชมรมวาทศิลป์',
 		label: 'ชมรมวาทศิลป์'
 	},
 	{
-		value: 'education_club',
+		value: 'ชมรมการศึกษา',
 		label: 'ชมรมการศึกษา'
 	},
 	{
-		value: 'anurak_club',
+		value: 'ชมรมอนุรักษ์',
 		label: 'ชมรมอนุรักษ์'
 	},
 	{
-		value: 'asa_club',
+		value: 'ชมรมอาสา',
 		label: 'ชมรมอาสา'
 	},
 	{
-		value: 'etc',
+		value: 'อื่น ๆ',
 		label: 'อื่น ๆ'
 	}
 ];

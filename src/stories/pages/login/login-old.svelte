@@ -20,7 +20,7 @@
 	style="background-image: url({BgImage}); background-size: cover; background-position: center;"
 >
 	<Card
-		class="flex w-full max-w-md flex-col items-center justify-center gap-4 bg-background/90 p-5 backdrop-blur-sm"
+		class="flex w-full max-w-md flex-col items-center justify-center gap-4 bg-background/80 p-5 backdrop-blur-sm"
 	>
 		<div class="items-text-center flex w-full flex-col items-center justify-center gap-2">
 			<Package class="size-12" />

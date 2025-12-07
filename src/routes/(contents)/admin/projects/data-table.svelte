@@ -153,10 +153,15 @@
 				}),
 			cell: ({ row }) => {
 				return renderSnippet(StaffCell, {
-					count: row.original.staffs.length,
+					count: row.original.isPinned ? Infinity : row.original.staffs.length,
 					id: row.original.id,
 					isPinned: row.original.isPinned
 				});
+			},
+			sortingFn: (rowA, rowB, columnId) => {
+				const aCount = rowA.original.isPinned ? Infinity : rowA.original.staffs.length;
+				const bCount = rowB.original.isPinned ? Infinity : rowB.original.staffs.length;
+				return aCount - bCount;
 			},
 			enableColumnFilter: false
 		},
