@@ -23,7 +23,7 @@
 		<Skeleton class="h-20 w-full" />
 	{/if}
 {:then result}
-	{@render children?.(result)}
+	{@render children(result)}
 {:catch _error}
 	{#if error}
 		{@render error(_error)}

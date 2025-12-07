@@ -13,6 +13,7 @@
 			}
 		}
 	});
+
 	let { children } = $props();
 </script>
 

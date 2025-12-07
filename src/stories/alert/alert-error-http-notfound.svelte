@@ -4,20 +4,23 @@
 	import type { HttpError } from '@sveltejs/kit';
 
 	interface Props {
-		error: HttpError;
+		error?: HttpError;
+		class?: string;
 	}
 
-	let { error }: Props = $props();
+	let { error, class: className }: Props = $props();
 </script>
 
-<Alert.Root variant="destructive">
+<Alert.Root variant="destructive" class={className}>
 	<TriangleAlert />
 	<Alert.Title>ไม่พบรายการนี้</Alert.Title>
 	<Alert.Description>
 		<span> ไม่พบทรัพยากรที่ค้นหา โปรดตรวจสอบรายละเอียดอีกครั้ง </span>
-		<span class="font-mono text-xs">
-			{error.status} -
-			{error.body.message}
-		</span>
+		{#if error}
+			<span class="font-mono text-xs">
+				{error?.status} -
+				{error?.body.message}
+			</span>
+		{/if}
 	</Alert.Description>
 </Alert.Root>
