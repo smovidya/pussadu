@@ -10,7 +10,7 @@
 		authClient: AuthClient;
 	}
 
-	const { authClient }: Props = $props();
+	const { authClient = $bindable() }: Props = $props();
 
 	const auth = authClient.useSession();
 </script>
