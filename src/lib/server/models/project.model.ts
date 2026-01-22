@@ -1,4 +1,4 @@
-import { and, eq, isNull, or } from 'drizzle-orm';
+import { and, desc, eq, isNull, or } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -27,8 +27,10 @@ export const selectAllProjects = async (db: DrizzleClient) => {
 };
 
 export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
-	const projects = await db
-		.select()
+	return db
+		.selectDistinct({
+			project: tables.project
+		})
 		.from(tables.projectToBorrower)
 		.fullJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
 		.where(
@@ -38,7 +40,6 @@ export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
 			)
 		)
 		.orderBy(tables.project.id);
-	return projects;
 };
 
 export const assignBorrower = async (db: DrizzleClient, projectId: string, borrowerId: string) => {
