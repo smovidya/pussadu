@@ -68,6 +68,7 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 			baseURL: env.PUBLIC_BETTER_AUTH_URL,
 			basePath: '/api/auth',
 			trustedOrigins(request) {
+				if (!request) return [];
 				const url = new URL(request.url);
 				if (url.origin.endsWith('.vidyachula.org')) {
 					return [url.origin, env.PUBLIC_BETTER_AUTH_URL];
