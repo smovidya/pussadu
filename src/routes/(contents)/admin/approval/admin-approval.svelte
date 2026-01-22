@@ -86,7 +86,7 @@
 						<span class="text-sm text-muted-foreground"> สถานะการยืม </span>
 						<div class="flex flex-row items-center gap-2">
 							<Select.Root type="multiple" bind:value={filter.statuses}>
-								<Select.Trigger class="w-[180px]">
+								<Select.Trigger class="w-45">
 									เลือกไว้ {filter.statuses.length} สถานะ
 								</Select.Trigger>
 								<Select.Content>
@@ -114,7 +114,7 @@
 						<span class="text-sm text-muted-foreground"> สถานะโครงการ </span>
 						<div class="flex flex-row items-center gap-2">
 							<Select.Root type="multiple" bind:value={filter.projectStatus}>
-								<Select.Trigger class="w-[180px]">
+								<Select.Trigger class="w-45">
 									เลือกไว้ {filter.projectStatus.length} สถานะ
 								</Select.Trigger>
 								<Select.Content>
@@ -204,10 +204,6 @@
 					</div>
 				{/each}
 			</div>
-			<Alert.Root class="mt-4 flex flex-col items-center justify-center">
-				<Alert.Title>แสดงผลคำขอสูงสุด 50 รายการ</Alert.Title>
-				<Alert.Description>กรุณาใช้ตัวกรองเพื่อค้นหาคำขอที่ต้องการ</Alert.Description>
-			</Alert.Root>
 		{/snippet}
 		{#snippet pending()}
 			<div
