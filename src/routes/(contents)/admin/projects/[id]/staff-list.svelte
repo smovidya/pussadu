@@ -93,7 +93,7 @@
 				};
 				return;
 			}
-			toast.error(`เกิดข้อผิดพลาดในการค้นหา: ${err.message}`);
+			toast.error(`เกิดข้อผิดพลาดในการค้นหา: ${(err as Error).message}`);
 		}
 	}
 
@@ -121,7 +121,7 @@
 				await listAllStaffsForProject({ projectId }).refresh();
 				return;
 			}
-			toast.error(`เกิดข้อผิดพลาดในการบันทึก: ${err.message}`);
+			toast.error(`เกิดข้อผิดพลาดในการบันทึก: ${(err as Error).message}`);
 		}
 
 		loadedStaffInfo = {
@@ -161,7 +161,7 @@
 		};
 	}
 
-	const staffQuery = listAllStaffsForProject({ projectId });
+	const staffQuery = $derived(listAllStaffsForProject({ projectId }));
 </script>
 
 {#snippet StaffRow({
@@ -236,26 +236,26 @@
 				}}
 			>
 				<Label>เลขนิสิต</Label>
-				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.ouid} disabled />
+				<Input class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.ouid} disabled />
 				<Label>ชื่อ</Label>
-				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.name} />
+				<Input class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.name} />
 				<Label>อีเมล</Label>
-				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.email} />
+				<Input class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.email} />
 				<Label>ไลน์ ID</Label>
-				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.line_id} />
+				<Input class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.line_id} />
 				<Label>เบอร์โทร</Label>
-				<Input class="w-full min-w-[130px] text-sm" bind:value={loadedStaffInfo.phone} />
+				<Input class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.phone} />
 
 				<Label>ภาควิชา</Label>
 				{#await listDepartment()}
-					<Skeleton class="w-[180px]" />
+					<Skeleton class="w-45" />
 				{:then departments}
 					<Select.Root
 						type="single"
 						value={loadedStaffInfo.departmentId}
 						onValueChange={(value) => (loadedStaffInfo.departmentId = value)}
 					>
-						<Select.Trigger class="w-[180px]">
+						<Select.Trigger class="w-45">
 							{#if loadedStaffInfo.departmentId}
 								{loadedStaffInfo.departmentId}
 							{:else}
@@ -269,11 +269,7 @@
 						</Select.Content>
 					</Select.Root>
 				{/await}
-				<Input
-					hidden
-					class="w-full min-w-[130px] text-sm"
-					bind:value={loadedStaffInfo.departmentId}
-				/>
+				<Input hidden class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.departmentId} />
 				<div class="col-span-full mt-2 flex gap-2">
 					<Button type="submit">
 						<UserRoundPlus />

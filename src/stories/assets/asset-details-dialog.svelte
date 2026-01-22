@@ -55,7 +55,7 @@
 		listAssetsQuery?: ReturnType<typeof listAssets>;
 	}
 
-	let { asset, trigger, mode, listAssetsQuery }: Props = $props();
+	let { asset = $bindable(), trigger, mode, listAssetsQuery }: Props = $props();
 	let isOpen = $state(false);
 
 	const validators = arktype(updateAssetSchema);

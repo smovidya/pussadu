@@ -30,7 +30,7 @@
 		request: NonNullable<ReturnType<typeof listBorrowingRequests>['current']>[number];
 	}
 
-	let { trigger, request }: Props = $props();
+	let { trigger, request = $bindable() }: Props = $props();
 
 	const validators = arktype(borrowingUpdateSchema);
 	const form = superForm(
@@ -60,7 +60,7 @@
 					if (isHttpError(e)) {
 						toast.error(`เกิดข้อผิดพลาด: ${e.body.message}`);
 					}
-					toast.error(`เกิดข้อผิดพลาด: ${e.message}`);
+					toast.error(`เกิดข้อผิดพลาด: ${(e as Error).message}`);
 					return;
 				}
 			}
@@ -260,7 +260,7 @@
 					<Form.Control>
 						{#snippet children({ props })}
 							<Select.Root type="single" bind:value={$formData.status} name={props.name}>
-								<Select.Trigger class="w-[180px]">
+								<Select.Trigger class="w-45">
 									{#if $formData.status}
 										{@const status = borrowingStatus.find((s) => s.value === $formData.status)}
 										{status?.label}

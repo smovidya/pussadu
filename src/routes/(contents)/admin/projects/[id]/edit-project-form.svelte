@@ -18,7 +18,7 @@
 		projectData: InferSelectModel<typeof project>;
 	}
 
-	const { projectData }: Props = $props();
+	const { projectData = $bindable() }: Props = $props();
 
 	const validators = arktype(updateProjectSchema);
 	const form = superForm(defaults(validators), {
@@ -111,7 +111,7 @@
 							onValueChange={(val) => ($formData.isPinned = val === 'true')}
 							value={$formData.isPinned ? 'true' : 'false'}
 						>
-							<Select.Trigger class="w-[180px]">
+							<Select.Trigger class="w-45">
 								{#if $formData.isPinned}
 									ทุกคนยืมได้
 								{:else}
@@ -142,7 +142,7 @@
 							value={$formData.status}
 							name={props.name}
 						>
-							<Select.Trigger class="w-[180px]">
+							<Select.Trigger class="w-45">
 								{#if $formData.status === 'notstarted'}
 									ยังไม่เริ่ม
 								{:else if $formData.status === 'inprogress'}

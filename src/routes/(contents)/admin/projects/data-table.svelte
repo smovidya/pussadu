@@ -60,10 +60,10 @@
 	};
 
 	interface Props {
-		getAllProjectsQuery: typeof getAllProjects;
+		getAllProjectsQuery: ReturnType<typeof getAllProjects>;
 	}
 
-	const { getAllProjectsQuery } = $props();
+	const { getAllProjectsQuery = $bindable() }: Props = $props();
 
 	const data = getAllProjectsQuery.current ?? [];
 	let dialogRemoveOpen = $state(false);
@@ -278,7 +278,7 @@
 		>
 			<Select.Trigger
 				size="sm"
-				class={cn('w-[140px] justify-start border-none shadow-none', status.color)}
+				class={cn('w-35 justify-start border-none shadow-none', status.color)}
 			>
 				<status.icon class={cn('mr-2 size-4 shrink-0 text-inherit')} />
 				<span>
@@ -313,7 +313,7 @@
 			}}
 			{value}
 		>
-			<Select.Trigger class="h-8 w-[140px] justify-start border-none shadow-none">
+			<Select.Trigger class="h-8 w-35 justify-start border-none shadow-none">
 				<span class="truncate">
 					{owner.label}
 				</span>
@@ -352,14 +352,14 @@
 {/snippet}
 
 {#snippet CreatedAtCell({ value }: { value: Date | null })}
-	<div class="flex w-[100px] items-center">
+	<div class="flex w-25 items-center">
 		<span>{value ? formatDate(value) : '?'}</span>
 	</div>
 {/snippet}
 
 {#snippet TitleCell({ value }: { value: string })}
 	<div class="flex space-x-2">
-		<span class="max-w-[500px] truncate font-medium">
+		<span class="max-w-125 truncate font-medium">
 			{value}
 		</span>
 	</div>
@@ -376,7 +376,7 @@
 					</Button>
 				{/snippet}
 			</DropdownMenu.Trigger>
-			<DropdownMenu.Content class="w-[160px]" align="end">
+			<DropdownMenu.Content class="w-40" align="end">
 				<DropdownMenu.Item
 					onclick={() => {
 						goto(`/admin/projects/${row.original.id}`);
@@ -435,7 +435,7 @@
 						table.setPageSize(Number(value));
 					}}
 				>
-					<Select.Trigger class="h-8 w-[70px]">
+					<Select.Trigger class="h-8 w-17.5">
 						{String(table.getState().pagination.pageSize)}
 					</Select.Trigger>
 					<Select.Content side="top">
@@ -447,7 +447,7 @@
 					</Select.Content>
 				</Select.Root>
 			</div>
-			<div class="flex w-[100px] items-center justify-center text-sm font-medium">
+			<div class="flex w-25 items-center justify-center text-sm font-medium">
 				หน้า {table.getState().pagination.pageIndex + 1} จาก
 				{table.getPageCount()}
 			</div>

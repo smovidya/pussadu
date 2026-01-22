@@ -19,7 +19,7 @@
 		mode: 'create' | 'edit' | 'view';
 	}
 
-	let { form, mode = 'create' }: Props = $props();
+	let { form = $bindable(), mode = 'create' }: Props = $props();
 	const { form: formData, enhance } = form;
 </script>
 

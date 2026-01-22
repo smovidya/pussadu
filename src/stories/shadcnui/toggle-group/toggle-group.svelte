@@ -18,8 +18,8 @@
 		ref = $bindable(null),
 		value = $bindable(),
 		class: className,
-		size = 'default',
-		variant = 'default',
+		size = $bindable('default'),
+		variant = $bindable('default'),
 		...restProps
 	}: ToggleGroupPrimitive.RootProps & ToggleVariants = $props();
 
