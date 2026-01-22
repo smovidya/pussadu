@@ -13,10 +13,12 @@
 	import DatePicker from '$stories/date/date-picker.svelte';
 	import Separator from '$stories/shadcnui/separator/separator.svelte';
 	import type { borrowingFilterSchema } from '$lib/validator/borrowing.validator';
-	import Button from '$stories/shadcnui/button/button.svelte';
-	import { PackageOpen, TextSearch } from '@lucide/svelte';
+	import Button, { buttonVariants } from '$stories/shadcnui/button/button.svelte';
+	import { Check, PackageOpen, TextSearch } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
+	import { getAllProjects } from '$lib/rpc/project.remote';
+	import ComboboxSeletorSearch from './combobox-seletor-search.svelte';
 
 	type FilterState = typeof borrowingFilterSchema.infer;
 
@@ -82,6 +84,81 @@
 						placeholder="ค้นหาด้วยชื่อพัสดุ คำอธิบายพัสดุ ชื่อผู้ยืม เลขนิสิตผู้ยืม หรือหมายเหตุ"
 						bind:value={filter.searchTerm}
 					/>
+					<div>
+						<span class="text-sm text-muted-foreground"> โครงการ </span>
+						<AsyncHttpBoundary dataLoader={getAllProjects()}>
+							{#snippet children(projects)}
+								<div class="flex flex-row items-center gap-2">
+									<ComboboxSeletorSearch
+										options={projects
+											.toSorted((a, b) => {
+												let inprogress = ['notstarted', 'inprogress'];
+												if (inprogress.includes(a.status) && !inprogress.includes(b.status)) {
+													return -1;
+												} else if (
+													inprogress.includes(b.status) &&
+													!inprogress.includes(a.status)
+												) {
+													return 1;
+												} else {
+													if (!a.updatedAt) return 1;
+													if (!b.updatedAt) return -1;
+													return b.updatedAt.getTime() - a.updatedAt.getTime();
+												}
+											})
+											.map((p) => {
+												return {
+													label: p.title,
+													value: p.id,
+													group:
+														projectStatusOptions.find((status) => status.value === p.status)
+															?.label || 'ไม่ระบุสถานะ'
+												};
+											})}
+										bind:value={filter.projectIds}
+										placeholder="ค้นหาโครงการ..."
+										type="multiple"
+									>
+										{#snippet trigger({ props, value })}
+											<button
+												{...props}
+												class={cn(
+													buttonVariants({
+														variant: 'outline'
+													}),
+													'inline h-auto w-full text-left text-wrap whitespace-normal',
+													value.length > 0 ? '' : 'text-muted-foreground'
+												)}
+												role="combobox"
+											>
+												{#if value.length > 0}
+													{#each value as v, i (v)}
+														{#if i > 0},&nbsp;<wbr />{/if}{projects.find((p) => p.id === v)?.title}
+													{/each}
+												{:else}
+													เลือกโครงการ
+												{/if}
+											</button>
+										{/snippet}
+										{#snippet item({ option, isSelected })}
+											<Check class={cn(!isSelected ? 'text-transparent' : '')} />
+											<span>{option.label}</span>
+										{/snippet}
+									</ComboboxSeletorSearch>
+								</div>
+							{/snippet}
+							{#snippet pending()}
+								<div
+									transition:fade={{
+										duration: 400,
+										delay: 200
+									}}
+								>
+									<Skeleton class="h-10 w-45" />
+								</div>
+							{/snippet}
+						</AsyncHttpBoundary>
+					</div>
 					<div>
 						<span class="text-sm text-muted-foreground"> สถานะการยืม </span>
 						<div class="flex flex-row items-center gap-2">
