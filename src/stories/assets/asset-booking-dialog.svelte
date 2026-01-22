@@ -14,6 +14,7 @@
 	import { listAssets } from '$lib/rpc/assets.remote';
 	import type { Snippet } from 'svelte';
 	import { createMutation } from '@tanstack/svelte-query';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	interface Props {
 		asset: {
@@ -223,7 +224,8 @@
 							disabled={submitBorrowingMutation.isPending}
 						>
 							{#if submitBorrowingMutation.isPending}
-								กำลังส่งคำขอ...
+								<Spinner />
+								<span> กำลังส่งคำขอ... </span>
 							{:else}
 								ส่งคำขอยืม
 							{/if}

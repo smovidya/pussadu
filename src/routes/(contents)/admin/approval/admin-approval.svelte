@@ -4,7 +4,7 @@
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import * as Card from '$stories/shadcnui/card';
-	import * as Alert from '$stories/shadcnui/alert';
+	import * as Empty from '$stories/shadcnui/empty';
 	import * as Select from '$stories/shadcnui/select';
 	import Input from '$stories/shadcnui/input/input.svelte';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
@@ -14,7 +14,7 @@
 	import Separator from '$stories/shadcnui/separator/separator.svelte';
 	import type { borrowingFilterSchema } from '$lib/validator/borrowing.validator';
 	import Button from '$stories/shadcnui/button/button.svelte';
-	import { TextSearch } from '@lucide/svelte';
+	import { PackageOpen, TextSearch } from '@lucide/svelte';
 	import { fade } from 'svelte/transition';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 
@@ -199,9 +199,15 @@
 						{/snippet}
 					</AdminApprovalSidesheet>
 				{:else}
-					<div class="text-muted-foreground text-sm text-center col-span-full">
-						ไม่มีคำขอที่ตรงกับตัวกรอง
-					</div>
+					<Empty.Root>
+						<Empty.Header>
+							<Empty.Media variant="icon">
+								<PackageOpen />
+							</Empty.Media>
+							<Empty.Title>ไม่พบคำขอ</Empty.Title>
+							<Empty.Description>ไม่มีคำขอการยืมที่ตรงกับตัวกรองที่เลือก</Empty.Description>
+						</Empty.Header>
+					</Empty.Root>
 				{/each}
 			</div>
 		{/snippet}
