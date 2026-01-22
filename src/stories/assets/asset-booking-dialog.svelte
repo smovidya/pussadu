@@ -32,7 +32,7 @@
 			id: string;
 			title: string;
 		};
-		trigger?: Snippet;
+		trigger?: Snippet<{ props: Record<string, any> }>;
 	}
 
 	const submitBorrowingMutation = createMutation(() => ({
@@ -102,7 +102,7 @@
 	<Dialog.Trigger>
 		{#snippet child(args)}
 			{#if trigger}
-				{@render trigger()}
+				{@render trigger({ props: args.props })}
 			{:else}
 				<Button class="w-full" {...args.props}>
 					<ShoppingCart class="mr-2" />

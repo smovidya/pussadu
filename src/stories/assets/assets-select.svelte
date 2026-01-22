@@ -17,7 +17,7 @@
 		};
 	}
 
-	let { project }: Props = $props();
+	let { project = $bindable() }: Props = $props();
 
 	const listAssetsQuery = listAssets({ projectId: project.id });
 	let assetFilters = $state({

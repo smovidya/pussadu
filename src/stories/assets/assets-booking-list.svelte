@@ -54,7 +54,7 @@
 	}
 
 	const {
-		assets,
+		assets = $bindable(),
 		project,
 		search = $bindable(),
 		selectedTypes = $bindable(),
