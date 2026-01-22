@@ -13,6 +13,7 @@
 	import { toast } from 'svelte-sonner';
 	import { listAssets } from '$lib/rpc/assets.remote';
 	import type { Snippet } from 'svelte';
+	import { createMutation } from '@tanstack/svelte-query';
 
 	interface Props {
 		asset: {
@@ -31,14 +32,12 @@
 			id: string;
 			title: string;
 		};
-		trigger?: Snippet<
-			[
-				{
-					props: Record<string, unknown>;
-				}
-			]
-		>;
+		trigger?: Snippet;
 	}
+
+	const submitBorrowingMutation = createMutation(() => ({
+		mutationFn: async () => saveBooking()
+	}));
 
 	let { asset, project, trigger }: Props = $props();
 	let bookingInfoValue = $state({
@@ -103,7 +102,7 @@
 	<Dialog.Trigger>
 		{#snippet child(args)}
 			{#if trigger}
-				{@render trigger(args)}
+				{@render trigger()}
 			{:else}
 				<Button class="w-full" {...args.props}>
 					<ShoppingCart class="mr-2" />
@@ -217,9 +216,18 @@
 						</div>
 					</div>
 					<div>
-						<Button variant="default" class="mt-2 w-full" onclick={async () => await saveBooking()}
-							>ยืนยันการจอง</Button
+						<Button
+							variant="default"
+							class="mt-2 w-full"
+							onclick={() => submitBorrowingMutation.mutate()}
+							disabled={submitBorrowingMutation.isPending}
 						>
+							{#if submitBorrowingMutation.isPending}
+								กำลังส่งคำขอ...
+							{:else}
+								ส่งคำขอยืม
+							{/if}
+						</Button>
 					</div>
 				</div>
 			</Dialog.Description>
