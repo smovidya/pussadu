@@ -154,8 +154,7 @@ export async function listBorrowingRequests(
 				endDate ? lte(assetToProject.endDate, endDate) : undefined,
 				isNull(assetToProject.deletedAt)
 			)
-		)
-		.limit(50);
+		);
 	return borrowings;
 }
 
