@@ -77,7 +77,9 @@ export const createProject = command(createProjectSchema, async (data) => {
 	await insertNewLog(Locals.db, {
 		action: 'create-project',
 		actor: ouid,
-		target: project.id
+		target: project.id,
+		detail: project,
+		comment: `Created project "${project.name}"`
 	});
 
 	await getAllProjects().refresh();
@@ -116,6 +118,7 @@ export const assignBorrowerToProject = command(assignBorrowerToProjectSchema, as
 		action: 'assign-borrower-to-project',
 		actor: ouid,
 		target: project.projectId,
+		detail: data,
 		comment: `Assigned borrower "${data.relations.borrowerId}" to project "${data.relations.projectId}"`
 	});
 
@@ -138,6 +141,7 @@ export const removeBorrowerFromProject = command(
 			action: 'unassign-borrower',
 			actor: ouid,
 			target: project.projectId,
+			detail: data,
 			comment: `Unassigned borrower "${data.borrowerId}" from project "${data.projectId}"`
 		});
 
@@ -156,6 +160,7 @@ export const setProjectInfo = command(updateProjectSchema, async (data) => {
 	await insertNewLog(Locals.db, {
 		action: 'update-project',
 		actor: ouid,
+		detail: data,
 		target: project.id,
 		comment: `Updated project "${project.id}": ${JSON.stringify(data)}`
 	});
@@ -175,6 +180,7 @@ export const removeProject = command(
 		await insertNewLog(Locals.db, {
 			action: 'remove-project',
 			actor: ouid,
+			detail: data,
 			target: data.id,
 			comment: `Removed project "${data.id}"`
 		});

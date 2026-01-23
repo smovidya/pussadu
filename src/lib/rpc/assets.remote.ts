@@ -40,7 +40,8 @@ export const createAsset = command(assetsValidator.insertAssetSchema, async (dat
 		action: 'create-asset',
 		actor: ouid,
 		target: asset.id,
-		comment: `Created asset ${asset.name} (${asset.id})`
+		detail: asset,
+		comment: `สร้างพัสดุใหม่ ${asset.name} (${asset.id})`
 	});
 	return asset;
 });
@@ -55,7 +56,8 @@ export const updateAsset = command(assetsValidator.updateAssetSchema, async (dat
 		action: 'update-asset',
 		actor: ouid,
 		target: asset.id,
-		comment: `Updated asset ${asset.name} (${asset.id})`
+		detail: data,
+		comment: `อัปเดตพัสดุ ${asset.name} (${asset.id})`
 	});
 	return asset;
 });
@@ -74,7 +76,8 @@ export const removeAsset = command(type({ assetId: 'string' }), async (data) => 
 		action: 'remove-asset',
 		actor: ouid,
 		target: asset.id,
-		comment: `Removed asset ${asset.name} (${asset.id})`
+		detail: asset,
+		comment: `ลบพัสดุ ${asset.name} (${asset.id})`
 	});
 	return asset;
 });

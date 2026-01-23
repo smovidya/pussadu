@@ -1,0 +1,1 @@
+ALTER TABLE `log` ADD `version` integer DEFAULT 1;

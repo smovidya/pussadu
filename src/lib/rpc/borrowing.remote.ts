@@ -48,7 +48,8 @@ export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), asyn
 		action: 'request-borrow',
 		actor: ouid,
 		target: asset.id,
-		comment: `Requested to borrow ${asset.name} (${asset.id})`
+		detail: { ...data, borrowerId: ouid },
+		comment: `บันทึกขอยืม ${asset.name} (${asset.id})`
 	});
 });
 
@@ -107,7 +108,8 @@ export const updateBorrowingRequest = command(
 				action: 'add-to-stock',
 				actor: ouid,
 				target: request.assetId,
-				comment: `Returned ${request.amount} of ${request.assetId} to stock`
+				detail: { request, amountReturned: request.amount },
+				comment: `คืน ${request.assetId} เข้าสต็อก ${request.amount} ${asset.unitTerm}`
 			});
 		}
 
@@ -132,7 +134,8 @@ export const updateBorrowingRequest = command(
 				action: 'remove-from-stock',
 				actor: ouid,
 				target: request.assetId,
-				comment: `Removed ${data.amount} of ${request.assetId} from stock`
+				detail: { request, newAmount: data.amount, difference: request.amount - data.amount },
+				comment: `นำ ${request.assetId} ออกจากสต็อก ${data.amount} ${asset.unitTerm}`
 			});
 		}
 		await borrowingModel.updateBorrowingRequest(Locals.db, data.id, data);
@@ -140,7 +143,8 @@ export const updateBorrowingRequest = command(
 			action: 'update-borrowing-request',
 			actor: ouid,
 			target: request.id,
-			comment: `Updated borrowing request ${request.id} from ${JSON.stringify(request)} to ${JSON.stringify(data)}`
+			detail: { from: request, to: data },
+			comment: `อัปเดตคำขอยืม ${request.id}`
 		});
 	}
 );
