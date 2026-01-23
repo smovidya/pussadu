@@ -43,6 +43,8 @@
 	import { toast } from 'svelte-sonner';
 	import { ChevronRight } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
+	import { createMutation } from '@tanstack/svelte-query';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	type Project = {
 		id: string;
@@ -366,7 +368,7 @@
 {/snippet}
 
 {#snippet RowActions({ row }: { row: Row<Project> })}
-	<AlertDialog.Root bind:open={dialogRemoveOpen}>
+	<AlertDialog.Root>
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger>
 				{#snippet child({ props })}
@@ -377,12 +379,12 @@
 				{/snippet}
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-40" align="end">
+				<DropdownMenu.Label>ดำเนินการ</DropdownMenu.Label>
 				<DropdownMenu.Item
 					onclick={() => {
 						goto(`/admin/projects/${row.original.id}`);
 					}}>แก้ไข</DropdownMenu.Item
 				>
-				<DropdownMenu.Separator />
 				<AlertDialog.Trigger>
 					{#snippet child({ props })}
 						<DropdownMenu.Item variant="destructive" {...props}>ลบโครงการ</DropdownMenu.Item>
@@ -403,15 +405,22 @@
 					</AlertDialog.Description>
 				</AlertDialog.Header>
 				<AlertDialog.Footer>
-					<AlertDialog.Cancel>ยกเลิก</AlertDialog.Cancel>
+					<AlertDialog.Cancel disabled={!!removeProject.pending}>ยกเลิก</AlertDialog.Cancel>
 					<AlertDialog.Action
+						disabled={!!removeProject.pending}
 						onclick={async () => {
 							await removeProject({ id: row.original.id });
 							toast.success(`ลบโครงการ "${row.original.title}" เรียบร้อยแล้ว`);
 							await getAllProjectsQuery.refresh();
-							dialogRemoveOpen = false;
-						}}>ลบเลย</AlertDialog.Action
+						}}
 					>
+						{#if removeProject.pending}
+							<Spinner />
+							<span>กำลังลบ...</span>
+						{:else}
+							ลบโครงการ
+						{/if}
+					</AlertDialog.Action>
 				</AlertDialog.Footer>
 			</AlertDialog.Content>
 		</AlertDialog.Portal>
