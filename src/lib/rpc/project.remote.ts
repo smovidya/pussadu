@@ -79,7 +79,7 @@ export const createProject = command(createProjectSchema, async (data) => {
 		actor: ouid,
 		target: project.id,
 		detail: project,
-		comment: `Created project "${project.name}"`
+		comment: `สร้างโครงการ "${project.title}"`
 	});
 
 	await getAllProjects().refresh();

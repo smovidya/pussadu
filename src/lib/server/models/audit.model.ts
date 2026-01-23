@@ -10,7 +10,14 @@ import {
 
 const logTable = tables.log;
 
-export const insertNewLog = insertToTable(logTable);
+import type { LogEntryInsert } from '$lib/schema/log-details';
+
+export const insertNewLog = async (
+	db: DrizzleClient,
+	data: LogEntryInsert & { actor: string; target: string; comment?: string }
+) => {
+	return insertToTable(logTable)(db, data);
+};
 export const updateLog = updateToTable(logTable, logTable.id);
 export const getLog = getOneFromTable(logTable, logTable.id);
 export const deleteLog = deleteFromTable(logTable, logTable.id);
