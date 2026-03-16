@@ -385,6 +385,13 @@
 						goto(`/admin/projects/${row.original.id}`);
 					}}>แก้ไข</DropdownMenu.Item
 				>
+				<DropdownMenu.Item
+					onclick={() => {
+						goto(`/admin/log/project/${row.original.id}`);
+					}}
+				>
+					ประวัติการดำเนินการ
+				</DropdownMenu.Item>
 				<AlertDialog.Trigger>
 					{#snippet child({ props })}
 						<DropdownMenu.Item variant="destructive" {...props}>ลบโครงการ</DropdownMenu.Item>

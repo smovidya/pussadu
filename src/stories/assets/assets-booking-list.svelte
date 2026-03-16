@@ -8,6 +8,7 @@
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import { listAssets, removeAsset } from '$lib/rpc/assets.remote';
 	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
 	interface Props {
 		assets: {
 			createdAt: Date | null;
@@ -113,6 +114,12 @@
 							{#snippet actionDropdownMenuContent({ DropdownMenu })}
 								<DropdownMenu.Group>
 									<DropdownMenu.Label>เมนูผู้ดูแล</DropdownMenu.Label>
+									<DropdownMenu.Item
+										onclick={() => {
+											goto(`/admin/log/asset/${asset.id}`);
+										}}
+										>ประวัติการดำเนินการ
+									</DropdownMenu.Item>
 									<DropdownMenu.Separator />
 									<DropdownMenu.Item variant="destructive" onclick={() => onRemoveAsset(asset.id)}
 										>ลบพัสดุนี้</DropdownMenu.Item

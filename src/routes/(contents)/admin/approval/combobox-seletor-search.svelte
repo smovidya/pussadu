@@ -82,7 +82,7 @@
 				<Button
 					{...props}
 					variant="outline"
-					class="w-50 justify-between"
+					class="w-full justify-between"
 					role="combobox"
 					aria-expanded={open}
 				>

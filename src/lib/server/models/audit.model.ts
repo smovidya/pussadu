@@ -9,6 +9,7 @@ import {
 } from './helper';
 
 const logTable = tables.log;
+type LogSelect = typeof logTable.$inferSelect;
 
 import type { LogEntryInsert } from '$lib/schema/log-details';
 
@@ -37,13 +38,15 @@ export const getAllLogs = async (
 		fieldIsNull,
 		fieldDateRange,
 		fieldsSeach,
+		textSearch,
 		includeDeleted = false
 	}: {
-		orderBy?: { field: keyof typeof logTable.$inferSelect; direction: 'asc' | 'desc' }[];
-		fieldEq?: Record<keyof typeof logTable.$inferSelect, unknown>;
-		fieldIsNull?: Record<keyof typeof logTable.$inferSelect, boolean>;
+		orderBy?: { field: keyof LogSelect; direction: 'asc' | 'desc' }[];
+		fieldEq?: { [K in keyof LogSelect]?: unknown };
+		fieldIsNull?: { [K in keyof LogSelect]?: boolean };
 		fieldDateRange?: Record<'createAt' | 'updatedAt' | 'deleteAt', { from?: Date; to?: Date }>;
-		fieldsSeach?: Record<keyof typeof logTable.$inferSelect, unknown>;
+		fieldsSeach?: { [K in keyof LogSelect]?: unknown };
+		textSearch?: string;
 		includeDeleted?: boolean;
 	}
 ) => {
@@ -55,17 +58,17 @@ export const getAllLogs = async (
 				return order(logs[field]);
 			});
 		},
-		where: (logs, { eq, and, isNull, lte, gte, ilike }) => {
+		where: (logs, { eq, and, or, isNull, lte, gte, ilike }) => {
 			return and(
 				...Object.entries(fieldEq || {}).map(([field, value]) =>
-					eq(logs[field as keyof typeof logTable.$inferSelect], value)
+					eq(logs[field as keyof LogSelect], value as any)
 				),
 				includeDeleted ? undefined : isNull(logs.deletedAt),
 				...Object.entries(fieldIsNull || {}).map(([field, _value]) =>
-					isNull(logs[field as keyof typeof logTable.$inferSelect])
+					isNull(logs[field as keyof LogSelect])
 				),
 				...Object.entries(fieldDateRange || {}).flatMap(([field, range]) => {
-					const fieldKey = field as keyof typeof logTable.$inferSelect;
+					const fieldKey = field as keyof LogSelect;
 					return [
 						range.from ? gte(logs[fieldKey], range.from) : undefined,
 						range.to ? lte(logs[fieldKey], range.to) : undefined
@@ -74,11 +77,19 @@ export const getAllLogs = async (
 				...Object.entries(fieldsSeach || {})
 					.map(([field, value]) => {
 						if (typeof value === 'string' && value.trim() !== '') {
-							return ilike(logs[field as keyof typeof logTable.$inferSelect], value);
+							return ilike(logs[field as keyof LogSelect], value);
 						}
 						return undefined;
 					})
-					.filter(Boolean)
+					.filter(Boolean),
+				textSearch
+					? or(
+							ilike(logs.action, `%${textSearch}%`),
+							ilike(logs.actor, `%${textSearch}%`),
+							ilike(logs.target, `%${textSearch}%`),
+							ilike(logs.comment, `%${textSearch}%`)
+						)
+					: undefined
 			);
 		}
 	});

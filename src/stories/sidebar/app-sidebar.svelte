@@ -63,6 +63,10 @@
 						icon: PlusIcon,
 						href: '/admin/projects/new'
 					}
+				},
+				{
+					title: 'ประวัติการดำเนินการ (Logs)',
+					url: '/admin/log'
 				}
 			]
 		}
