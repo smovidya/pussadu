@@ -1,9 +1,16 @@
 import { error } from '@sveltejs/kit';
+import type { RequestHandler } from './$types';
 
-export const GET = async (event) => {
+export const GET: RequestHandler = async (event) => {
 	const userId = event.locals.user?.id;
 	if (!userId) {
-		return new Response('Unauthorized', { status: 401 });
+		const limit = await event.platform?.env.ANON_IMAGE_ACCESS_RATE_LIMIT.limit({
+			key: event.url.pathname
+		});
+
+		if (limit && !limit?.success) {
+			error(429, 'Too many requests');
+		}
 	}
 
 	// user-files/Ol4PHuC05vdP6l7acsEoHUyW4li96W39/utxjDBKgmB5k90JWJUzd7xiM0gSi9ifD-Frame_1__1_.png

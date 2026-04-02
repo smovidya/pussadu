@@ -36,7 +36,17 @@
 			"preview_bucket_name": "pussadu-r2-preview"
 		}
 	],
-	"compatibility_flags": ["nodejs_compat"]
+	"compatibility_flags": ["nodejs_compat"],
+	"ratelimits": [
+		{
+			"name": "ANON_IMAGE_ACCESS_RATE_LIMIT",
+			"namespace_id": "1001",
+			"simple": {
+				"limit": 200,
+				"period": 10
+			}
+		}
+	]
 	/**
 	 * Smart Placement
 	 * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
