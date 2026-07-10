@@ -50,7 +50,7 @@
 		},
 		{
 			title: 'แอดมิน',
-			allowRoles: ['admin'],
+			allowRoles: ['admin', 'staff'],
 			items: [
 				{
 					title: 'จัดการผู้ใช้',
