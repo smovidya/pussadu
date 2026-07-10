@@ -1,6 +1,7 @@
 import type { asset } from '../asset.schema';
 import type { project } from '../project.schema';
 import type { user } from '../auth.schema';
+import type { borrower } from '../borrower.schema';
 import type { BorrowingRequest, borrowingUpdateSchema } from '../../validator/borrowing.validator';
 import type {
 	assignBorrowerToProjectSchema,
@@ -25,7 +26,10 @@ export type LogAction =
 	| 'bulk-ban-student-users'
 	| 'bulk-unban-student-users'
 	| 'bulk-remove-student-users'
-	| 'set-student-role';
+	| 'set-student-role'
+	| 'create-borrower'
+	| 'update-borrower'
+	| 'remove-borrower';
 
 export interface LogDetailBase {
 	version?: number;
@@ -155,6 +159,24 @@ export interface LogDetailSetStudentRole extends LogDetailBase {
 	};
 }
 
+// Borrower Actions
+export interface LogDetailCreateBorrower extends LogDetailBase {
+	action: 'create-borrower';
+	detail: typeof borrower.$inferSelect;
+}
+
+export interface LogDetailUpdateBorrower extends LogDetailBase {
+	action: 'update-borrower';
+	detail: Partial<typeof borrower.$inferInsert>;
+}
+
+export interface LogDetailRemoveBorrower extends LogDetailBase {
+	action: 'remove-borrower';
+	detail: {
+		ouid: string;
+	};
+}
+
 export type LogEntryInsert =
 	| LogDetailCreateAsset
 	| LogDetailUpdateAsset
@@ -173,4 +195,7 @@ export type LogEntryInsert =
 	| LogDetailBulkBanStudentUsers
 	| LogDetailBulkUnbanStudentUsers
 	| LogDetailBulkRemoveStudentUsers
-	| LogDetailSetStudentRole;
+	| LogDetailSetStudentRole
+	| LogDetailCreateBorrower
+	| LogDetailUpdateBorrower
+	| LogDetailRemoveBorrower;

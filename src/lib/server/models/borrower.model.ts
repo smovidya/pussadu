@@ -1,3 +1,4 @@
+import { isNull } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import * as helper from './helper';
 
@@ -20,7 +21,11 @@ export const selectAllBorrowers = async (
 	}
 ) => {
 	return db.query.borrower.findMany({
+		where: isNull(borrowerTable.deletedAt),
 		offset: offset,
-		limit: limit
+		limit: limit,
+		with: {
+			department: true
+		}
 	});
 };

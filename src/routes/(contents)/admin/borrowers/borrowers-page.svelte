@@ -15,7 +15,7 @@
 <PageWrapper pageTitle="การจัดการผู้ยืม" groupTitle="ผู้ยืม" groupUrl="/admin/borrowers">
 	<article class="container mx-auto my-5 flex flex-col gap-4">
 		<h1 class="text-2xl font-bold">การจัดการผู้ยืม</h1>
-		{#await authClient.admin.hasPermission({ permission: { user: ['list'] } })}
+		{#await authClient.admin.hasPermission({ permission: { borrower: ['list'] } })}
 			<Skeleton class="h-6 w-32" />
 		{:then perm}
 			{#if perm.data?.success}

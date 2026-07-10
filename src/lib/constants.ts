@@ -20,7 +20,10 @@ import {
 	ShieldBan,
 	ShieldCheck,
 	UserX,
-	ListChecks
+	ListChecks,
+	Contact,
+	ContactRound,
+	UserRoundX
 } from '@lucide/svelte';
 
 /**
@@ -343,5 +346,23 @@ export const logActionOptions = [
 		value: 'set-student-role',
 		icon: UserCog,
 		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'เพิ่มผู้มีสิทธิ์ยืม',
+		value: 'create-borrower',
+		icon: Contact,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'แก้ไขผู้มีสิทธิ์ยืม',
+		value: 'update-borrower',
+		icon: ContactRound,
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'ลบผู้มีสิทธิ์ยืม',
+		value: 'remove-borrower',
+		icon: UserRoundX,
+		color: 'bg-red-50 text-red-600'
 	}
 ];
