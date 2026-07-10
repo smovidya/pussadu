@@ -122,6 +122,43 @@ export async function getBorrowingRequestDetail(db: DrizzleClient, id: string) {
 	});
 }
 
+/** Project statuses that mean the project is no longer active - matches the
+ * "ended" grouping used for filtering in listBorrowingRequests. */
+const CLOSED_PROJECT_STATUSES = ['completed', 'evaluated', 'cancelled'] as const;
+
+/**
+ * Borrowings that are either due within the next 24h or already overdue and
+ * still not returned - used by the daily return-reminder cron. Excludes items
+ * overdue by more than a month (treated as lost/stale, not something a daily
+ * nag will fix) and items whose project has already closed.
+ */
+export async function listDueSoonOrOverdueBorrowings(db: DrizzleClient) {
+	const in24h = new Date(Date.now() + 24 * 60 * 60 * 1000);
+	const oneMonthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+	const borrowings = await db.query.assetToProject.findMany({
+		where: (row, { and, inArray, lte, gte, isNull }) =>
+			and(
+				inArray(row.status, ['approved', 'inuse']),
+				isNull(row.deletedAt),
+				lte(row.endDate, in24h),
+				gte(row.endDate, oneMonthAgo)
+			),
+		with: {
+			asset: true,
+			borrower: true,
+			project: true
+		}
+	});
+
+	return borrowings.filter(
+		(b) =>
+			!CLOSED_PROJECT_STATUSES.includes(
+				b.project?.status as (typeof CLOSED_PROJECT_STATUSES)[number]
+			)
+	);
+}
+
 export async function listBorrowingRequests(
 	db: DrizzleClient,
 	{

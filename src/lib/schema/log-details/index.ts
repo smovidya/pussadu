@@ -29,7 +29,8 @@ export type LogAction =
 	| 'set-student-role'
 	| 'create-borrower'
 	| 'update-borrower'
-	| 'remove-borrower';
+	| 'remove-borrower'
+	| 'send-return-reminders';
 
 export interface LogDetailBase {
 	version?: number;
@@ -177,6 +178,13 @@ export interface LogDetailRemoveBorrower extends LogDetailBase {
 	};
 }
 
+export interface LogDetailSendReturnReminders extends LogDetailBase {
+	action: 'send-return-reminders';
+	detail: {
+		count: number;
+	};
+}
+
 export type LogEntryInsert =
 	| LogDetailCreateAsset
 	| LogDetailUpdateAsset
@@ -198,4 +206,5 @@ export type LogEntryInsert =
 	| LogDetailSetStudentRole
 	| LogDetailCreateBorrower
 	| LogDetailUpdateBorrower
-	| LogDetailRemoveBorrower;
+	| LogDetailRemoveBorrower
+	| LogDetailSendReturnReminders;

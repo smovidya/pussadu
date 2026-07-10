@@ -177,7 +177,7 @@ export const updateBorrowingRequest = command(
 			const borrower = await selectBorrower(Locals.db, request.borrowerId);
 			if (borrower?.email && borrower.emailNotificationsEnabled) {
 				const detailUrl = `${Platform.env.PUBLIC_BETTER_AUTH_URL}${detailPath}`;
-				await sendNotificationEmail({
+				await sendNotificationEmail(Platform.env.EMAIL, {
 					to: borrower.email,
 					subject: `คำขอยืม "${asset.name}" อัปเดตสถานะเป็น "${statusLabel}"`,
 					html: `<p>สวัสดีคุณ ${borrower.name}</p><p>คำขอยืม <strong>${asset.name}</strong> ของคุณมีการเปลี่ยนสถานะเป็น <strong>${statusLabel}</strong></p><p><a href="${detailUrl}">ดูรายละเอียดคำขอยืม</a></p>`,

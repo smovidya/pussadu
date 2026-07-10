@@ -23,7 +23,8 @@ import {
 	ListChecks,
 	Contact,
 	ContactRound,
-	UserRoundX
+	UserRoundX,
+	BellRing
 } from '@lucide/svelte';
 
 /**
@@ -364,5 +365,11 @@ export const logActionOptions = [
 		value: 'remove-borrower',
 		icon: UserRoundX,
 		color: 'bg-red-50 text-red-600'
+	},
+	{
+		label: 'ส่งการแจ้งเตือนคืนพัสดุ',
+		value: 'send-return-reminders',
+		icon: BellRing,
+		color: 'bg-yellow-50 text-yellow-600'
 	}
 ];
