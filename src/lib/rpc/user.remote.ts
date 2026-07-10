@@ -1,6 +1,6 @@
 import { query, command } from '$app/server';
 import { insertNewLog } from '$lib/server/models/audit.model';
-import { selectAllUsers } from '$lib/server/models/user.model';
+import { selectAllUsers, selectUserDirectory } from '$lib/server/models/user.model';
 import {
 	bulkBanSchema,
 	bulkCreateStudentUsersSchema,
@@ -39,6 +39,12 @@ const adminApi = () => Locals.auth.api as unknown as AdminApi;
 export const getAllStudentUsers = query(async () => {
 	Guard.admin();
 	return await selectAllUsers(Locals.db);
+});
+
+/** ouid -> name/email lookup, used by /admin/log to resolve actors to a person. */
+export const getUserDirectory = query(async () => {
+	Guard.admin();
+	return await selectUserDirectory(Locals.db);
 });
 
 export const createStudentUser = command(createStudentUserSchema, async (data) => {

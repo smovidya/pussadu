@@ -1,4 +1,27 @@
-import { CircleCheck, CircleDashed, CircleGauge, CircleSlash, Timer } from '@lucide/svelte';
+import {
+	CircleCheck,
+	CircleDashed,
+	CircleGauge,
+	CircleSlash,
+	Timer,
+	PackagePlus,
+	PackageSearch,
+	PackageX,
+	PackageMinus,
+	HandCoins,
+	ClipboardCheck,
+	FolderPlus,
+	FolderCog,
+	FolderX,
+	UserPlus,
+	UserMinus,
+	UserCog,
+	UsersRound,
+	ShieldBan,
+	ShieldCheck,
+	UserX,
+	ListChecks
+} from '@lucide/svelte';
 
 /**
  * Used in new project form
@@ -218,5 +241,107 @@ export const borrowingStatus = [
 		label: 'ส่งคืนแล้ว',
 		value: 'returned',
 		color: 'bg-gray-50 text-gray-600'
+	}
+];
+
+export const logActionOptions = [
+	{ label: 'ทั้งหมด', value: 'all', icon: ListChecks, color: 'bg-stone-50 text-stone-600' },
+	{
+		label: 'สร้างพัสดุ',
+		value: 'create-asset',
+		icon: PackagePlus,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'แก้ไขพัสดุ',
+		value: 'update-asset',
+		icon: PackageSearch,
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{ label: 'ลบพัสดุ', value: 'remove-asset', icon: PackageX, color: 'bg-red-50 text-red-600' },
+	{
+		label: 'ขอยืมพัสดุ',
+		value: 'request-borrow',
+		icon: HandCoins,
+		color: 'bg-yellow-50 text-yellow-600'
+	},
+	{
+		label: 'เพิ่มเข้าสต๊อก',
+		value: 'add-to-stock',
+		icon: PackagePlus,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'นำออกจากสต๊อก',
+		value: 'remove-from-stock',
+		icon: PackageMinus,
+		color: 'bg-orange-50 text-orange-600'
+	},
+	{
+		label: 'อัปเดตคำขอยืม',
+		value: 'update-borrowing-request',
+		icon: ClipboardCheck,
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'สร้างโครงการ',
+		value: 'create-project',
+		icon: FolderPlus,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'มอบหมายผู้ยืมเข้าโครงการ',
+		value: 'assign-borrower-to-project',
+		icon: UserPlus,
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{
+		label: 'ถอดผู้ยืมออกจากโครงการ',
+		value: 'unassign-borrower',
+		icon: UserMinus,
+		color: 'bg-orange-50 text-orange-600'
+	},
+	{
+		label: 'แก้ไขโครงการ',
+		value: 'update-project',
+		icon: FolderCog,
+		color: 'bg-blue-50 text-blue-600'
+	},
+	{ label: 'ลบโครงการ', value: 'remove-project', icon: FolderX, color: 'bg-red-50 text-red-600' },
+	{
+		label: 'เพิ่มผู้ใช้',
+		value: 'create-student-user',
+		icon: UserPlus,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'เพิ่มผู้ใช้ (หลายคน)',
+		value: 'bulk-create-student-users',
+		icon: UsersRound,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'แบนผู้ใช้ (หลายคน)',
+		value: 'bulk-ban-student-users',
+		icon: ShieldBan,
+		color: 'bg-red-50 text-red-600'
+	},
+	{
+		label: 'ปลดแบนผู้ใช้ (หลายคน)',
+		value: 'bulk-unban-student-users',
+		icon: ShieldCheck,
+		color: 'bg-green-50 text-green-600'
+	},
+	{
+		label: 'ลบผู้ใช้ (หลายคน)',
+		value: 'bulk-remove-student-users',
+		icon: UserX,
+		color: 'bg-red-50 text-red-600'
+	},
+	{
+		label: 'เปลี่ยนบทบาทผู้ใช้',
+		value: 'set-student-role',
+		icon: UserCog,
+		color: 'bg-blue-50 text-blue-600'
 	}
 ];
