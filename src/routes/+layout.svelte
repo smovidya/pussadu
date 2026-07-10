@@ -16,6 +16,21 @@
 	});
 
 	let { children } = $props();
+
+	$effect(() => {
+		const url = new URL(window.location.href);
+		if (window.navigator.userAgent.includes('Line')) {
+			url.searchParams.set('openExternalBrowser', '1');
+			window.location.href = url.toString();
+		}
+		if (
+			url.searchParams.get('openExternalBrowser') === '1' &&
+			!window.navigator.userAgent.includes('Line')
+		) {
+			url.searchParams.delete('openExternalBrowser');
+			window.location.href = url.toString();
+		}
+	});
 </script>
 
 <svelte:head>
