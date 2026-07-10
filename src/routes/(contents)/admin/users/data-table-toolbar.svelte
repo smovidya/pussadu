@@ -1,0 +1,47 @@
+<script lang="ts" generics="TData">
+	import XIcon from '@lucide/svelte/icons/x';
+	import type { Table } from '@tanstack/table-core';
+	import DataTableFacetedFilter from './data-table-faceted-filter.svelte';
+	import DataTableViewsOptions from './data-table-views-options.svelte';
+	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Input } from '$stories/shadcnui/input/index.js';
+	import { userRoleOptions, userStatusOptions } from '$lib/constants';
+
+	let { table }: { table: Table<TData> } = $props();
+
+	const isFiltered = $derived(table.getState().columnFilters.length > 0);
+	const roleCol = $derived(table.getColumn('role'));
+	const statusCol = $derived(table.getColumn('status'));
+</script>
+
+<div class="flex items-center justify-between">
+	<div class="flex flex-1 items-center space-x-2">
+		<Input
+			placeholder="ค้นหาด้วยชื่อหรืออีเมล"
+			value={(table.getColumn('name')?.getFilterValue() as string) ?? ''}
+			oninput={(e) => {
+				table.getColumn('name')?.setFilterValue(e.currentTarget.value);
+			}}
+			onchange={(e) => {
+				table.getColumn('name')?.setFilterValue(e.currentTarget.value);
+			}}
+			class="h-8 w-[150px] lg:w-[250px]"
+		/>
+
+		{#if roleCol}
+			<DataTableFacetedFilter column={roleCol} title="บทบาท" options={userRoleOptions} />
+		{/if}
+
+		{#if statusCol}
+			<DataTableFacetedFilter column={statusCol} title="สถานะ" options={userStatusOptions} />
+		{/if}
+
+		{#if isFiltered}
+			<Button variant="ghost" onclick={() => table.resetColumnFilters()} class="h-8 px-2 lg:px-3">
+				รีเซ็ต
+				<XIcon />
+			</Button>
+		{/if}
+	</div>
+	<DataTableViewsOptions {table} />
+</div>

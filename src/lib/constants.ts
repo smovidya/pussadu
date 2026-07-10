@@ -167,6 +167,17 @@ export const assetTypeOptions = [
 	}
 ] as const;
 
+export const userRoleOptions = [
+	{ label: 'ผู้ดูแลระบบ', value: 'admin', color: 'bg-red-50 text-red-600' },
+	{ label: 'สตาฟ', value: 'staff', color: 'bg-blue-50 text-blue-600' },
+	{ label: 'นิสิต', value: 'user', color: 'bg-green-50 text-green-600' }
+];
+
+export const userStatusOptions = [
+	{ label: 'ปกติ', value: 'active', color: 'bg-green-50 text-green-600' },
+	{ label: 'ถูกแบน', value: 'banned', color: 'bg-red-50 text-red-600' }
+];
+
 export const borrowingStatus = [
 	{
 		label: 'สูญหาย',

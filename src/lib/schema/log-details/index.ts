@@ -1,5 +1,6 @@
 import type { asset } from '../asset.schema';
 import type { project } from '../project.schema';
+import type { user } from '../auth.schema';
 import type { BorrowingRequest, borrowingUpdateSchema } from '../../validator/borrowing.validator';
 import type {
 	assignBorrowerToProjectSchema,
@@ -18,7 +19,13 @@ export type LogAction =
 	| 'assign-borrower-to-project'
 	| 'unassign-borrower'
 	| 'update-project'
-	| 'remove-project';
+	| 'remove-project'
+	| 'create-student-user'
+	| 'bulk-create-student-users'
+	| 'bulk-ban-student-users'
+	| 'bulk-unban-student-users'
+	| 'bulk-remove-student-users'
+	| 'set-student-role';
 
 export interface LogDetailBase {
 	version?: number;
@@ -102,6 +109,52 @@ export interface LogDetailRemoveProject extends LogDetailBase {
 	};
 }
 
+// Student User Actions
+export interface LogDetailCreateStudentUser extends LogDetailBase {
+	action: 'create-student-user';
+	detail: Pick<typeof user.$inferSelect, 'id' | 'email' | 'name'>;
+}
+
+export interface LogDetailBulkCreateStudentUsers extends LogDetailBase {
+	action: 'bulk-create-student-users';
+	detail: {
+		succeeded: { email: string; id: string }[];
+		failed: { email: string; error: string }[];
+	};
+}
+
+export interface LogDetailBulkBanStudentUsers extends LogDetailBase {
+	action: 'bulk-ban-student-users';
+	detail: {
+		succeeded: string[];
+		failed: { id: string; error: string }[];
+		reason: string;
+	};
+}
+
+export interface LogDetailBulkUnbanStudentUsers extends LogDetailBase {
+	action: 'bulk-unban-student-users';
+	detail: {
+		succeeded: string[];
+		failed: { id: string; error: string }[];
+	};
+}
+
+export interface LogDetailBulkRemoveStudentUsers extends LogDetailBase {
+	action: 'bulk-remove-student-users';
+	detail: {
+		succeeded: string[];
+		failed: { id: string; error: string }[];
+	};
+}
+
+export interface LogDetailSetStudentRole extends LogDetailBase {
+	action: 'set-student-role';
+	detail: {
+		role: string;
+	};
+}
+
 export type LogEntryInsert =
 	| LogDetailCreateAsset
 	| LogDetailUpdateAsset
@@ -114,4 +167,10 @@ export type LogEntryInsert =
 	| LogDetailAssignBorrowerToProject
 	| LogDetailUnassignBorrower
 	| LogDetailUpdateProject
-	| LogDetailRemoveProject;
+	| LogDetailRemoveProject
+	| LogDetailCreateStudentUser
+	| LogDetailBulkCreateStudentUsers
+	| LogDetailBulkBanStudentUsers
+	| LogDetailBulkUnbanStudentUsers
+	| LogDetailBulkRemoveStudentUsers
+	| LogDetailSetStudentRole;

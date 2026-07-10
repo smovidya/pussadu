@@ -55,7 +55,13 @@
 		'assign-borrower-to-project',
 		'unassign-borrower',
 		'update-project',
-		'remove-project'
+		'remove-project',
+		'create-student-user',
+		'bulk-create-student-users',
+		'bulk-ban-student-users',
+		'bulk-unban-student-users',
+		'bulk-remove-student-users',
+		'set-student-role'
 	];
 </script>
 
