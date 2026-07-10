@@ -5,6 +5,7 @@
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import { Switch } from '$stories/shadcnui/switch';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
+	import { Spinner } from '$stories/shadcnui/spinner';
 	import {
 		getMyNotifications,
 		getMyUnreadNotificationCount,
@@ -67,8 +68,12 @@
 				variant="ghost"
 				size="sm"
 				class="h-7 px-2 text-xs"
+				disabled={!!markAllNotificationsRead.pending}
 				onclick={() => markAllNotificationsRead()}
 			>
+				{#if markAllNotificationsRead.pending}
+					<Spinner class="size-3" />
+				{/if}
 				อ่านทั้งหมด
 			</Button>
 		</div>
@@ -79,9 +84,10 @@
 				{#each notifications as n (n.id)}
 					<button
 						class={cn(
-							'flex w-full flex-col gap-0.5 border-b px-3 py-2 text-left last:border-0 hover:bg-muted',
+							'flex w-full flex-col gap-0.5 border-b px-3 py-2 text-left last:border-0 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-60',
 							!n.read && 'bg-muted/50'
 						)}
+						disabled={!!markNotificationRead.pending}
 						onclick={() => handleClick(n)}
 					>
 						<div class="flex items-center gap-2">
@@ -106,6 +112,7 @@
 					<span class="text-sm">รับอีเมลแจ้งเตือน</span>
 					<Switch
 						checked={me.emailNotificationsEnabled}
+						disabled={!!setMyEmailNotificationPreference.pending}
 						onCheckedChange={toggleEmailNotifications}
 					/>
 				</div>

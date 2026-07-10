@@ -10,6 +10,7 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { arktype } from 'sveltekit-superforms/adapters';
 	import { possibleOwnerList } from '$lib/constants';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	const validators = arktype(createProjectSchema);
 	const form = superForm(defaults(validators), {
@@ -22,7 +23,7 @@
 		}
 	});
 
-	const { form: formData, enhance, submit } = form;
+	const { form: formData, enhance, submit, submitting } = form;
 </script>
 
 <Card.Root class="w-full">
@@ -140,6 +141,13 @@
 		</form>
 	</Card.Content>
 	<Card.Footer>
-		<Button type="submit" onclick={submit}>เพิ่มโครงการ</Button>
+		<Button type="submit" onclick={submit} disabled={$submitting}>
+			{#if $submitting}
+				<Spinner />
+				<span>กำลังเพิ่ม...</span>
+			{:else}
+				เพิ่มโครงการ
+			{/if}
+		</Button>
 	</Card.Footer>
 </Card.Root>

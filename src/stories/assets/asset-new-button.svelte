@@ -8,6 +8,7 @@
 	import { insertAssetSchema } from '$lib/validator/asset.validator';
 	import { toast } from 'svelte-sonner';
 	import AssetForm from './asset-form.svelte';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	const validators = arktype(insertAssetSchema);
 	const form = superForm(
@@ -34,6 +35,8 @@
 			}
 		}
 	);
+
+	const { submitting } = form;
 </script>
 
 <Sheet.Root>
@@ -54,7 +57,14 @@
 		</Sheet.Header>
 		<AssetForm {form} mode="create" />
 		<Sheet.Footer>
-			<Button onclick={() => form.submit()} class="mr-2">บันทึก</Button>
+			<Button onclick={() => form.submit()} disabled={$submitting} class="mr-2">
+				{#if $submitting}
+					<Spinner />
+					<span>กำลังบันทึก...</span>
+				{:else}
+					บันทึก
+				{/if}
+			</Button>
 			<Sheet.Close class={buttonVariants({ variant: 'outline' })}>ปิด</Sheet.Close>
 		</Sheet.Footer>
 	</Sheet.Content>

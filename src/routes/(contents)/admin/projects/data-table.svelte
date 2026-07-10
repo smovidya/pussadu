@@ -280,6 +280,7 @@
 		>
 			<Select.Trigger
 				size="sm"
+				disabled={!!setProjectInfo.pending}
 				class={cn('w-35 justify-start border-none shadow-none', status.color)}
 			>
 				<status.icon class={cn('mr-2 size-4 shrink-0 text-inherit')} />
@@ -315,7 +316,10 @@
 			}}
 			{value}
 		>
-			<Select.Trigger class="h-8 w-35 justify-start border-none shadow-none">
+			<Select.Trigger
+				disabled={!!setProjectInfo.pending}
+				class="h-8 w-35 justify-start border-none shadow-none"
+			>
 				<span class="truncate">
 					{owner.label}
 				</span>

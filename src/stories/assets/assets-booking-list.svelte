@@ -9,6 +9,7 @@
 	import { listAssets, removeAsset } from '$lib/rpc/assets.remote';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import { Spinner } from '$stories/shadcnui/spinner';
 	interface Props {
 		assets: {
 			createdAt: Date | null;
@@ -121,9 +122,16 @@
 										>ประวัติการดำเนินการ
 									</DropdownMenu.Item>
 									<DropdownMenu.Separator />
-									<DropdownMenu.Item variant="destructive" onclick={() => onRemoveAsset(asset.id)}
-										>ลบพัสดุนี้</DropdownMenu.Item
+									<DropdownMenu.Item
+										variant="destructive"
+										disabled={!!removeAsset.pending}
+										onclick={() => onRemoveAsset(asset.id)}
 									>
+										{#if removeAsset.pending}
+											<Spinner class="size-3.5" />
+										{/if}
+										ลบพัสดุนี้
+									</DropdownMenu.Item>
 								</DropdownMenu.Group>
 							{/snippet}
 						</AssetsCard>

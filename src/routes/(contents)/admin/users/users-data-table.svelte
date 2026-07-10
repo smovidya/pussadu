@@ -278,7 +278,11 @@
 			}
 		}}
 	>
-		<Select.Trigger size="sm" class={cn('w-32 justify-start border-none shadow-none', role?.color)}>
+		<Select.Trigger
+			size="sm"
+			disabled={!!setStudentUserRole.pending}
+			class={cn('w-32 justify-start border-none shadow-none', role?.color)}
+		>
 			{role?.label ?? value}
 		</Select.Trigger>
 		<Select.Content>

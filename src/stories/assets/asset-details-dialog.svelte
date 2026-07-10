@@ -9,6 +9,7 @@
 	import { listAssets, updateAsset } from '$lib/rpc/assets.remote';
 	import { toast } from 'svelte-sonner';
 	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	interface Props {
 		asset: {
@@ -75,7 +76,7 @@
 		}
 	});
 
-	const { form: formData } = form;
+	const { form: formData, submitting } = form;
 </script>
 
 <Sheet.Root bind:open={isOpen}>
@@ -101,7 +102,14 @@
 		<AssetForm {form} {mode} />
 		<Sheet.Footer>
 			{#if mode !== 'view'}
-				<Button onclick={() => form.submit()}>บันทึก</Button>
+				<Button onclick={() => form.submit()} disabled={$submitting}>
+					{#if $submitting}
+						<Spinner />
+						<span>กำลังบันทึก...</span>
+					{:else}
+						บันทึก
+					{/if}
+				</Button>
 			{/if}
 			<Sheet.Close class={buttonVariants({ variant: 'ghost' })}>ปิด</Sheet.Close>
 		</Sheet.Footer>

@@ -15,6 +15,7 @@
 	import { isHttpError } from '@sveltejs/kit';
 	import { listDepartment } from '$lib/rpc/department.remote';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
+	import { Spinner } from '$stories/shadcnui/spinner';
 	import Label from '$stories/shadcnui/label/label.svelte';
 
 	let {
@@ -191,9 +192,14 @@
 			<Button
 				variant="outline"
 				size="icon"
+				disabled={!!removeBorrowerFromProject.pending}
 				onclick={async () => await unassignBorrower(staffInfo.ouid)}
 			>
-				<UserRoundX />
+				{#if removeBorrowerFromProject.pending}
+					<Spinner />
+				{:else}
+					<UserRoundX />
+				{/if}
 			</Button>
 		</Table.Cell>
 	</Table.Row>
@@ -271,11 +277,22 @@
 				{/await}
 				<Input hidden class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.departmentId} />
 				<div class="col-span-full mt-2 flex gap-2">
-					<Button type="submit">
-						<UserRoundPlus />
-						เพิ่มนิสิต
+					<Button type="submit" disabled={!!assignBorrowerToProject.pending}>
+						{#if assignBorrowerToProject.pending}
+							<Spinner />
+							<span>กำลังบันทึก...</span>
+						{:else}
+							<UserRoundPlus />
+							เพิ่มนิสิต
+						{/if}
 					</Button>
-					<Button variant="outline" onclick={async () => await resetNewStaff()}>ยกเลิก</Button>
+					<Button
+						variant="outline"
+						disabled={!!assignBorrowerToProject.pending}
+						onclick={async () => await resetNewStaff()}
+					>
+						ยกเลิก
+					</Button>
 				</div>
 			</form>
 		{/if}

@@ -4,6 +4,7 @@
 	import * as Select from '$stories/shadcnui/select';
 	import { Input } from '$stories/shadcnui/input';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
+	import { Spinner } from '$stories/shadcnui/spinner';
 	import Button from '$stories/shadcnui/button/button.svelte';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { arktype } from 'sveltekit-superforms/adapters';
@@ -66,7 +67,7 @@
 		}
 	);
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 	const departmentsQuery = listDepartment();
 
 	// Re-seed the form from the latest row data every time the sheet is opened,
@@ -179,10 +180,17 @@
 				<Form.FieldErrors />
 			</Form.Field>
 			<div class="flex flex-wrap gap-2 py-4">
-				<Button type="submit">{isEdit ? 'บันทึก' : 'เพิ่ม'}</Button>
+				<Button type="submit" disabled={$submitting}>
+					{#if $submitting}
+						<Spinner />
+						<span>กำลังบันทึก...</span>
+					{:else}
+						{isEdit ? 'บันทึก' : 'เพิ่ม'}
+					{/if}
+				</Button>
 				<Sheet.Close>
 					{#snippet child({ props })}
-						<Button variant="ghost" {...props}>ยกเลิก</Button>
+						<Button variant="ghost" disabled={$submitting} {...props}>ยกเลิก</Button>
 					{/snippet}
 				</Sheet.Close>
 			</div>

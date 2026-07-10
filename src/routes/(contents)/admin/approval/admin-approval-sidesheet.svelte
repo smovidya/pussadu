@@ -18,6 +18,7 @@
 	import Textarea from '$stories/shadcnui/textarea/textarea.svelte';
 	import DatePicker from '$stories/date/date-picker.svelte';
 	import { isHttpError } from '@sveltejs/kit';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	interface Props {
 		trigger?: Snippet<
@@ -67,7 +68,7 @@
 		}
 	);
 
-	const { form: formData, enhance } = form;
+	const { form: formData, enhance, submitting } = form;
 
 	const projectStatus = projectStatusOptions.find((p) => p.value === request.project?.status);
 
@@ -287,8 +288,17 @@
 				</Form.Field>
 			</div>
 			<div class="flex flex-wrap gap-2 py-4">
-				<Button variant="default" type="submit">บันทึก</Button>
-				<Button onclick={() => form.reset()} variant="ghost">รีเซ็ตฟอร์ม</Button>
+				<Button variant="default" type="submit" disabled={$submitting}>
+					{#if $submitting}
+						<Spinner />
+						<span>กำลังบันทึก...</span>
+					{:else}
+						บันทึก
+					{/if}
+				</Button>
+				<Button onclick={() => form.reset()} variant="ghost" disabled={$submitting}
+					>รีเซ็ตฟอร์ม</Button
+				>
 				<Sheet.Close>
 					{#snippet child({ props })}
 						<Button variant="ghost" {...props}>ปิด</Button>

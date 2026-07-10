@@ -13,6 +13,7 @@
 	import type { InferSelectModel } from 'drizzle-orm';
 	import type { project } from '$lib/schema';
 	import { Save, ArrowLeft } from '@lucide/svelte';
+	import { Spinner } from '$stories/shadcnui/spinner';
 
 	interface Props {
 		projectData: InferSelectModel<typeof project>;
@@ -31,7 +32,7 @@
 		}
 	});
 
-	const { form: formData, enhance, submit } = form;
+	const { form: formData, enhance, submit, submitting } = form;
 
 	// Initialize form with existing project data
 	$formData.id = projectData.id;
@@ -176,9 +177,14 @@
 		<div class="flex gap-2">
 			<Button variant="outline" href="/admin/projects">ยกเลิก</Button>
 		</div>
-		<Button type="submit" onclick={submit} class="flex items-center gap-2">
-			<Save class="h-4 w-4" />
-			บันทึกการเปลี่ยนแปลง
+		<Button type="submit" onclick={submit} disabled={$submitting} class="flex items-center gap-2">
+			{#if $submitting}
+				<Spinner class="h-4 w-4" />
+				<span>กำลังบันทึก...</span>
+			{:else}
+				<Save class="h-4 w-4" />
+				<span>บันทึกการเปลี่ยนแปลง</span>
+			{/if}
 		</Button>
 	</Card.Footer>
 </Card.Root>
