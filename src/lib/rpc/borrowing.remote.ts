@@ -61,7 +61,7 @@ export const listBorrowed = query(async () => {
 export const listBorrowingRequests = query(
 	borrowingValidators.borrowingFilterSchema,
 	async (data) => {
-		Guard.admin();
+		await Guard.allows({ permission: { borrowing: ['manage'] } });
 		const requests = await borrowingModel.listBorrowingRequests(Locals.db, data);
 		return requests;
 	}
@@ -70,7 +70,8 @@ export const listBorrowingRequests = query(
 export const updateBorrowingRequest = command(
 	borrowingValidators.borrowingUpdateSchema,
 	async (data) => {
-		const { ouid } = Guard.admin();
+		const { ouid } = Guard.loggedIn();
+		await Guard.allows({ permission: { borrowing: ['manage'] } });
 		const request = await borrowingModel.getBorrowingRequest(Locals.db, data.id);
 		if (!request) {
 			error(404, {

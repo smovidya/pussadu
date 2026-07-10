@@ -23,7 +23,7 @@ import { type } from 'arktype';
 import * as borrowerModel from '$lib/server/models/borrower.model';
 
 export const getAllProjects = query(async () => {
-	Guard.admin();
+	await Guard.allows({ permission: { project: ['list'] } });
 	return await selectAllProjects(Locals.db);
 });
 
@@ -33,7 +33,7 @@ export const getAllMyProjects = query(async () => {
 });
 
 export const adminGetProjectInfo = query(type({ id: 'string' }), async (data) => {
-	Guard.admin();
+	await Guard.allows({ permission: { project: ['list'] } });
 	return await getProject(Locals.db, data.id);
 });
 
@@ -52,9 +52,9 @@ export const listAllStaffsForProject = query(
 		projectId: 'string'
 	}),
 	async (data) => {
-		Guard.allows({
+		await Guard.allows({
 			permission: {
-				user: ['list']
+				borrower: ['list']
 			}
 		});
 
@@ -70,7 +70,8 @@ export const listAllStaffsForProject = query(
 );
 
 export const createProject = command(createProjectSchema, async (data) => {
-	const { ouid } = Guard.admin();
+	const { ouid } = Guard.loggedIn();
+	await Guard.allows({ permission: { project: ['create'] } });
 
 	const project = await insertNewProject(Locals.db, data);
 
@@ -88,7 +89,8 @@ export const createProject = command(createProjectSchema, async (data) => {
 });
 
 export const assignBorrowerToProject = command(assignBorrowerToProjectSchema, async (data) => {
-	const { ouid } = Guard.admin();
+	const { ouid } = Guard.loggedIn();
+	await Guard.allows({ permission: { project: ['update'] } });
 
 	const isAlreadyAssigned = await isBorrowerAlreadyAssignedToProject(
 		Locals.db,
@@ -133,7 +135,8 @@ export const removeBorrowerFromProject = command(
 		borrowerId: 'string'
 	}),
 	async (data) => {
-		const { ouid } = Guard.admin();
+		const { ouid } = Guard.loggedIn();
+		await Guard.allows({ permission: { project: ['update'] } });
 
 		const project = await unassignBorrower(Locals.db, data.projectId, data.borrowerId);
 
@@ -152,7 +155,8 @@ export const removeBorrowerFromProject = command(
 );
 
 export const setProjectInfo = command(updateProjectSchema, async (data) => {
-	const { ouid } = Guard.admin();
+	const { ouid } = Guard.loggedIn();
+	await Guard.allows({ permission: { project: ['update'] } });
 
 	if (!data.id) error(403, 'โปรดระบุ ID ของโครงการ');
 
@@ -173,7 +177,8 @@ export const removeProject = command(
 		id: 'string'
 	}),
 	async (data) => {
-		const { ouid } = Guard.admin();
+		const { ouid } = Guard.loggedIn();
+		await Guard.allows({ permission: { project: ['delete'] } });
 
 		await deleteProject(Locals.db, data.id);
 

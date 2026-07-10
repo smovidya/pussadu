@@ -9,7 +9,7 @@ export const getLogsByTarget = query(
 		targetId: 'string'
 	}),
 	async ({ targetId }) => {
-		Guard.admin();
+		await Guard.allows({ permission: { log: ['list'] } });
 		return await getAllLogs(Locals.db, {
 			fieldEq: { target: targetId },
 			orderBy: [{ field: 'createdAt', direction: 'desc' }]
@@ -25,7 +25,7 @@ export const getAllSystemLogs = query(
 		'sortDirection?': '"asc" | "desc"'
 	}),
 	async ({ search, action, sortBy, sortDirection }) => {
-		Guard.admin();
+		await Guard.allows({ permission: { log: ['list'] } });
 		return await getAllLogs(Locals.db, {
 			fieldEq: action && action !== 'all' ? { action } : undefined,
 			textSearch: search,
