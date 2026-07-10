@@ -36,6 +36,11 @@
 			"preview_bucket_name": "pussadu-r2-preview"
 		}
 	],
+	"send_email": [
+		{
+			"name": "EMAIL"
+		}
+	],
 	"compatibility_flags": ["nodejs_compat"],
 	"ratelimits": [
 		{

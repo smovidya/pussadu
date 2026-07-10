@@ -9,3 +9,4 @@ export const Cookies = createFacade(() => getRequestEvent().cookies, options);
 // hope this one work
 export const LocalRequest = createFacade(() => getRequestEvent().request, options);
 export const Params = createFacade(() => getRequestEvent().params, options);
+export const Platform = createFacade(() => getRequestEvent().platform as App.Platform, options);

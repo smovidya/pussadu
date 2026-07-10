@@ -5,10 +5,12 @@ import * as borrowingModel from '$lib/server/models/borrowing.model';
 import * as borrowingValidators from '$lib/validator/borrowing.validator';
 import * as assetModel from '$lib/server/models/assets.model';
 import * as projectModel from '$lib/server/models/project.model';
+import { selectBorrower } from '$lib/server/models/borrower.model';
 import { BorrowingRequest } from '$lib/validator/borrowing.validator';
 import { error } from '@sveltejs/kit';
 import { insertNewLog } from '$lib/server/models/audit.model';
 import { insertNotification } from '$lib/server/models/notification.model';
+import { sendNotificationEmail } from '$lib/server/helpers/email';
 
 const BORROWING_STATUS_LABEL_TH: Record<string, string> = {
 	pending: 'รอการอนุมัติ',
@@ -168,6 +170,16 @@ export const updateBorrowingRequest = command(
 				message: `สถานะเปลี่ยนเป็น "${statusLabel}"`,
 				link: '/my-borrowing'
 			});
+
+			const borrower = await selectBorrower(Locals.db, request.borrowerId);
+			if (borrower?.email) {
+				await sendNotificationEmail({
+					to: borrower.email,
+					subject: `คำขอยืม "${asset.name}" อัปเดตสถานะเป็น "${statusLabel}"`,
+					html: `<p>สวัสดีคุณ ${borrower.name}</p><p>คำขอยืม <strong>${asset.name}</strong> ของคุณมีการเปลี่ยนสถานะเป็น <strong>${statusLabel}</strong></p><p>ตรวจสอบรายละเอียดเพิ่มเติมได้ที่หน้า "รายการยืมของฉัน" ในระบบ</p>`,
+					text: `สวัสดีคุณ ${borrower.name}\n\nคำขอยืม "${asset.name}" ของคุณมีการเปลี่ยนสถานะเป็น "${statusLabel}"\n\nตรวจสอบรายละเอียดเพิ่มเติมได้ที่หน้า "รายการยืมของฉัน" ในระบบ`
+				});
+			}
 		}
 	}
 );
