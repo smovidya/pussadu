@@ -1,0 +1,1 @@
+ALTER TABLE `borrower` ADD `email_notifications_enabled` integer DEFAULT true NOT NULL;

@@ -1,6 +1,7 @@
 import { command, query } from '$app/server';
+import { type } from 'arktype';
 import { Guard } from '$lib/server/helpers/facades/guard';
-import { Locals } from '$lib/server/helpers/facades/request-event';
+import { Locals, Platform } from '$lib/server/helpers/facades/request-event';
 import * as borrowingModel from '$lib/server/models/borrowing.model';
 import * as borrowingValidators from '$lib/validator/borrowing.validator';
 import * as assetModel from '$lib/server/models/assets.model';
@@ -164,22 +165,37 @@ export const updateBorrowingRequest = command(
 
 		if (data.status) {
 			const statusLabel = BORROWING_STATUS_LABEL_TH[data.status] ?? data.status;
+			const detailPath = `/my-borrowing/${request.id}`;
+
 			await insertNotification(Locals.db, {
 				borrowerId: request.borrowerId,
 				title: `คำขอยืม "${asset.name}" อัปเดตสถานะ`,
 				message: `สถานะเปลี่ยนเป็น "${statusLabel}"`,
-				link: '/my-borrowing'
+				link: detailPath
 			});
 
 			const borrower = await selectBorrower(Locals.db, request.borrowerId);
-			if (borrower?.email) {
+			if (borrower?.email && borrower.emailNotificationsEnabled) {
+				const detailUrl = `${Platform.env.PUBLIC_BETTER_AUTH_URL}${detailPath}`;
 				await sendNotificationEmail({
 					to: borrower.email,
 					subject: `คำขอยืม "${asset.name}" อัปเดตสถานะเป็น "${statusLabel}"`,
-					html: `<p>สวัสดีคุณ ${borrower.name}</p><p>คำขอยืม <strong>${asset.name}</strong> ของคุณมีการเปลี่ยนสถานะเป็น <strong>${statusLabel}</strong></p><p>ตรวจสอบรายละเอียดเพิ่มเติมได้ที่หน้า "รายการยืมของฉัน" ในระบบ</p>`,
-					text: `สวัสดีคุณ ${borrower.name}\n\nคำขอยืม "${asset.name}" ของคุณมีการเปลี่ยนสถานะเป็น "${statusLabel}"\n\nตรวจสอบรายละเอียดเพิ่มเติมได้ที่หน้า "รายการยืมของฉัน" ในระบบ`
+					html: `<p>สวัสดีคุณ ${borrower.name}</p><p>คำขอยืม <strong>${asset.name}</strong> ของคุณมีการเปลี่ยนสถานะเป็น <strong>${statusLabel}</strong></p><p><a href="${detailUrl}">ดูรายละเอียดคำขอยืม</a></p>`,
+					text: `สวัสดีคุณ ${borrower.name}\n\nคำขอยืม "${asset.name}" ของคุณมีการเปลี่ยนสถานะเป็น "${statusLabel}"\n\nดูรายละเอียด: ${detailUrl}`
 				});
 			}
 		}
 	}
 );
+
+export const getMyBorrowingRequestInfo = query(type({ id: 'string' }), async (data) => {
+	const { ouid } = Guard.loggedIn();
+	const request = await borrowingModel.getBorrowingRequestDetail(Locals.db, data.id);
+	if (!request) {
+		error(404, { message: 'ไม่พบคำขอนี้' });
+	}
+	if (request.borrowerId !== ouid) {
+		error(403, { message: 'คุณไม่มีสิทธิ์เข้าถึงคำขอนี้' });
+	}
+	return request;
+});

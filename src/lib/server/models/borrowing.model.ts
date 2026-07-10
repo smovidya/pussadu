@@ -112,6 +112,16 @@ export const getBorrowingRequest = helper.getOneFromTable(
 	tables.assetToProject.id
 );
 
+export async function getBorrowingRequestDetail(db: DrizzleClient, id: string) {
+	return db.query.assetToProject.findFirst({
+		where: (row, { eq }) => eq(row.id, id),
+		with: {
+			asset: true,
+			project: true
+		}
+	});
+}
+
 export async function listBorrowingRequests(
 	db: DrizzleClient,
 	{

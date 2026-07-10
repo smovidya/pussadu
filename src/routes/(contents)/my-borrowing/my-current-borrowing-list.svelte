@@ -7,6 +7,13 @@
 	import { Badge } from '$stories/shadcnui/badge';
 	import { cn } from '$stories/utils';
 	import { formatDate } from '$lib/utils/datetime';
+	import { goto } from '$app/navigation';
+
+	function openDetail(id: string) {
+		// id is a runtime row id, not a compile-time-known route, so it can't go through resolve().
+		// eslint-disable-next-line svelte/no-navigation-without-resolve
+		goto(`/my-borrowing/${id}`);
+	}
 </script>
 
 <PageWrapper pageTitle="รายการยืมของฉัน" groupTitle="ยืมพัสดุ" groupUrl="/projects">
@@ -35,7 +42,7 @@
 						{@const projectStatus = projectStatusOptions.find(
 							(s) => s.value === item.project.status
 						)}
-						<Table.Row>
+						<Table.Row class="cursor-pointer hover:bg-muted/50" onclick={() => openDetail(item.id)}>
 							<Table.Cell>
 								<Badge class={cn('text-medium', status?.color)}>
 									{status?.label}

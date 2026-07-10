@@ -3,6 +3,7 @@
 	import * as Popover from '$stories/shadcnui/popover';
 	import { Button } from '$stories/shadcnui/button';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
+	import { Switch } from '$stories/shadcnui/switch';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import {
 		getMyNotifications,
@@ -10,12 +11,14 @@
 		markNotificationRead,
 		markAllNotificationsRead
 	} from '$lib/rpc/notification.remote';
+	import { getMyBorrowerData, setMyEmailNotificationPreference } from '$lib/rpc/borrower.remote';
 	import { goto } from '$app/navigation';
 	import { formatRelativeTime } from '$lib/utils/datetime';
 	import { cn } from '$stories/utils';
 
 	const unreadCountQuery = getMyUnreadNotificationCount();
 	const notificationsQuery = getMyNotifications();
+	const myBorrowerQuery = getMyBorrowerData();
 
 	type Notification = NonNullable<ReturnType<typeof getMyNotifications>['current']>[number];
 
@@ -32,6 +35,10 @@
 			// eslint-disable-next-line svelte/no-navigation-without-resolve
 			await goto(notification.link);
 		}
+	}
+
+	async function toggleEmailNotifications(enabled: boolean) {
+		await setMyEmailNotificationPreference({ enabled });
 	}
 </script>
 
@@ -93,5 +100,16 @@
 				{/each}
 			{/await}
 		</div>
+		{#await myBorrowerQuery then me}
+			{#if me}
+				<div class="flex items-center justify-between border-t p-3">
+					<span class="text-sm">รับอีเมลแจ้งเตือน</span>
+					<Switch
+						checked={me.emailNotificationsEnabled}
+						onCheckedChange={toggleEmailNotifications}
+					/>
+				</div>
+			{/if}
+		{/await}
 	</Popover.Content>
 </Popover.Root>

@@ -16,6 +16,9 @@ export const borrower = sqliteTable('borrower', {
 		.notNull()
 		.references(() => department.id),
 	oldIsAdmin: integer('old_is_admin', { mode: 'boolean' }).default(false).notNull(),
+	emailNotificationsEnabled: integer('email_notifications_enabled', { mode: 'boolean' })
+		.default(true)
+		.notNull(),
 	...timestamps
 });
 

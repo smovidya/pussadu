@@ -64,6 +64,13 @@
       "when": 1783698462481,
       "tag": "0008_demonic_vision",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1783709044713,
+      "tag": "0009_quiet_nick_fury",
+      "breakpoints": true
     }
   ]
 }

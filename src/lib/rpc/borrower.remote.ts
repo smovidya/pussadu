@@ -19,6 +19,21 @@ export const getMyBorrowerData = query(async () => {
 	return await selectBorrower(Locals.db, ouid);
 });
 
+export const setMyEmailNotificationPreference = command(
+	type({ enabled: 'boolean' }),
+	async (data) => {
+		const { ouid } = Guard.loggedIn();
+
+		const borrower = await updateBorrower(Locals.db, ouid, {
+			emailNotificationsEnabled: data.enabled
+		});
+
+		await getMyBorrowerData().refresh();
+
+		return borrower;
+	}
+);
+
 export const getBorrowerInfo = query(type({ ouid: 'string' }), async (data) => {
 	await Guard.allows({ permission: { borrower: ['list'] } });
 
