@@ -43,11 +43,11 @@
 	],
 	"compatibility_flags": ["nodejs_compat"],
 	"triggers": {
-		// Daily return-reminder check, 08:00 Asia/Bangkok (UTC+7)
+		// Return-reminder check, Mon/Wed/Fri 08:00 Asia/Bangkok (UTC+7)
 		// Handler is appended post-build by scripts/attach-scheduled-handler.mjs - see that
 		// file for why (adapter-cloudflare owns and regenerates `main` on every build, so a
 		// hand-written entry file placed there gets clobbered rather than imported from).
-		"crons": ["0 1 * * *"]
+		"crons": ["0 1 * * 1,3,5"]
 	},
 	// $lib isn't a real path - it's resolved by Vite during the SvelteKit build. The
 	// scheduled handler appended after that build (see triggers.crons comment) still

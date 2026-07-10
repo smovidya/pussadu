@@ -11,7 +11,7 @@ import { BorrowingRequest } from '$lib/validator/borrowing.validator';
 import { error } from '@sveltejs/kit';
 import { insertNewLog } from '$lib/server/models/audit.model';
 import { insertNotification } from '$lib/server/models/notification.model';
-import { sendNotificationEmail } from '$lib/server/helpers/email';
+import { sendNotificationEmail, emailBadge, emailButton } from '$lib/server/helpers/email';
 
 const BORROWING_STATUS_LABEL_TH: Record<string, string> = {
 	pending: 'รอการอนุมัติ',
@@ -22,6 +22,17 @@ const BORROWING_STATUS_LABEL_TH: Record<string, string> = {
 	damaged: 'ชำรุด',
 	lost: 'สูญหาย',
 	cancelled: 'ถูกยกเลิก'
+};
+
+const BORROWING_STATUS_TONE: Record<string, 'info' | 'success' | 'warn' | 'danger'> = {
+	pending: 'warn',
+	approved: 'success',
+	rejected: 'danger',
+	inuse: 'info',
+	returned: 'success',
+	damaged: 'danger',
+	lost: 'danger',
+	cancelled: 'danger'
 };
 
 export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), async (data) => {
@@ -176,12 +187,28 @@ export const updateBorrowingRequest = command(
 
 			const borrower = await selectBorrower(Locals.db, request.borrowerId);
 			if (borrower?.email && borrower.emailNotificationsEnabled) {
+				const project = await projectModel.getProject(Locals.db, request.projectId);
 				const detailUrl = `${Platform.env.PUBLIC_BETTER_AUTH_URL}${detailPath}`;
+				const tone = BORROWING_STATUS_TONE[data.status] ?? 'info';
+
 				await sendNotificationEmail(Platform.env.EMAIL, {
 					to: borrower.email,
 					subject: `คำขอยืม "${asset.name}" อัปเดตสถานะเป็น "${statusLabel}"`,
-					html: `<p>สวัสดีคุณ ${borrower.name}</p><p>คำขอยืม <strong>${asset.name}</strong> ของคุณมีการเปลี่ยนสถานะเป็น <strong>${statusLabel}</strong></p><p><a href="${detailUrl}">ดูรายละเอียดคำขอยืม</a></p>`,
-					text: `สวัสดีคุณ ${borrower.name}\n\nคำขอยืม "${asset.name}" ของคุณมีการเปลี่ยนสถานะเป็น "${statusLabel}"\n\nดูรายละเอียด: ${detailUrl}`
+					html: `
+						<p style="margin:0 0 16px;">สวัสดีคุณ ${borrower.name}</p>
+						<p style="margin:0 0 8px;">คำขอยืมของคุณมีการอัปเดตสถานะ</p>
+						<table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;border:1px solid #e4e4e7;border-radius:8px;margin:12px 0;">
+							<tr>
+								<td style="padding:16px;">
+									<div style="font-size:15px;font-weight:600;color:#18181b;">${asset.name}</div>
+									<div style="font-size:13px;color:#71717a;margin-top:2px;">โครงการ: ${project?.title ?? '-'}</div>
+									<div style="margin-top:10px;">${emailBadge(statusLabel, tone)}</div>
+								</td>
+							</tr>
+						</table>
+						${emailButton(detailUrl, 'ดูรายละเอียดคำขอยืม')}
+					`,
+					text: `สวัสดีคุณ ${borrower.name}\n\nคำขอยืม "${asset.name}" (โครงการ ${project?.title ?? '-'}) ของคุณมีการเปลี่ยนสถานะเป็น "${statusLabel}"\n\nดูรายละเอียด: ${detailUrl}`
 				});
 			}
 		}

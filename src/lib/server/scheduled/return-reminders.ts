@@ -2,7 +2,7 @@ import type { DrizzleClient } from '../db';
 import { listDueSoonOrOverdueBorrowings } from '../models/borrowing.model';
 import { insertNotification } from '../models/notification.model';
 import { insertNewLog } from '../models/audit.model';
-import { sendNotificationEmail } from '../helpers/email';
+import { sendNotificationEmail, emailBadge, emailButton } from '../helpers/email';
 
 /**
  * Reminds borrowers to return items that are due within 24h or already
@@ -47,10 +47,20 @@ export async function runReturnReminders(db: DrizzleClient, email: SendEmail, ap
 				.map((item) => {
 					const isOverdue = item.endDate.getTime() < Date.now();
 					const detailUrl = `${appUrl}/my-borrowing/${item.id}`;
+					const statusLabel = isOverdue ? 'เลยกำหนดคืนแล้ว' : 'ครบกำหนดคืนภายใน 24 ชั่วโมง';
 					return {
 						isOverdue,
-						html: `<li><strong>${item.asset!.name}</strong> (โครงการ ${item.project?.title ?? '-'}) - ${isOverdue ? 'เลยกำหนดคืนแล้ว' : 'ครบกำหนดคืนภายใน 24 ชั่วโมง'} - <a href="${detailUrl}">ดูรายละเอียด</a></li>`,
-						text: `- ${item.asset!.name} (โครงการ ${item.project?.title ?? '-'}) - ${isOverdue ? 'เลยกำหนดคืนแล้ว' : 'ครบกำหนดคืนภายใน 24 ชั่วโมง'}: ${detailUrl}`
+						html: `
+							<tr>
+								<td style="padding:12px 16px;border-bottom:1px solid #e4e4e7;">
+									<div style="font-size:14px;font-weight:600;color:#18181b;">${item.asset!.name}</div>
+									<div style="font-size:12px;color:#71717a;margin-top:2px;">โครงการ: ${item.project?.title ?? '-'}</div>
+									<div style="margin-top:8px;">${emailBadge(statusLabel, isOverdue ? 'danger' : 'warn')}
+										<a href="${detailUrl}" style="margin-left:8px;font-size:12px;color:${'#ca8a04'};">ดูรายละเอียด</a>
+									</div>
+								</td>
+							</tr>`,
+						text: `- ${item.asset!.name} (โครงการ ${item.project?.title ?? '-'}) - ${statusLabel}: ${detailUrl}`
 					};
 				})
 				.sort((a, b) => Number(b.isOverdue) - Number(a.isOverdue));
@@ -60,12 +70,20 @@ export async function runReturnReminders(db: DrizzleClient, email: SendEmail, ap
 				overdueCount > 0
 					? `คุณมีพัสดุเลยกำหนดคืน ${overdueCount} รายการ`
 					: `คุณมีพัสดุใกล้ถึงกำหนดคืน ${rows.length} รายการ`;
+			const myBorrowingUrl = `${appUrl}/my-borrowing`;
 
 			await sendNotificationEmail(email, {
 				to: borrower.email,
 				subject,
-				html: `<p>สวัสดีคุณ ${borrower.name}</p><p>รายการพัสดุที่ต้องคืน:</p><ul>${rows.map((r) => r.html).join('')}</ul>`,
-				text: `สวัสดีคุณ ${borrower.name}\n\nรายการพัสดุที่ต้องคืน:\n${rows.map((r) => r.text).join('\n')}`
+				html: `
+					<p style="margin:0 0 16px;">สวัสดีคุณ ${borrower.name}</p>
+					<p style="margin:0 0 8px;">รายการพัสดุที่ต้องคืน:</p>
+					<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e4e4e7;border-radius:8px;overflow:hidden;">
+						${rows.map((r) => r.html).join('')}
+					</table>
+					${emailButton(myBorrowingUrl, 'ดูรายการยืมของฉัน')}
+				`,
+				text: `สวัสดีคุณ ${borrower.name}\n\nรายการพัสดุที่ต้องคืน:\n${rows.map((r) => r.text).join('\n')}\n\nดูทั้งหมด: ${myBorrowingUrl}`
 			});
 		}
 
