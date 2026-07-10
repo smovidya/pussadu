@@ -6,5 +6,6 @@ export * from './borrower.schema';
 export * from './category.schema';
 export * from './department.schema';
 export * from './log.schema';
+export * from './notification.schema';
 export * from './project.schema';
 export * from './projectToBorrower.schema';

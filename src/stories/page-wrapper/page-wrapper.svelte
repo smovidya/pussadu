@@ -2,6 +2,8 @@
 	import * as Breadcrumb from '$stories/shadcnui/breadcrumb';
 	import * as Sidebar from '$stories/shadcnui/sidebar';
 	import { Separator } from '$stories/shadcnui/separator';
+	import NotificationBell from '$stories/notification/notification-bell.svelte';
+	import { authClient } from '$lib/auth-client';
 	import type { Snippet } from 'svelte';
 
 	interface Props {
@@ -11,6 +13,8 @@
 		children?: Snippet;
 	}
 	const { children, groupTitle, pageTitle, groupUrl }: Props = $props();
+
+	const auth = authClient.useSession();
 </script>
 
 <svelte:head>
@@ -35,6 +39,11 @@
 			</Breadcrumb.Item>
 		</Breadcrumb.List>
 	</Breadcrumb.Root>
+	{#if $auth.data?.user}
+		<div class="ml-auto">
+			<NotificationBell />
+		</div>
+	{/if}
 </header>
 <div class="container mx-auto flex flex-1 flex-col gap-4 p-4">
 	{@render children?.()}

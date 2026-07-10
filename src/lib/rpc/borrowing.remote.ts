@@ -8,6 +8,18 @@ import * as projectModel from '$lib/server/models/project.model';
 import { BorrowingRequest } from '$lib/validator/borrowing.validator';
 import { error } from '@sveltejs/kit';
 import { insertNewLog } from '$lib/server/models/audit.model';
+import { insertNotification } from '$lib/server/models/notification.model';
+
+const BORROWING_STATUS_LABEL_TH: Record<string, string> = {
+	pending: 'รอการอนุมัติ',
+	approved: 'อนุมัติแล้ว',
+	rejected: 'ถูกปฏิเสธ',
+	inuse: 'กำลังใช้งาน',
+	returned: 'ส่งคืนแล้ว',
+	damaged: 'ชำรุด',
+	lost: 'สูญหาย',
+	cancelled: 'ถูกยกเลิก'
+};
 
 export const requestToBorrow = command(BorrowingRequest.omit('borrowerId'), async (data) => {
 	const { ouid } = Guard.loggedIn();
@@ -147,5 +159,15 @@ export const updateBorrowingRequest = command(
 			detail: { from: request, to: data },
 			comment: `อัปเดตคำขอยืม ${request.id}`
 		});
+
+		if (data.status) {
+			const statusLabel = BORROWING_STATUS_LABEL_TH[data.status] ?? data.status;
+			await insertNotification(Locals.db, {
+				borrowerId: request.borrowerId,
+				title: `คำขอยืม "${asset.name}" อัปเดตสถานะ`,
+				message: `สถานะเปลี่ยนเป็น "${statusLabel}"`,
+				link: '/my-borrowing'
+			});
+		}
 	}
 );
