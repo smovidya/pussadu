@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, gte, ilike, isNull, lte, or } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -30,25 +30,61 @@ export const getLogsByActor = async (db: DrizzleClient, actorId: string) => {
 	});
 };
 
+type GetAllLogsFilter = {
+	orderBy?: { field: keyof LogSelect; direction: 'asc' | 'desc' }[];
+	fieldEq?: { [K in keyof LogSelect]?: unknown };
+	fieldIsNull?: { [K in keyof LogSelect]?: boolean };
+	fieldDateRange?: Record<'createAt' | 'updatedAt' | 'deleteAt', { from?: Date; to?: Date }>;
+	fieldsSeach?: { [K in keyof LogSelect]?: unknown };
+	textSearch?: string;
+	includeDeleted?: boolean;
+};
+
+const buildLogsWhere = ({
+	fieldEq,
+	fieldIsNull,
+	fieldDateRange,
+	fieldsSeach,
+	textSearch,
+	includeDeleted = false
+}: GetAllLogsFilter) => {
+	return and(
+		...Object.entries(fieldEq || {}).map(([field, value]) =>
+			eq(logTable[field as keyof LogSelect], value as any)
+		),
+		includeDeleted ? undefined : isNull(logTable.deletedAt),
+		...Object.entries(fieldIsNull || {}).map(([field]) =>
+			isNull(logTable[field as keyof LogSelect])
+		),
+		...Object.entries(fieldDateRange || {}).flatMap(([field, range]) => {
+			const fieldKey = field as keyof LogSelect;
+			return [
+				range.from ? gte(logTable[fieldKey], range.from) : undefined,
+				range.to ? lte(logTable[fieldKey], range.to) : undefined
+			].filter(Boolean);
+		}),
+		...Object.entries(fieldsSeach || {})
+			.map(([field, value]) => {
+				if (typeof value === 'string' && value.trim() !== '') {
+					return ilike(logTable[field as keyof LogSelect], value);
+				}
+				return undefined;
+			})
+			.filter(Boolean),
+		textSearch
+			? or(
+					ilike(logTable.action, `%${textSearch}%`),
+					ilike(logTable.actor, `%${textSearch}%`),
+					ilike(logTable.target, `%${textSearch}%`),
+					ilike(logTable.comment, `%${textSearch}%`)
+				)
+			: undefined
+	);
+};
+
 export const getAllLogs = async (
 	db: DrizzleClient,
-	{
-		orderBy,
-		fieldEq,
-		fieldIsNull,
-		fieldDateRange,
-		fieldsSeach,
-		textSearch,
-		includeDeleted = false
-	}: {
-		orderBy?: { field: keyof LogSelect; direction: 'asc' | 'desc' }[];
-		fieldEq?: { [K in keyof LogSelect]?: unknown };
-		fieldIsNull?: { [K in keyof LogSelect]?: boolean };
-		fieldDateRange?: Record<'createAt' | 'updatedAt' | 'deleteAt', { from?: Date; to?: Date }>;
-		fieldsSeach?: { [K in keyof LogSelect]?: unknown };
-		textSearch?: string;
-		includeDeleted?: boolean;
-	}
+	{ orderBy, limit, offset, ...filter }: GetAllLogsFilter & { limit?: number; offset?: number }
 ) => {
 	return await db.query.log.findMany({
 		orderBy: (logs, { asc, desc }) => {
@@ -58,41 +94,14 @@ export const getAllLogs = async (
 				return order(logs[field]);
 			});
 		},
-		where: (logs, { eq, and, or, isNull, lte, gte, ilike }) => {
-			return and(
-				...Object.entries(fieldEq || {}).map(([field, value]) =>
-					eq(logs[field as keyof LogSelect], value as any)
-				),
-				includeDeleted ? undefined : isNull(logs.deletedAt),
-				...Object.entries(fieldIsNull || {}).map(([field, _value]) =>
-					isNull(logs[field as keyof LogSelect])
-				),
-				...Object.entries(fieldDateRange || {}).flatMap(([field, range]) => {
-					const fieldKey = field as keyof LogSelect;
-					return [
-						range.from ? gte(logs[fieldKey], range.from) : undefined,
-						range.to ? lte(logs[fieldKey], range.to) : undefined
-					].filter(Boolean);
-				}),
-				...Object.entries(fieldsSeach || {})
-					.map(([field, value]) => {
-						if (typeof value === 'string' && value.trim() !== '') {
-							return ilike(logs[field as keyof LogSelect], value);
-						}
-						return undefined;
-					})
-					.filter(Boolean),
-				textSearch
-					? or(
-							ilike(logs.action, `%${textSearch}%`),
-							ilike(logs.actor, `%${textSearch}%`),
-							ilike(logs.target, `%${textSearch}%`),
-							ilike(logs.comment, `%${textSearch}%`)
-						)
-					: undefined
-			);
-		}
+		where: () => buildLogsWhere(filter),
+		limit,
+		offset
 	});
+};
+
+export const countLogs = async (db: DrizzleClient, filter: GetAllLogsFilter = {}) => {
+	return await db.$count(logTable, buildLogsWhere(filter));
 };
 
 export const countLogsByActor = async (db: DrizzleClient, actorId: string) => {

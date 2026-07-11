@@ -8,6 +8,7 @@
 	import * as Collapsible from '$stories/shadcnui/collapsible';
 	import * as HoverCard from '$stories/shadcnui/hover-card';
 	import * as Avatar from '$stories/shadcnui/avatar';
+	import * as Pagination from '$stories/shadcnui/pagination';
 	import { Input } from '$stories/shadcnui/input';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import Button from '$stories/shadcnui/button/button.svelte';
@@ -31,6 +32,8 @@
 	let action = $state('all');
 	let sortBy = $state('createdAt');
 	let sortDirection = $state<'asc' | 'desc'>('desc');
+	const pageSize = 25;
+	let page = $state(1);
 
 	// Debounce search
 	let debouncedSearch = $state('');
@@ -40,7 +43,16 @@
 		clearTimeout(timer);
 		timer = setTimeout(() => {
 			debouncedSearch = search;
+			page = 1;
 		}, 500);
+	});
+
+	$effect(() => {
+		// reset to first page whenever filters/sort change (search handled via debounce above)
+		void action;
+		void sortBy;
+		void sortDirection;
+		page = 1;
 	});
 
 	const toggleSort = (field: string) => {
@@ -127,16 +139,20 @@
 					search: debouncedSearch,
 					action,
 					sortBy,
-					sortDirection
+					sortDirection,
+					page: page - 1,
+					pageSize
 				}),
 				getUserDirectory()
 			])}
 		>
-			{#snippet children([logs, directory])}
+			{#snippet children([{ logs, total }, directory])}
 				{@const actorDirectory = new Map(
 					directory.filter((u) => u.ouid).map((u) => [u.ouid as string, u])
 				)}
-				<p class="text-sm text-muted-foreground">พบ {logs.length} รายการ</p>
+				<p class="text-sm text-muted-foreground">
+					พบ {total} รายการ (หน้า {page} จาก {Math.max(1, Math.ceil(total / pageSize))})
+				</p>
 				<div class="overflow-x-auto rounded-md border">
 					<Table.Root>
 						<Table.Header>
@@ -278,6 +294,32 @@
 						</Table.Body>
 					</Table.Root>
 				</div>
+
+				{#if total > pageSize}
+					<Pagination.Root count={total} perPage={pageSize} bind:page siblingCount={1}>
+						{#snippet children({ pages, currentPage })}
+							<Pagination.Content>
+								<Pagination.Item>
+									<Pagination.PrevButton />
+								</Pagination.Item>
+								{#each pages as p (p.key)}
+									{#if p.type === 'ellipsis'}
+										<Pagination.Item>
+											<Pagination.Ellipsis />
+										</Pagination.Item>
+									{:else}
+										<Pagination.Item>
+											<Pagination.Link page={p} isActive={currentPage === p.value} />
+										</Pagination.Item>
+									{/if}
+								{/each}
+								<Pagination.Item>
+									<Pagination.NextButton />
+								</Pagination.Item>
+							</Pagination.Content>
+						{/snippet}
+					</Pagination.Root>
+				{/if}
 			{/snippet}
 		</AsyncHttpBoundary>
 	</div>
