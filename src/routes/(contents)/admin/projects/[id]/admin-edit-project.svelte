@@ -4,7 +4,8 @@
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 	import EditProjectForm from './edit-project-form.svelte';
 	import * as Alert from '$stories/shadcnui/alert';
-	import { TriangleAlert } from '@lucide/svelte';
+	import Button from '$stories/shadcnui/button/button.svelte';
+	import { ScrollText, TriangleAlert } from '@lucide/svelte';
 	import StaffList from './staff-list.svelte';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
 
@@ -20,7 +21,13 @@
 		{#snippet children(projectInfo)}
 			{#if projectInfo}
 				<div class="p-2">
-					<h1 class="text-2xl font-bold">{projectInfo.title}</h1>
+					<div class="flex flex-wrap items-center gap-2">
+						<h1 class="text-2xl font-bold">{projectInfo.title}</h1>
+						<Button variant="outline" size="sm" href={`/admin/log/project/${id}`}>
+							<ScrollText class="size-3.5" />
+							ประวัติ
+						</Button>
+					</div>
 					<p class="text-muted-foreground">แก้ไขรายละเอียดโครงการ</p>
 				</div>
 				<EditProjectForm projectData={projectInfo} />

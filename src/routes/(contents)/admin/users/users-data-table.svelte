@@ -51,6 +51,7 @@
 	} from '$lib/rpc/user.remote';
 	import { toast } from 'svelte-sonner';
 	import { Spinner } from '$stories/shadcnui/spinner';
+	import { goto } from '$app/navigation';
 
 	type User = {
 		id: string;
@@ -321,6 +322,11 @@
 			</DropdownMenu.Trigger>
 			<DropdownMenu.Content class="w-48" align="end">
 				<DropdownMenu.Label>ดำเนินการ</DropdownMenu.Label>
+				<!-- runtime row id, not a compile-time-known route, so it can't go through resolve() -->
+				<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+				<DropdownMenu.Item onclick={() => goto(`/admin/log/user/${row.original.id}`)}>
+					ดูโปรไฟล์และประวัติ
+				</DropdownMenu.Item>
 				{#if row.original.banned}
 					<DropdownMenu.Item
 						onclick={async () => {

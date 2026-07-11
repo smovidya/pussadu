@@ -185,6 +185,17 @@ export interface LogDetailSendReturnReminders extends LogDetailBase {
 	};
 }
 
+/** Entity kind a log's `target` id points to, derived from the action. */
+export type LogTargetKind = 'asset' | 'project' | 'user' | 'borrower' | 'borrow-request' | 'cron';
+
+/** Server-resolved display info for a log target id (see log-target.model.ts). */
+export interface ResolvedLogTarget {
+	kind: LogTargetKind;
+	name: string;
+	/** For borrow-request targets: the underlying asset id, used for linking. */
+	refId?: string;
+}
+
 export type LogEntryInsert =
 	| LogDetailCreateAsset
 	| LogDetailUpdateAsset

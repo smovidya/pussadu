@@ -1,6 +1,7 @@
 import { query, command } from '$app/server';
+import { type } from 'arktype';
 import { insertNewLog } from '$lib/server/models/audit.model';
-import { selectAllUsers, selectUserDirectory } from '$lib/server/models/user.model';
+import { selectAllUsers, selectUserById, selectUserDirectory } from '$lib/server/models/user.model';
 import {
 	bulkBanSchema,
 	bulkCreateStudentUsersSchema,
@@ -45,6 +46,12 @@ export const getAllStudentUsers = query(async () => {
 export const getUserDirectory = query(async () => {
 	Guard.admin();
 	return await selectUserDirectory(Locals.db);
+});
+
+/** Single-user profile header for /admin/log/user/[userId]. */
+export const getUserProfile = query(type({ userId: 'string' }), async ({ userId }) => {
+	Guard.admin();
+	return (await selectUserById(Locals.db, userId)) ?? null;
 });
 
 export const createStudentUser = command(createStudentUserSchema, async (data) => {

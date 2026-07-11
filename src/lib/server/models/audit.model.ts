@@ -1,4 +1,4 @@
-import { and, eq, gte, ilike, isNull, lte, or } from 'drizzle-orm';
+import { and, eq, gte, isNull, like, lte, or } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -37,6 +37,8 @@ type GetAllLogsFilter = {
 	fieldDateRange?: Record<'createAt' | 'updatedAt' | 'deleteAt', { from?: Date; to?: Date }>;
 	fieldsSeach?: { [K in keyof LogSelect]?: unknown };
 	textSearch?: string;
+	/** Substring match on `target` — needed for bulk actions that store comma-joined ids. */
+	targetContains?: string;
 	includeDeleted?: boolean;
 };
 
@@ -46,11 +48,13 @@ const buildLogsWhere = ({
 	fieldDateRange,
 	fieldsSeach,
 	textSearch,
+	targetContains,
 	includeDeleted = false
 }: GetAllLogsFilter) => {
 	return and(
+		targetContains ? like(logTable.target, `%${targetContains}%`) : undefined,
 		...Object.entries(fieldEq || {}).map(([field, value]) =>
-			eq(logTable[field as keyof LogSelect], value as any)
+			eq(logTable[field as keyof LogSelect], value as never)
 		),
 		includeDeleted ? undefined : isNull(logTable.deletedAt),
 		...Object.entries(fieldIsNull || {}).map(([field]) =>
@@ -66,17 +70,17 @@ const buildLogsWhere = ({
 		...Object.entries(fieldsSeach || {})
 			.map(([field, value]) => {
 				if (typeof value === 'string' && value.trim() !== '') {
-					return ilike(logTable[field as keyof LogSelect], value);
+					return like(logTable[field as keyof LogSelect], value);
 				}
 				return undefined;
 			})
 			.filter(Boolean),
 		textSearch
 			? or(
-					ilike(logTable.action, `%${textSearch}%`),
-					ilike(logTable.actor, `%${textSearch}%`),
-					ilike(logTable.target, `%${textSearch}%`),
-					ilike(logTable.comment, `%${textSearch}%`)
+					like(logTable.action, `%${textSearch}%`),
+					like(logTable.actor, `%${textSearch}%`),
+					like(logTable.target, `%${textSearch}%`),
+					like(logTable.comment, `%${textSearch}%`)
 				)
 			: undefined
 	);
