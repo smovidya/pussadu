@@ -75,7 +75,7 @@
 		<HoverCard.Trigger>
 			{#snippet child({ props })}
 				<button {...props} class="text-sm hover:underline">
-					ผู้ใช้ {ids.length} คน
+					<span class="tabular-nums">ผู้ใช้ {ids.length} คน</span>
 				</button>
 			{/snippet}
 		</HoverCard.Trigger>

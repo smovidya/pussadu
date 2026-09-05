@@ -163,7 +163,7 @@
 						<span class="text-sm text-muted-foreground"> สถานะการยืม </span>
 						<div class="flex flex-row items-center gap-2">
 							<Select.Root type="multiple" bind:value={filter.statuses}>
-								<Select.Trigger class="w-45">
+								<Select.Trigger class="w-45 tabular-nums">
 									เลือกไว้ {filter.statuses.length} สถานะ
 								</Select.Trigger>
 								<Select.Content>
@@ -191,7 +191,7 @@
 						<span class="text-sm text-muted-foreground"> สถานะโครงการ </span>
 						<div class="flex flex-row items-center gap-2">
 							<Select.Root type="multiple" bind:value={filter.projectStatus}>
-								<Select.Trigger class="w-45">
+								<Select.Trigger class="w-45 tabular-nums">
 									เลือกไว้ {filter.projectStatus.length} สถานะ
 								</Select.Trigger>
 								<Select.Content>
@@ -243,7 +243,7 @@
 										<img
 											src={request.asset?.image_url || '/placeholder/grey.png'}
 											alt={request.asset?.name}
-											class="h-full w-full object-cover"
+											class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 										/>
 									</div>
 									<div class="mt-2 space-y-1 text-sm">

@@ -123,7 +123,7 @@
 						<img
 							src={asset.image_url ?? '/placeholder-image.png'}
 							alt={asset.name}
-							class="mb-4 h-32 rounded-2xl object-cover"
+							class="mb-4 h-32 rounded-2xl object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 						/>
 					</div>
 					<div class="flex flex-col gap-1 text-start">
@@ -132,20 +132,21 @@
 						<p>สถานะ: {asset.status}</p>
 						<p>หมวดหมู่: {asset.category}</p>
 						<p>เจ้าของ: {asset.owner}</p>
-						<p class="font-bold">พร้อมยืม: {asset.amount} {asset.unitTerm}</p>
+						<p class="font-bold tabular-nums">พร้อมยืม: {asset.amount} {asset.unitTerm}</p>
 					</div>
 				</div>
 				<div class="mt-6 flex flex-col gap-2 border-t pt-4 text-start">
 					<div class="flex flex-col gap-1">
 						<Label>โครงการ</Label>
-						<p class="text-lg font-semibold text-gray-900">{project.title}</p>
+						<p class="text-lg font-semibold text-foreground">{project.title}</p>
 					</div>
 					<div class="flex flex-col gap-1">
 						<Label>จำนวนที่ยืม</Label>
-						<div class="flex flex-row gap-2 text-gray-900">
+						<div class="flex flex-row gap-2 text-foreground">
 							<Button
 								size="icon"
 								variant="outline"
+								aria-label="ลดจำนวนพัสดุ"
 								onclick={() => {
 									bookingInfoValue.amount = Math.max(1, bookingInfoValue.amount - 1);
 								}}
@@ -157,11 +158,12 @@
 								type="number"
 								min={1}
 								max={asset.amount}
-								class="text-center text-lg"
+								class="text-center text-lg tabular-nums"
 							/>
 							<Button
 								size="icon"
 								variant="outline"
+								aria-label="เพิ่มจำนวนพัสดุ"
 								onclick={() => {
 									bookingInfoValue.amount = Math.min(asset.amount, bookingInfoValue.amount + 1);
 								}}
@@ -174,7 +176,7 @@
 						<Label>หมายเหตุ</Label>
 						<Input
 							bind:value={bookingInfoValue.note}
-							class="text-gray-900"
+							class="text-foreground"
 							placeholder="กรอกหมายเหตุ"
 						/>
 					</div>
@@ -184,7 +186,7 @@
 							<Popover.Root>
 								<Popover.Trigger
 									class={cn(
-										buttonVariants({ variant: 'outline', class: 'text-gray-900' }),
+										buttonVariants({ variant: 'outline', class: 'text-foreground' }),
 										!dateValue && 'text-muted-foreground'
 									)}
 								>

@@ -58,7 +58,11 @@
 <div>
 	{#if uploadedUrl}
 		<div class="my-2 h-40 w-full overflow-hidden rounded-md border shadow">
-			<img src={uploadedUrl} alt="Uploaded file preview" class="h-full w-full object-cover" />
+			<img
+				src={uploadedUrl}
+				alt="Uploaded file preview"
+				class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
+			/>
 		</div>
 	{/if}
 	<Input

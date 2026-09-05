@@ -44,7 +44,7 @@
 					{:else}
 						<details class="min-w-0" open={count <= OPEN_THRESHOLD}>
 							<summary class="cursor-pointer text-muted-foreground select-none hover:underline">
-								แสดงทั้งหมด ({count})
+								<span class="tabular-nums">แสดงทั้งหมด ({count})</span>
 							</summary>
 							<div class="mt-0.5 border-l pl-3">
 								{@render tree(child)}

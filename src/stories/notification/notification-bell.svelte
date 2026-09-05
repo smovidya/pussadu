@@ -51,7 +51,7 @@
 				{#await unreadCountQuery then count}
 					{#if count > 0}
 						<Badge
-							class="absolute -top-1 -right-1 h-4 min-w-4 justify-center rounded-full border-0 bg-red-500 px-1 text-[10px] text-white"
+							class="absolute -top-1 -right-1 h-4 min-w-4 justify-center rounded-full border-0 bg-red-500 px-1 text-[10px] text-white tabular-nums"
 						>
 							{count > 9 ? '9+' : count}
 						</Badge>

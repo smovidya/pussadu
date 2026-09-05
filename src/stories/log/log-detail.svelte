@@ -85,7 +85,7 @@
 	{#if items.length > BULK_LIST_CAP}
 		<details>
 			<summary class="cursor-pointer text-muted-foreground select-none hover:underline">
-				แสดงอีก {items.length - BULK_LIST_CAP} รายการ
+				<span class="tabular-nums">แสดงอีก {items.length - BULK_LIST_CAP} รายการ</span>
 			</summary>
 			<ul class="flex flex-col gap-0.5">
 				{#each items.slice(BULK_LIST_CAP) as item, i (i)}
@@ -114,13 +114,13 @@
 			<LogDetailDiff from={isRecord(detail.from) ? detail.from : null} to={detail.to} />
 		{:else if action === 'add-to-stock' && typeof detail.amountReturned === 'number'}
 			<p class="mb-1 font-medium text-green-700 dark:text-green-400">
-				รับคืนเข้าคลัง +{detail.amountReturned}
+				<span class="tabular-nums">รับคืนเข้าคลัง +{detail.amountReturned}</span>
 			</p>
 			{#if isRecord(detail.request)}
 				<LogDetailKv data={detail.request} keys={KV_KEY_ORDER} />
 			{/if}
 		{:else if action === 'remove-from-stock' && typeof detail.difference === 'number'}
-			<p class="mb-1 font-medium text-orange-700 dark:text-orange-400">
+			<p class="mb-1 font-medium text-orange-700 tabular-nums dark:text-orange-400">
 				ตัดออกจากคลัง −{detail.difference} (คงเหลือ {detail.newAmount})
 			</p>
 			{#if isRecord(detail.request)}
@@ -134,7 +134,7 @@
 				{#if detail.succeeded.length > 0}
 					<div>
 						<p class="font-medium text-green-700 dark:text-green-400">
-							สำเร็จ ({detail.succeeded.length})
+							<span class="tabular-nums">สำเร็จ ({detail.succeeded.length})</span>
 						</p>
 						{@render bulkList(detail.succeeded, 'success')}
 					</div>
@@ -142,7 +142,7 @@
 				{#if detail.failed.length > 0}
 					<div>
 						<p class="font-medium text-red-700 dark:text-red-400">
-							ล้มเหลว ({detail.failed.length})
+							<span class="tabular-nums">ล้มเหลว ({detail.failed.length})</span>
 						</p>
 						{@render bulkList(detail.failed, 'failure')}
 					</div>
@@ -151,7 +151,7 @@
 		{:else if action === 'set-student-role' && typeof detail.role === 'string'}
 			<p>เปลี่ยนบทบาทเป็น <span class="font-medium">{roleLabel(detail.role)}</span></p>
 		{:else if action === 'send-return-reminders' && typeof detail.count === 'number'}
-			<p>ส่งอีเมลแจ้งเตือนคืนพัสดุ {detail.count} ฉบับ</p>
+			<p class="tabular-nums">ส่งอีเมลแจ้งเตือนคืนพัสดุ {detail.count} ฉบับ</p>
 		{:else}
 			<JsonView value={detail} showFooter={false} />
 		{/if}

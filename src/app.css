@@ -113,12 +113,30 @@
 }
 
 @layer base {
+	html {
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+	}
+
 	* {
 		@apply border-border font-sans outline-ring/50;
 	}
 
 	body {
 		@apply bg-background text-foreground;
+	}
+
+	h1,
+	h2,
+	h3 {
+		text-wrap: balance;
+	}
+
+	p,
+	li,
+	figcaption,
+	blockquote {
+		text-wrap: pretty;
 	}
 }
 

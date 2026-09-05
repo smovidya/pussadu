@@ -182,11 +182,11 @@
 			{#if mode !== 'view'}
 				<Upload bind:uploadedUrl={$formData.image_url} />
 			{:else}
-				<div class="my-2 w-full overflow-hidden rounded-md border shadow">
+				<div class="my-2 w-full overflow-hidden rounded-md shadow">
 					<img
 						src={$formData.image_url}
 						alt="ตัวอย่างภาพพัสดุ"
-						class="h-full w-full object-cover"
+						class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 					/>
 				</div>
 			{/if}

@@ -192,6 +192,7 @@
 			<Button
 				variant="outline"
 				size="icon"
+				aria-label={`นำ ${staffInfo.name} ออกจากโครงการ`}
 				disabled={!!removeBorrowerFromProject.pending}
 				onclick={async () => await unassignBorrower(staffInfo.ouid)}
 			>

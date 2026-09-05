@@ -155,7 +155,7 @@
 			{@const actorDirectory = new Map(
 				directory.filter((u) => u.ouid).map((u) => [u.ouid as string, u])
 			)}
-			<p class="text-sm text-muted-foreground">
+			<p class="text-sm text-muted-foreground tabular-nums">
 				พบ {total} รายการ (หน้า {page} จาก {Math.max(1, Math.ceil(total / pageSize))})
 			</p>
 			<div class="overflow-x-auto rounded-md border">

@@ -42,7 +42,7 @@
 <Card.Root
 	{...props}
 	class={cn(
-		'group relative flex h-full w-full cursor-pointer flex-col gap-0 overflow-hidden border py-0 shadow-sm transition-all hover:shadow-lg',
+		'group relative flex h-full w-full cursor-pointer flex-col gap-0 overflow-hidden border py-0 shadow-sm transition-shadow duration-150 ease-out hover:shadow-lg focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none',
 		!alwaysDisplay && asset.amount <= 0 && 'pointer-events-none opacity-50',
 		!alwaysDisplay && asset.status === 'maintenance' && 'opacity-75',
 		!alwaysDisplay && asset.status === 'lost' && 'pointer-events-none opacity-50',
@@ -54,7 +54,7 @@
 		<img
 			src={asset.image_url ?? '/placeholder/grey.png'}
 			alt={asset.name}
-			class="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+			class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 		/>
 		<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
 		<!-- Status Badge -->
@@ -117,7 +117,7 @@
 					<Info class="mr-2 size-4" />
 					จำนวนที่มี
 				</span>
-				<span class="font-semibold">{asset.amount} {asset.unitTerm}</span>
+				<span class="font-semibold tabular-nums">{asset.amount} {asset.unitTerm}</span>
 			</div>
 		</div>
 	</Card.Content>

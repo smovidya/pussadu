@@ -20,15 +20,19 @@
 	style="background-image: url({BgImage}); background-size: cover; background-position: center;"
 >
 	<Card
-		class="flex w-full max-w-md flex-col items-center justify-center gap-4 bg-background/80 p-5 backdrop-blur-sm"
+		class="flex w-full max-w-md flex-col items-center justify-center gap-4 rounded-[1.875rem] bg-background/80 p-5 backdrop-blur-sm"
 	>
 		<div class="items-text-center flex w-full flex-col items-center justify-center gap-2">
 			<Package class="size-12" />
 			<h1 class="text-2xl font-bold">ระบบพัสดุ</h1>
 			<span>สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาลงกรณ์มหาวิทยาลัย</span>
 			{#if $auth.data?.user}
-				<Button href="/projects" class="mt-4 flex h-auto flex-row gap-3 rounded-xl px-3.5 py-2.5">
-					<img src={$auth.data.user.image} alt="" class="size-8 rounded-sm" />
+				<Button href="/projects" class="mt-4 flex h-auto flex-row gap-3 rounded-lg px-3.5 py-2.5">
+					<img
+						src={$auth.data.user.image}
+						alt=""
+						class="size-8 rounded-sm outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
+					/>
 					<div class="flex flex-col">
 						<span class="text-xs">ดำเนินการต่อในฐานะ</span>
 						<span class="text-sm font-bold">{$auth.data.user.name}</span>

@@ -111,7 +111,12 @@
 										<div class="flex flex-row items-center justify-between gap-1">
 											<a href={item.url} {...props}>{item.title}</a>
 											{#if item.rightAction}
-												<Button variant="outline" size="icon" href={item.rightAction.href}>
+												<Button
+													variant="outline"
+													size="icon"
+													href={item.rightAction.href}
+													aria-label={`สร้าง${item.title}ใหม่`}
+												>
 													<item.rightAction.icon />
 												</Button>
 											{/if}
@@ -146,7 +151,7 @@
 				<div class="flex flex-row gap-2">
 					<img
 						src={$auth.data.user.image}
-						class="size-10 rounded-2xl border"
+						class="size-10 rounded-2xl outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 						alt={$auth.data.user.name}
 					/>
 					<div class="flex flex-col text-sm">
@@ -156,7 +161,7 @@
 								<span class="text-xs text-muted-foreground">(Admin)</span>
 							{/if}
 						</span>
-						<span>
+						<span class="tabular-nums">
 							{$auth.data.user.ouid}
 						</span>
 					</div>

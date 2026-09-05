@@ -95,15 +95,17 @@
 			</Sheet.Description>
 		</Sheet.Header>
 		<form use:enhance class="grid flex-1 auto-rows-min gap-4 overflow-y-auto px-4">
-			<div class="my-2 w-full overflow-hidden rounded-md border shadow">
+			<div class="my-2 w-full overflow-hidden rounded-md shadow">
 				<img
 					src={request.asset?.image_url}
 					alt="ตัวอย่างภาพพัสดุ"
-					class="h-full w-full object-cover"
+					class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 				/>
 			</div>
 			<div>
-				<h2 class="text-lg font-semibold">{request.asset?.name} (x{$formData.amount})</h2>
+				<h2 class="text-lg font-semibold tabular-nums">
+					{request.asset?.name} (x{$formData.amount})
+				</h2>
 				<p class="text-sm text-muted-foreground">{request.asset?.description}</p>
 			</div>
 			<div class="flex flex-col gap-1">
@@ -181,7 +183,9 @@
 						</Form.Field>
 					</div>
 					<span class="text-xs text-muted-foreground">
-						พร้อมยืม {(request.asset?.amount || 0) + request.asset_to_project.amount}
+						<span class="tabular-nums">
+							พร้อมยืม {(request.asset?.amount || 0) + request.asset_to_project.amount}
+						</span>
 						{request.asset?.unitTerm}
 					</span>
 				</div>

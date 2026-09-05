@@ -27,11 +27,11 @@
 				</div>
 
 				{#if request.asset?.image_url}
-					<div class="w-full overflow-hidden rounded-md border shadow">
+					<div class="w-full overflow-hidden rounded-md shadow">
 						<img
 							src={request.asset.image_url}
 							alt="ตัวอย่างภาพพัสดุ"
-							class="h-64 w-full object-cover"
+							class="h-64 w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 						/>
 					</div>
 				{/if}
@@ -53,7 +53,7 @@
 				<div class="grid grid-cols-2 gap-4">
 					<div class="flex flex-col gap-1">
 						<span class="text-sm text-muted-foreground">จำนวน</span>
-						<strong class="text-lg">{request.amount} {request.asset?.unitTerm}</strong>
+						<strong class="text-lg tabular-nums">{request.amount} {request.asset?.unitTerm}</strong>
 					</div>
 					<div class="flex flex-col gap-1">
 						<span class="text-sm text-muted-foreground">ช่วงวันที่ยืม</span>

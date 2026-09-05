@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { listBorrowed } from '$lib/rpc/borrowing.remote';
 	import * as Table from '$stories/shadcnui/table';
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
@@ -7,13 +8,6 @@
 	import { Badge } from '$stories/shadcnui/badge';
 	import { cn } from '$stories/utils';
 	import { formatDate } from '$lib/utils/datetime';
-	import { goto } from '$app/navigation';
-
-	function openDetail(id: string) {
-		// id is a runtime row id, not a compile-time-known route, so it can't go through resolve().
-		// eslint-disable-next-line svelte/no-navigation-without-resolve
-		goto(`/my-borrowing/${id}`);
-	}
 </script>
 
 <PageWrapper pageTitle="รายการยืมของฉัน" groupTitle="ยืมพัสดุ" groupUrl="/projects">
@@ -42,7 +36,7 @@
 						{@const projectStatus = projectStatusOptions.find(
 							(s) => s.value === item.project.status
 						)}
-						<Table.Row class="cursor-pointer hover:bg-muted/50" onclick={() => openDetail(item.id)}>
+						<Table.Row class="hover:bg-muted/50">
 							<Table.Cell>
 								<Badge class={cn('text-medium', status?.color)}>
 									{status?.label}
@@ -54,8 +48,17 @@
 									>{projectStatus?.label}</Badge
 								></Table.Cell
 							>
-							<Table.Cell class="font-medium">{item.asset.name}</Table.Cell>
-							<Table.Cell class="text-right">{item.amount} {item.asset.unitTerm}</Table.Cell>
+							<Table.Cell class="font-medium">
+								<a
+									href={resolve('/my-borrowing/[id]', { id: item.id })}
+									class="rounded-sm underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+								>
+									{item.asset.name}
+								</a>
+							</Table.Cell>
+							<Table.Cell class="text-right tabular-nums"
+								>{item.amount} {item.asset.unitTerm}</Table.Cell
+							>
 							<Table.Cell>
 								{formatDate(item.startDate)} - {formatDate(item.endDate)}
 							</Table.Cell>

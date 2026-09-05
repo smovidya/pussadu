@@ -351,7 +351,7 @@
 		</Button>
 	{:else}
 		<Button variant="ghost" class="text-muted-foreground" href="/admin/projects/{id}">
-			<span>{count} คน</span>
+			<span class="tabular-nums">{count} คน</span>
 			<ChevronRight />
 		</Button>
 	{/if}
@@ -440,7 +440,7 @@
 
 {#snippet Pagination({ table }: { table: TableType<Project> })}
 	<div class="flex items-center justify-between px-2">
-		<div class="flex-1 text-sm text-muted-foreground">
+		<div class="flex-1 text-sm text-muted-foreground tabular-nums">
 			เลือก {table.getFilteredSelectedRowModel().rows.length} แถวจาก
 			{table.getFilteredRowModel().rows.length} แถว
 		</div>
@@ -455,7 +455,7 @@
 						table.setPageSize(Number(value));
 					}}
 				>
-					<Select.Trigger class="h-8 w-17.5">
+					<Select.Trigger class="h-8 w-17.5 tabular-nums">
 						{String(table.getState().pagination.pageSize)}
 					</Select.Trigger>
 					<Select.Content side="top">

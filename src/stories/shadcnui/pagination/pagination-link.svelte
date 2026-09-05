@@ -18,7 +18,7 @@
 </script>
 
 {#snippet Fallback()}
-	{page.value}
+	<span class="tabular-nums">{page.value}</span>
 {/snippet}
 
 <PaginationPrimitive.Page
