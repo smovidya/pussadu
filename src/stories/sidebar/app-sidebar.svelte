@@ -131,22 +131,19 @@
 		{/each}
 	</Sidebar.Content>
 	<Sidebar.Footer>
-		<ThemeToggle />
-		<Sidebar.Menu>
-			<Sidebar.MenuItem>
-				<Sidebar.MenuButton>
-					{#snippet child({ props })}
-						<a
-							href="https://it-smovidya-chula.notion.site/26781e17c554805696a0c3a496fbf9d4"
-							{...props}
-						>
-							<LifeBuoy />
-							คู่มือการใช้งาน
-						</a>
-					{/snippet}
-				</Sidebar.MenuButton>
-			</Sidebar.MenuItem>
-		</Sidebar.Menu>
+		<div class="flex flex-col gap-1">
+			<ThemeToggle />
+			<Button
+				variant="ghost"
+				class="w-full justify-start"
+				href="https://it-smovidya-chula.notion.site/26781e17c554805696a0c3a496fbf9d4"
+				target="_blank"
+				rel="noreferrer"
+			>
+				<LifeBuoy data-icon="inline-start" />
+				คู่มือการใช้งาน
+			</Button>
+		</div>
 		{#if $auth.data?.user}
 			<div class="flex flex-row justify-between">
 				<div class="flex flex-row gap-2">
