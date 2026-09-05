@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, or } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 import {
 	deleteFromTable,
@@ -29,25 +29,27 @@ export const selectAllProjects = async (db: DrizzleClient) => {
 export const selectAllMyProjects = async (db: DrizzleClient, ouid: string) => {
 	return db
 		.selectDistinct({
-			project: tables.project
+			project: tables.project,
+			role: tables.projectToBorrower.role
 		})
 		.from(tables.projectToBorrower)
-		.fullJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
-		.where(
-			and(
-				isNull(tables.project.deletedAt),
-				or(eq(tables.projectToBorrower.borrowerId, ouid), eq(tables.project.isPinned, true))
-			)
-		)
+		.innerJoin(tables.project, eq(tables.project.id, tables.projectToBorrower.projectId))
+		.where(and(isNull(tables.project.deletedAt), eq(tables.projectToBorrower.borrowerId, ouid)))
 		.orderBy(tables.project.id);
 };
 
-export const assignBorrower = async (db: DrizzleClient, projectId: string, borrowerId: string) => {
+export const assignBorrower = async (
+	db: DrizzleClient,
+	projectId: string,
+	borrowerId: string,
+	role: 'member' | 'coordinator' = 'member'
+) => {
 	const result = await db
 		.insert(tables.projectToBorrower)
 		.values({
 			borrowerId,
-			projectId
+			projectId,
+			role
 		})
 		.returning();
 
@@ -85,26 +87,17 @@ export const isBorrowerAlreadyAssignedToProject = async (
 	projectId: string,
 	borrowerId: string
 ) => {
-	// const result = await db.query.projectToBorrower.findFirst({
-	// 	where: (projectToBorrower, { eq, and }) =>
-	// 		or(
-	// 			and(
-	// 				eq(projectToBorrower.projectId, projectId),
-	// 				eq(projectToBorrower.borrowerId, borrowerId)
-	// 			),
-	// 			eq(project.isPinned, true)
-	// 		)
-	// });
-	const project = await db.query.project.findFirst({
-		where: (project, { eq }) => eq(project.id, projectId)
-	});
+	const result = await getProjectMembership(db, projectId, borrowerId);
+	return !!result;
+};
 
-	if (project?.isPinned) return true;
-
-	const result = await db.query.projectToBorrower.findFirst({
+export const getProjectMembership = async (
+	db: DrizzleClient,
+	projectId: string,
+	borrowerId: string
+) => {
+	return db.query.projectToBorrower.findFirst({
 		where: (projectToBorrower, { eq }) =>
 			and(eq(projectToBorrower.projectId, projectId), eq(projectToBorrower.borrowerId, borrowerId))
 	});
-
-	return !!result;
 };

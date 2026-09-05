@@ -4,6 +4,7 @@ import { dev } from '$app/environment';
 import { getDb } from '../db';
 import * as authSchema from '$lib/schema/auth.schema';
 import { selectBorrower } from '../models/borrower.model';
+import { linkBorrowerToUserByOuid } from '../models/person.model';
 import { betterAuthOptions } from './options';
 import { withCloudflare } from 'better-auth-cloudflare';
 import { drizzle } from 'drizzle-orm/d1';
@@ -144,6 +145,9 @@ export const createAuth = (env: Env, cf?: IncomingRequestCfProperties) => {
 								message:
 									'โปรดเลือกอีเมลที่ถูกต้อง (@student.chula.ac.th หรือ @chula.ac.th เท่านั้น)'
 							});
+						},
+						async after(user) {
+							if (user.ouid) await linkBorrowerToUserByOuid(db, user.id, String(user.ouid));
 						}
 					}
 				}

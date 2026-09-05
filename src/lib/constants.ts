@@ -210,16 +210,6 @@ export const userStatusOptions = [
 
 export const borrowingStatus = [
 	{
-		label: 'สูญหาย',
-		value: 'lost',
-		tone: 'destructive'
-	},
-	{
-		label: 'ชำรุด',
-		value: 'damaged',
-		tone: 'destructive'
-	},
-	{
 		label: 'ถูกยกเลิก',
 		value: 'cancelled',
 		tone: 'destructive'

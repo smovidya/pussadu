@@ -15,13 +15,9 @@ export const BorrowingStatus = createInsertSchema(assetToProject)
 	.exclude('null | undefined');
 export type BorrowingStatus = (typeof BorrowingStatus)['infer'];
 
-export const ReturnStatus = BorrowingStatus.extract('"lost" | "damaged" | "returned"');
-export type ReturnStatus = (typeof ReturnStatus)['infer'];
-
 export const borrowingFilterSchema = type({
 	searchTerm: 'string',
-	statuses:
-		'("lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned")[]',
+	statuses: '("cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned")[]',
 	'startDate?': 'Date | undefined',
 	'endDate?': 'Date | undefined',
 	'projectIds?': 'string[]',
@@ -34,7 +30,33 @@ export const borrowingUpdateSchema = type({
 	amount: 'number',
 	startDate: 'Date',
 	endDate: 'Date',
-	status:
-		'"lost" | "damaged" | "cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned"',
+	status: '"cancelled" | "pending" | "approved" | "rejected" | "inuse" | "returned"',
 	'+': 'delete'
+});
+
+export const updateMyBorrowingSchema = type({
+	id: 'string',
+	projectId: 'string',
+	amount: 'number.integer>=1',
+	startDate: 'Date',
+	endDate: 'Date',
+	'note?': 'string | null'
+});
+
+export const cancelMyBorrowingSchema = type({
+	id: 'string',
+	'reason?': 'string'
+});
+
+export const borrowingActionSchema = type({
+	id: 'string',
+	'note?': 'string'
+});
+
+export const processBorrowingReturnSchema = type({
+	id: 'string',
+	returnedAmount: 'number.integer>=0',
+	damagedAmount: 'number.integer>=0',
+	lostAmount: 'number.integer>=0',
+	'note?': 'string'
 });

@@ -18,6 +18,18 @@ export const asset = sqliteTable('asset', {
 		.notNull()
 		.default('available'),
 	amount: integer('amount').notNull().default(1),
+	catalogState: text('catalog_state', {
+		enum: ['active', 'paused', 'retired']
+	})
+		.notNull()
+		.default('active'),
+	totalAmount: integer('total_amount').notNull().default(1),
+	maintenanceAmount: integer('maintenance_amount').notNull().default(0),
+	damagedAmount: integer('damaged_amount').notNull().default(0),
+	lostAmount: integer('lost_amount').notNull().default(0),
+	needsInventoryReview: integer('needs_inventory_review', { mode: 'boolean' })
+		.notNull()
+		.default(false),
 	unitTerm: text('unit_term').notNull().default('ชิ้น'),
 	image_url: text('image_url'),
 	category: text('category').notNull().default('ทั่วไป'),

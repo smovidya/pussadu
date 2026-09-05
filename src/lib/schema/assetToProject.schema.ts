@@ -4,6 +4,8 @@ import { asset } from './asset.schema';
 import { project } from './project.schema';
 import { relations } from 'drizzle-orm';
 import { borrower } from './borrower.schema';
+import { borrowingEvent } from './borrowingEvent.schema';
+import { inventoryMovement } from './inventoryMovement.schema';
 
 export const assetToProject = sqliteTable('asset_to_project', {
 	...id,
@@ -19,7 +21,7 @@ export const assetToProject = sqliteTable('asset_to_project', {
 	amount: integer('amount').notNull().default(1),
 	note: text('note'),
 	status: text('status', {
-		enum: ['pending', 'approved', 'rejected', 'inuse', 'returned', 'lost', 'damaged', 'cancelled']
+		enum: ['pending', 'approved', 'rejected', 'inuse', 'returned', 'cancelled']
 	}).notNull(),
 	startDate: integer('start_date', {
 		mode: 'timestamp'
@@ -31,7 +33,7 @@ export const assetToProject = sqliteTable('asset_to_project', {
 	...timestamps
 });
 
-export const assetToProjectRelations = relations(assetToProject, ({ one }) => ({
+export const assetToProjectRelations = relations(assetToProject, ({ one, many }) => ({
 	asset: one(asset, {
 		fields: [assetToProject.assetId],
 		references: [asset.id]
@@ -43,5 +45,7 @@ export const assetToProjectRelations = relations(assetToProject, ({ one }) => ({
 	borrower: one(borrower, {
 		fields: [assetToProject.borrowerId],
 		references: [borrower.ouid]
-	})
+	}),
+	events: many(borrowingEvent),
+	movements: many(inventoryMovement)
 }));

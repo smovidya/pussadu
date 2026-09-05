@@ -8,6 +8,7 @@ import {
 	updateToTable
 } from './helper';
 import * as projectModel from '$lib/server/models/project.model';
+import * as inventoryModel from './inventory.model';
 
 const assetTable = tables.asset;
 
@@ -25,7 +26,7 @@ export async function listAssets(db: DrizzleClient, includeDeleted = false) {
 		.from(tables.asset)
 		.where(includeDeleted ? undefined : isNull(tables.asset.deletedAt));
 
-	return assets;
+	return inventoryModel.listAssetsWithAvailability(db, assets);
 }
 
 export async function listAssetsForProject(
@@ -43,7 +44,14 @@ export async function listAssetsForProject(
 				project?.isPinned ? eq(tables.asset.type, 'key') : undefined
 			)
 		);
-	return assets;
+	return inventoryModel.listAssetsWithAvailability(db, assets);
+}
+
+export async function selectAssetWithAvailability(db: DrizzleClient, assetId: string) {
+	const item = await selectAsset(db, assetId);
+	if (!item) return undefined;
+	const now = new Date();
+	return { ...item, ...(await inventoryModel.getAvailability(db, assetId, now, now)) };
 }
 
 export async function removeAsset(db: DrizzleClient, assetId: string) {

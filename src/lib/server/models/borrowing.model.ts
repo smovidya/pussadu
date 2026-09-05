@@ -3,50 +3,41 @@
  */
 
 import { tables, type DrizzleClient } from '../db';
-import { and, eq, gte, inArray, isNull, like, lte, or, sql } from 'drizzle-orm';
+import { and, eq, gte, inArray, isNull, like, lte, or } from 'drizzle-orm';
 import type {
 	borrowingFilterSchema,
 	BorrowingRequest,
 	BorrowingStatus,
-	ReturnStatus,
 	borrowingUpdateSchema
 } from '$lib/validator/borrowing.validator';
-import { asset, assetToBorrower, assetToProject, borrower, project } from '$lib/schema';
+import { asset, assetToProject, borrower, project } from '$lib/schema';
 import * as helper from './helper';
+import { createId } from '@paralleldrive/cuid2';
 
 export async function requestToBorrow(db: DrizzleClient, request: BorrowingRequest) {
-	const { amount, assetId, startDate, endDate, projectId, note, borrowerId } = request;
-	// NOTE: temp fix idk why transaction didn't work -- PTSGRN
-	// await db.transaction(async (tx) => {
-	// 	await tx.insert(tables.assetToProject).values(request);
-
-	// 	// updateAsset(tx, assetId, { amount: sql`${tables.asset.amount} - 1  })
-	// 	await tx
-	// 		.update(tables.asset)
-	// 		.set({
-	// 			amount: sql`${tables.asset.amount} - ${amount}`
-	// 		})
-	// 		.where(eq(tables.asset.id, assetId));
-	// });
-
-	// TODO: delete this record when it's returned???
-	await db.insert(assetToBorrower).values(request);
-	await db
-		.update(tables.asset)
-		.set({
-			amount: sql`${tables.asset.amount} - ${amount}`
+	if (!('batch' in db)) throw new Error('Atomic batch is unavailable');
+	const id = createId();
+	const created = { ...request, id, status: 'pending' as const };
+	await db.batch([
+		db.insert(tables.assetToProject).values(created),
+		db.insert(tables.borrowingEvent).values({
+			id: createId(),
+			borrowingRequestId: id,
+			type: 'submitted',
+			actorOuid: request.borrowerId,
+			detail: { amount: request.amount, startDate: request.startDate, endDate: request.endDate }
+		}),
+		db.insert(tables.inventoryMovement).values({
+			id: createId(),
+			assetId: request.assetId,
+			borrowingRequestId: id,
+			type: 'reserved',
+			amount: request.amount,
+			actorOuid: request.borrowerId,
+			reason: 'Borrowing request submitted'
 		})
-		.where(eq(tables.asset.id, assetId));
-	await db.insert(tables.assetToProject).values({
-		amount,
-		assetId,
-		startDate,
-		endDate,
-		projectId,
-		note,
-		borrowerId,
-		status: 'pending'
-	});
+	]);
+	return created;
 }
 
 /**
@@ -89,10 +80,6 @@ export const rejectRequest = updateStatusIf(['pending'], 'rejected');
 export const cancelRequest = updateStatusIf(['pending', 'approved'], 'cancelled');
 
 // used by admin
-export async function returnBorrowing(db: DrizzleClient, id: string, status: ReturnStatus) {
-	return updateStatusIf(['pending', 'approved'], status)(db, id);
-}
-
 export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
 	const { asset: _, assetToProject } = tables;
 
@@ -101,10 +88,27 @@ export async function listBorrowedByUser(db: DrizzleClient, ouid: string) {
 		where: (_asset, { eq }) => eq(assetToProject.borrowerId, ouid),
 		with: {
 			asset: true,
-			project: true
+			project: true,
+			events: true,
+			movements: true
 		}
 	});
 	return items;
+}
+
+export async function getResolvedAmounts(db: DrizzleClient, id: string) {
+	const movements = await db.query.inventoryMovement.findMany({
+		where: (movement, { eq }) => eq(movement.borrowingRequestId, id)
+	});
+	return movements.reduce(
+		(total, movement) => {
+			if (movement.type === 'returned-usable') total.returnedAmount += movement.amount;
+			if (movement.type === 'damaged') total.damagedAmount += movement.amount;
+			if (movement.type === 'lost') total.lostAmount += movement.amount;
+			return total;
+		},
+		{ returnedAmount: 0, damagedAmount: 0, lostAmount: 0 }
+	);
 }
 
 export const getBorrowingRequest = helper.getOneFromTable(
@@ -117,8 +121,11 @@ export async function getBorrowingRequestDetail(db: DrizzleClient, id: string) {
 		where: (row, { eq }) => eq(row.id, id),
 		with: {
 			asset: true,
-			project: true
-		}
+			project: true,
+			events: true,
+			movements: true
+		},
+		orderBy: (row, { desc }) => desc(row.createdAt)
 	});
 }
 
@@ -202,7 +209,12 @@ export async function listBorrowingRequests(
 				isNull(assetToProject.deletedAt)
 			)
 		);
-	return borrowings;
+	return Promise.all(
+		borrowings.map(async (borrowing) => ({
+			...borrowing,
+			resolution: await getResolvedAmounts(db, borrowing.asset_to_project.id)
+		}))
+	);
 }
 
 export async function updateBorrowingRequest(

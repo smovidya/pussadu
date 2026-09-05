@@ -2,7 +2,7 @@ import type { asset } from '../asset.schema';
 import type { project } from '../project.schema';
 import type { user } from '../auth.schema';
 import type { borrower } from '../borrower.schema';
-import type { BorrowingRequest, borrowingUpdateSchema } from '../../validator/borrowing.validator';
+import type { BorrowingRequest } from '../../validator/borrowing.validator';
 import type {
 	assignBorrowerToProjectSchema,
 	updateProjectSchema
@@ -30,6 +30,11 @@ export type LogAction =
 	| 'create-borrower'
 	| 'update-borrower'
 	| 'remove-borrower'
+	| 'adjust-inventory'
+	| 'set-asset-catalog-state'
+	| 'confirm-inventory'
+	| 'set-borrowing-eligibility'
+	| 'update-project-member-role'
 	| 'send-return-reminders';
 
 export interface LogDetailBase {
@@ -61,7 +66,7 @@ export interface LogDetailRequestBorrow extends LogDetailBase {
 export interface LogDetailAddToStock extends LogDetailBase {
 	action: 'add-to-stock';
 	detail: {
-		request: any; // Ideally this should be more specific, but for now 'any' or a partial request type
+		request: unknown;
 		amountReturned: number;
 	};
 }
@@ -69,7 +74,7 @@ export interface LogDetailAddToStock extends LogDetailBase {
 export interface LogDetailRemoveFromStock extends LogDetailBase {
 	action: 'remove-from-stock';
 	detail: {
-		request: any;
+		request: unknown;
 		newAmount: number;
 		difference: number;
 	};
@@ -77,10 +82,17 @@ export interface LogDetailRemoveFromStock extends LogDetailBase {
 
 export interface LogDetailUpdateBorrowingRequest extends LogDetailBase {
 	action: 'update-borrowing-request';
-	detail: {
-		from: any;
-		to: typeof borrowingUpdateSchema.infer;
-	};
+	detail: Record<string, unknown>;
+}
+
+export interface LogDetailDomainChange extends LogDetailBase {
+	action:
+		| 'adjust-inventory'
+		| 'set-asset-catalog-state'
+		| 'confirm-inventory'
+		| 'set-borrowing-eligibility'
+		| 'update-project-member-role';
+	detail: Record<string, unknown>;
 }
 
 // Project Actions
@@ -218,4 +230,5 @@ export type LogEntryInsert =
 	| LogDetailCreateBorrower
 	| LogDetailUpdateBorrower
 	| LogDetailRemoveBorrower
+	| LogDetailDomainChange
 	| LogDetailSendReturnReminders;

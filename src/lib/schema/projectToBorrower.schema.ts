@@ -11,7 +11,10 @@ export const projectToBorrower = sqliteTable(
 			.references(() => project.id),
 		borrowerId: text('borrower_id')
 			.notNull()
-			.references(() => borrower.ouid)
+			.references(() => borrower.ouid),
+		role: text('role', { enum: ['member', 'coordinator'] })
+			.notNull()
+			.default('member')
 	},
 	(t) => [primaryKey({ columns: [t.projectId, t.borrowerId] })]
 );
