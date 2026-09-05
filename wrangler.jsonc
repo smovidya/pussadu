@@ -5,6 +5,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "vidya-chula-pussadu",
+	"account_id": "e2069f9cc14d2fe64afc9d04ed6576bd",
 	"compatibility_date": "2025-08-05",
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"assets": {
