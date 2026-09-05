@@ -33,7 +33,7 @@
 
 <Badge class={cn(statusBadgeVariants({ tone }), className)} {...restProps}>
 	{#if Icon}
-		<Icon data-icon="inline-start" />
+		<Icon data-icon="inline-start" class="text-current" strokeWidth={2.25} aria-hidden="true" />
 	{/if}
 	{@render children?.()}
 </Badge>
