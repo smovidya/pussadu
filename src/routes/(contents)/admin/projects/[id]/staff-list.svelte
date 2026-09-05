@@ -10,13 +10,16 @@
 	import {
 		assignBorrowerToProject,
 		listAllStaffsForProject,
-		removeBorrowerFromProject
+		removeBorrowerFromProject,
+		setProjectMemberRole
 	} from '$lib/rpc/project.remote';
 	import { isHttpError } from '@sveltejs/kit';
 	import { listDepartment } from '$lib/rpc/department.remote';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import { Spinner } from '$stories/shadcnui/spinner';
 	import Label from '$stories/shadcnui/label/label.svelte';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import { resolve } from '$app/paths';
 
 	let {
 		projectId
@@ -111,7 +114,8 @@
 				},
 				relations: {
 					borrowerId: loadedStaffInfo.ouid,
-					projectId
+					projectId,
+					role: 'member'
 				}
 			});
 			await listAllStaffsForProject({ projectId }).refresh();
@@ -166,7 +170,8 @@
 </script>
 
 {#snippet StaffRow({
-	staffInfo
+	staffInfo,
+	role
 }: {
 	staffInfo: {
 		name: string;
@@ -180,6 +185,7 @@
 		phone: string;
 		oldIsAdmin: boolean;
 	};
+	role: 'member' | 'coordinator';
 })}
 	<Table.Row>
 		<Table.Cell>{staffInfo.ouid}</Table.Cell>
@@ -188,6 +194,35 @@
 		<Table.Cell>{staffInfo.line_id || '-'}</Table.Cell>
 		<Table.Cell>{staffInfo.phone || '-'}</Table.Cell>
 		<Table.Cell>{staffInfo.departmentId}</Table.Cell>
+		<Table.Cell>
+			<Select.Root
+				type="single"
+				value={role}
+				onValueChange={async (value) => {
+					if (value !== 'member' && value !== 'coordinator') return;
+					try {
+						await setProjectMemberRole({ projectId, borrowerId: staffInfo.ouid, role: value });
+						await listAllStaffsForProject({ projectId }).refresh();
+						toast.success('อัปเดตบทบาทแล้ว');
+					} catch (error) {
+						toast.error(error instanceof Error ? error.message : 'อัปเดตบทบาทไม่สำเร็จ');
+					}
+				}}
+			>
+				<Select.Trigger aria-label={`บทบาทของ ${staffInfo.name}`}
+					><StatusBadge tone={role === 'coordinator' ? 'info' : 'neutral'}
+						>{role === 'coordinator' ? 'ผู้ประสานงาน' : 'สมาชิก'}</StatusBadge
+					></Select.Trigger
+				>
+				<Select.Content
+					><Select.Group
+						><Select.Item value="member">สมาชิก</Select.Item><Select.Item value="coordinator"
+							>ผู้ประสานงาน</Select.Item
+						></Select.Group
+					></Select.Content
+				>
+			</Select.Root>
+		</Table.Cell>
 		<Table.Cell>
 			<Button
 				variant="outline"
@@ -269,11 +304,13 @@
 								เลือกภาควิชา
 							{/if}
 						</Select.Trigger>
-						<Select.Content>
-							{#each departments as department (department.id)}
-								<Select.Item value={department.id}>{department.name}</Select.Item>
-							{/each}
-						</Select.Content>
+						<Select.Content
+							><Select.Group>
+								{#each departments as department (department.id)}
+									<Select.Item value={department.id}>{department.name}</Select.Item>
+								{/each}
+							</Select.Group></Select.Content
+						>
 					</Select.Root>
 				{/await}
 				<Input hidden class="w-full min-w-32.5 text-sm" bind:value={loadedStaffInfo.departmentId} />
@@ -309,8 +346,8 @@
 					จัดการสตาฟที่มีสิทธิ์เข้าถึงและแก้ไขโครงการนี้
 				</Card.Description>
 			</div>
-			<Button variant="outline" href="/admin/projects" class="flex items-center gap-2">
-				<ArrowLeft class="h-4 w-4" />
+			<Button variant="outline" href={resolve('/admin/projects')}>
+				<ArrowLeft data-icon="inline-start" />
 				กลับ
 			</Button>
 		</div>
@@ -326,15 +363,16 @@
 						<Table.Cell>ไลน์ ID</Table.Cell>
 						<Table.Cell>เบอร์โทร</Table.Cell>
 						<Table.Cell>ภาควิชา</Table.Cell>
+						<Table.Cell>บทบาท</Table.Cell>
 						<Table.Cell></Table.Cell>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#each staffQuery.current ?? [] as staff (staff.borrowerId)}
-						{@render StaffRow({ staffInfo: staff.borrower })}
+						{@render StaffRow({ staffInfo: staff.borrower, role: staff.role })}
 					{:else}
 						<Table.Row>
-							<Table.Cell colspan={7}>
+							<Table.Cell colspan={8}>
 								<p class="py-4 text-center text-sm text-muted-foreground">
 									Owo<br />ยังไม่มีสตาฟในโครงการนี้
 								</p>

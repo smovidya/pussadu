@@ -40,13 +40,13 @@
 		<AsyncHttpBoundary dataLoader={getAllMyProjects()}>
 			{#snippet children(projects)}
 				{@const inprogressProjects = projects.filter(
-					(v) =>
-						v.project?.status === 'inprogress' ||
-						v.project?.status === 'evaluated' ||
-						v.project?.status === 'notstarted'
+					(v) => v.project?.status === 'inprogress' || v.project?.status === 'notstarted'
 				)}
 				{@const endedProjects = projects.filter(
-					(v) => v.project?.status === 'completed' || v.project?.status === 'cancelled'
+					(v) =>
+						v.project?.status === 'completed' ||
+						v.project?.status === 'evaluated' ||
+						v.project?.status === 'cancelled'
 				)}
 
 				{#if inprogressProjects.length === 0}

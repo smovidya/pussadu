@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { assetStatusOptions, assetTypeOptions } from '$lib/constants';
+	import { assetTypeOptions } from '$lib/constants';
 	import { Badge } from '$stories/shadcnui/badge';
 	import { Button } from '$stories/shadcnui/button';
 	import StatusBadge from '$stories/status-badge/status-badge.svelte';
@@ -8,27 +8,16 @@
 	import { cn } from '$stories/utils';
 	import { Package, Tag, Info, KeyIcon, Ellipsis } from '@lucide/svelte';
 	import type { Snippet } from 'svelte';
-
-	interface AssetProps {
-		id: string;
-		name: string;
-		description: string | null;
-		type: 'normal' | 'durable' | 'key';
-		status: 'available' | 'borrowed' | 'reserved' | 'maintenance' | 'lost' | 'damaged';
-		amount: number;
-		unitTerm: string;
-		image_url: string | null;
-		category: string;
-	}
+	import type { AssetView } from './types';
 
 	interface Props {
-		asset: AssetProps;
+		asset: AssetView;
 		props?: Record<string, unknown>;
 		alwaysDisplay?: boolean;
 		actionDropdownMenuContent?: Snippet<
 			[
 				{
-					asset: AssetProps;
+					asset: AssetView;
 					DropdownMenu: typeof DropdownMenu;
 				}
 			]
@@ -37,17 +26,27 @@
 
 	let { asset, props, alwaysDisplay, actionDropdownMenuContent }: Props = $props();
 	const assetType = assetTypeOptions.find((option) => option.value === asset.type);
-	const assetStatus = assetStatusOptions.find((option) => option.value === asset.status);
+	const availability = $derived(
+		asset.needsInventoryReview
+			? { label: 'รอตรวจยอด', tone: 'warning' as const }
+			: asset.catalogState === 'paused'
+				? { label: 'งดให้ยืม', tone: 'warning' as const }
+				: asset.catalogState === 'retired'
+					? { label: 'เลิกใช้งาน', tone: 'neutral' as const }
+					: asset.availableAmount > 0
+						? {
+								label: `พร้อมยืม ${asset.availableAmount} ${asset.unitTerm}`,
+								tone: 'success' as const
+							}
+						: { label: 'ไม่ว่างขณะนี้', tone: 'warning' as const }
+	);
 </script>
 
 <Card.Root
 	{...props}
 	class={cn(
 		'group relative flex h-full w-full cursor-pointer flex-col gap-0 overflow-hidden border py-0 shadow-sm transition-shadow duration-150 ease-out hover:shadow-lg focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:outline-none motion-reduce:transition-none',
-		!alwaysDisplay && asset.amount <= 0 && 'pointer-events-none opacity-50',
-		!alwaysDisplay && asset.status === 'maintenance' && 'opacity-75',
-		!alwaysDisplay && asset.status === 'lost' && 'pointer-events-none opacity-50',
-		!alwaysDisplay && asset.status === 'damaged' && 'pointer-events-none opacity-50'
+		!alwaysDisplay && asset.availableAmount <= 0 && 'opacity-60'
 	)}
 >
 	<!-- Image Section -->
@@ -55,15 +54,13 @@
 		<img
 			src={asset.image_url ?? '/placeholder/grey.png'}
 			alt={asset.name}
-			class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
+			class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-border"
 		/>
 		<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
 		<!-- Status Badge -->
-		{#if assetStatus}
-			<StatusBadge tone={assetStatus.tone} class="absolute top-3 right-3">
-				{assetStatus.label}
-			</StatusBadge>
-		{/if}
+		<StatusBadge tone={availability.tone} class="absolute top-3 right-3">
+			{availability.label}
+		</StatusBadge>
 	</div>
 
 	<!-- Content Section -->
@@ -120,7 +117,9 @@
 					<Info class="mr-2 size-4" />
 					จำนวนที่มี
 				</span>
-				<span class="font-semibold tabular-nums">{asset.amount} {asset.unitTerm}</span>
+				<span class="font-semibold tabular-nums"
+					>{asset.availableAmount} / {asset.totalAmount} {asset.unitTerm}</span
+				>
 			</div>
 		</div>
 	</Card.Content>

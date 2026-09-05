@@ -3,25 +3,31 @@
 	import { Button } from '$stories/shadcnui/button';
 	import * as Card from '$stories/shadcnui/card';
 	import PageHeader from '$stories/page-header/page-header.svelte';
-	import { ChevronRight, User } from '@lucide/svelte';
+	import { ChevronRight, ClipboardCheck, FolderKanban, Users } from '@lucide/svelte';
 
 	const pages = [
 		{
-			title: 'การจัดการผู้ใช้',
-			description: 'จัดการผู้ใช้ในระบบของคุณ',
-			href: '/admin/users',
-			icon: User
+			title: 'บุคคล',
+			description: 'ค้นหาและจัดการบัญชี สิทธิ์ยืม และสมาชิกโครงการ',
+			href: '/admin/people',
+			icon: Users
 		},
 		{
-			title: 'ผู้มีสิทธิ์ยืม',
-			description: 'จัดการผู้มีสิทธิ์ยืมในระบบของคุณ',
-			href: '/admin/borrowers',
-			icon: User
+			title: 'คำขอยืม',
+			description: 'อนุมัติ ส่งมอบ และรับคืนพัสดุ',
+			href: '/admin/approval',
+			icon: ClipboardCheck
+		},
+		{
+			title: 'โครงการ',
+			description: 'จัดการโครงการและสมาชิก',
+			href: '/admin/projects',
+			icon: FolderKanban
 		}
 	];
 </script>
 
-{#snippet adminPageCard(title: string, description: string, href: string, Icon: typeof User)}
+{#snippet adminPageCard(title: string, description: string, href: string, Icon: typeof Users)}
 	<Card.Root>
 		<Card.Header>
 			<Card.Title class="flex items-center gap-2"><Icon />{title}</Card.Title>

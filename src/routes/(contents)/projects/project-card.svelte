@@ -23,9 +23,10 @@
 	)}
 	href={resolve(`/projects/${project.project?.id}`)}
 >
-	{#if status}
-		<StatusBadge tone={status.tone} Icon={status.icon}>{status.label}</StatusBadge>
-	{/if}
+	<div class="flex flex-wrap gap-2">
+		{#if status}<StatusBadge tone={status.tone} Icon={status.icon}>{status.label}</StatusBadge>{/if}
+		{#if project.role === 'coordinator'}<StatusBadge tone="info">ผู้ประสานงาน</StatusBadge>{/if}
+	</div>
 	<h2 class="flex h-full flex-row items-start gap-2 text-xl leading-tight font-bold">
 		<span>
 			{project.project?.title}

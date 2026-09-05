@@ -10,44 +10,15 @@
 	import { listAssets, removeAsset } from '$lib/rpc/assets.remote';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { Spinner } from '$stories/shadcnui/spinner';
 	import * as ToggleGroup from '$stories/shadcnui/toggle-group';
 	import { LayoutGrid, LayoutPanelTop } from '@lucide/svelte';
+	import { getAllMyProjects } from '$lib/rpc/project.remote';
+	import type { AssetView, BorrowingProjectView } from './types';
 
 	interface Props {
-		assets: {
-			createdAt: Date | null;
-			updatedAt: Date | null;
-			deletedAt: Date | null;
-			name: string;
-			description: string | null;
-			type: 'normal' | 'durable' | 'key';
-			status: 'available' | 'borrowed' | 'reserved' | 'maintenance' | 'lost' | 'damaged';
-			amount: number;
-			unitTerm: string;
-			image_url: string | null;
-			category: string;
-			owner:
-				| 'president'
-				| 'vice1'
-				| 'vice2'
-				| 'secretary'
-				| 'treasurer'
-				| 'student_relation'
-				| 'arts'
-				| 'academic'
-				| 'sport'
-				| 'social_development'
-				| 'korkor_club'
-				| 'sciren_club'
-				| 'vata_club'
-				| 'education_club'
-				| 'anurak_club'
-				| 'asa_club'
-				| 'etc';
-			categoryId: string | null;
-			id: string;
-		}[];
+		assets: AssetView[];
 		project?: {
 			id: string;
 			title: string;
@@ -80,7 +51,7 @@
 				(v) => selectedTypes && (selectedTypes.length === 0 || selectedTypes.includes(v.type))
 			)
 			// Move zero-amount assets to the end
-			.toSorted((a, b) => (a.amount === 0 ? 1 : b.amount === 0 ? -1 : 0))
+			.toSorted((a, b) => (a.availableAmount === 0 ? 1 : b.availableAmount === 0 ? -1 : 0))
 	);
 
 	async function onRemoveAsset(assetId: string) {
@@ -97,6 +68,7 @@
 	}
 
 	let view = $state<'grid' | 'gallery'>('grid');
+	const myProjectsQuery = getAllMyProjects();
 
 	// Column count for the masonry (gallery) view - true reflow per breakpoint
 	// (not a fixed bucket count reflowed via CSS, which would just re-wrap
@@ -121,9 +93,16 @@
 	);
 </script>
 
-{#await Promise.all([hasPerm({ permission: { asset: ['update'] } })])}
+{#await Promise.all([hasPerm({ permission: { asset: ['update'] } }), myProjectsQuery])}
 	<Skeleton class="h-56 w-full" />
-{:then [canEdit]}
+{:then [canEdit, memberships]}
+	{@const borrowingProjects = memberships
+		.map((membership) => membership.project)
+		.filter(
+			(candidate) =>
+				candidate !== null &&
+				(candidate.status === 'notstarted' || candidate.status === 'inprogress')
+		) as BorrowingProjectView[]}
 	<div class="mt-4 flex justify-end">
 		<ToggleGroup.Root type="single" bind:value={view}>
 			<ToggleGroup.Item value="grid" aria-label="มุมมองตาราง">
@@ -144,7 +123,7 @@
 							<AssetsCard {asset} {props}></AssetsCard>
 						{/snippet}
 					</AssetsBookingDialog>
-				{:else}
+				{:else if canEdit.data?.success}
 					<AssetsDetailsDialog
 						{listAssetsQuery}
 						mode={canEdit.data?.success ? 'edit' : 'view'}
@@ -157,7 +136,7 @@
 										<DropdownMenu.Label>เมนูผู้ดูแล</DropdownMenu.Label>
 										<DropdownMenu.Item
 											onclick={() => {
-												goto(`/admin/log/asset/${asset.id}`);
+												goto(resolve(`/admin/log/asset/${asset.id}`));
 											}}
 											>ประวัติการดำเนินการ
 										</DropdownMenu.Item>
@@ -177,6 +156,12 @@
 							</AssetsCard>
 						{/snippet}
 					</AssetsDetailsDialog>
+				{:else}
+					<AssetsBookingDialog {asset} projects={borrowingProjects}>
+						{#snippet trigger({ props })}
+							<AssetsCard alwaysDisplay={true} {asset} {props} />
+						{/snippet}
+					</AssetsBookingDialog>
 				{/if}
 			{:else}
 				<div class="col-span-full">
@@ -198,7 +183,7 @@
 									<AssetGalleryTile {asset} {props} />
 								{/snippet}
 							</AssetsBookingDialog>
-						{:else}
+						{:else if canEdit.data?.success}
 							<AssetsDetailsDialog
 								{listAssetsQuery}
 								mode={canEdit.data?.success ? 'edit' : 'view'}
@@ -211,7 +196,7 @@
 												<DropdownMenu.Label>เมนูผู้ดูแล</DropdownMenu.Label>
 												<DropdownMenu.Item
 													onclick={() => {
-														goto(`/admin/log/asset/${asset.id}`);
+														goto(resolve(`/admin/log/asset/${asset.id}`));
 													}}
 													>ประวัติการดำเนินการ
 												</DropdownMenu.Item>
@@ -231,6 +216,12 @@
 									</AssetGalleryTile>
 								{/snippet}
 							</AssetsDetailsDialog>
+						{:else}
+							<AssetsBookingDialog {asset} projects={borrowingProjects}>
+								{#snippet trigger({ props })}
+									<AssetGalleryTile alwaysDisplay={true} {asset} {props} />
+								{/snippet}
+							</AssetsBookingDialog>
 						{/if}
 					{/each}
 				</div>

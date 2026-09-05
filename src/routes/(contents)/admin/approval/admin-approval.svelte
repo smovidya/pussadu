@@ -61,6 +61,11 @@
 		}
 	}
 
+	function requestAge(createdAt: Date | null) {
+		if (!createdAt) return null;
+		return Math.max(0, Math.floor((Date.now() - createdAt.getTime()) / 86_400_000));
+	}
+
 	const filteredRequests = $derived(listBorrowingRequests(filter));
 </script>
 
@@ -221,15 +226,17 @@
 
 	<AsyncHttpBoundary dataLoader={filteredRequests}>
 		{#snippet children(requests)}
-			<div
-				class="mt-4 grid min-h-screen grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
-			>
+			<div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 				{#each requests as request (request.asset_to_project.id)}
 					{@const project = projectStatusOptions.find((p) => p.value === request.project?.status)}
 					{@const projectStatus = project ? project.label : 'ไม่ระบุสถานะ'}
 					{@const requestStatus = borrowingStatus.find(
 						(a) => a.value === request.asset_to_project.status
 					)}
+					{@const pendingDays =
+						request.asset_to_project.status === 'pending'
+							? requestAge(request.asset_to_project.createdAt)
+							: null}
 					<AdminApprovalSidesheet {request}>
 						{#snippet trigger({ props })}
 							<Card.Root {...props}>
@@ -244,7 +251,7 @@
 										<img
 											src={request.asset?.image_url || '/placeholder/grey.png'}
 											alt={request.asset?.name}
-											class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
+											class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-border"
 										/>
 									</div>
 									<div class="mt-2 flex flex-col gap-1 text-sm">
@@ -269,6 +276,11 @@
 											</span>
 										</div>
 									</div>
+									{#if pendingDays !== null}<div class="flex items-center justify-between gap-2">
+											<span class="text-muted-foreground">อายุคำขอ</span><span class="tabular-nums"
+												>{pendingDays} วัน · ไม่มีวันหมดอายุ</span
+											>
+										</div>{/if}
 								</Card.Content>
 							</Card.Root>
 						{/snippet}

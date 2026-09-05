@@ -5,7 +5,7 @@
 	import * as RadioGroup from '$stories/shadcnui/radio-group';
 	import * as Select from '$stories/shadcnui/select';
 	import * as FormPrimitive from 'formsnap';
-	import { assetStatusOptions, assetTypeOptions, projectOwnerOptions } from '$lib/constants';
+	import { assetTypeOptions, projectOwnerOptions } from '$lib/constants';
 	import { Textarea } from '$stories/shadcnui/textarea';
 	import { insertAssetSchema, updateAssetSchema } from '$lib/validator/asset.validator';
 	import Upload from '$stories/file-input/upload.svelte';
@@ -88,11 +88,15 @@
 						bind:value={$formData.amount}
 						style="grid-area: input-amount"
 						class="rounded-r-none border-r-0"
-						readonly={mode === 'view'}
+						readonly={mode !== 'create'}
 					/>
 				{/snippet}
 			</Form.Control>
-			<Form.Description style="grid-area: description-amount">จำนวนพัสดุคงคลัง</Form.Description>
+			<Form.Description style="grid-area: description-amount"
+				>{mode === 'create'
+					? 'จำนวนตั้งต้นทั้งหมดในทะเบียน'
+					: 'ปรับจำนวนผ่านส่วนคลังและสภาพพัสดุด้านล่าง'}</Form.Description
+			>
 			<Form.FieldErrors style="grid-area: errors-amount" />
 		</FormPrimitive.Field>
 		<FormPrimitive.Field {form} name="unitTerm">
@@ -114,39 +118,6 @@
 			<Form.FieldErrors style="grid-area: errors-unitTerm" />
 		</FormPrimitive.Field>
 	</div>
-	<Form.Field {form} name="status">
-		<Form.Control>
-			{#snippet children({ props })}
-				<Form.Label>สถานะ</Form.Label>
-				<Select.Root
-					disabled={mode === 'view'}
-					type="single"
-					bind:value={$formData.status}
-					name={props.name}
-				>
-					<Select.Trigger>
-						{#if $formData.status}
-							{@const statusLabel = assetStatusOptions.find(
-								(option) => option.value === $formData.status
-							)?.label}
-							{statusLabel}
-						{:else}
-							เลือกสถานะ
-						{/if}
-					</Select.Trigger>
-					<Select.Content>
-						<Select.Group>
-							{#each assetStatusOptions as option (option.value)}
-								<Select.Item value={option.value}>{option.label}</Select.Item>
-							{/each}
-						</Select.Group>
-					</Select.Content>
-				</Select.Root>
-			{/snippet}
-		</Form.Control>
-		<Form.Description>สถานะของพัสดุ</Form.Description>
-		<Form.FieldErrors />
-	</Form.Field>
 	<Form.Field {form} name="owner">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -190,7 +161,7 @@
 					<img
 						src={$formData.image_url}
 						alt="ตัวอย่างภาพพัสดุ"
-						class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
+						class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-border"
 					/>
 				</div>
 			{/if}

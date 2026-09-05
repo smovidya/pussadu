@@ -2,15 +2,17 @@
 	import AssetsSelect from '$stories/assets/assets-select.svelte';
 	import { page } from '$app/state';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
-	import { getProjectInfo } from '$lib/rpc/project.remote';
+	import { getMyProjectMembership, getProjectInfo } from '$lib/rpc/project.remote';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
 	const id = page.params.id ?? '';
 </script>
 
-<AsyncHttpBoundary dataLoader={getProjectInfo({ id })}>
-	{#snippet children(project)}
+<AsyncHttpBoundary
+	dataLoader={Promise.all([getProjectInfo({ id }), getMyProjectMembership({ id })])}
+>
+	{#snippet children([project, membership])}
 		{#if project}
-			<AssetsSelect {project} />
+			<AssetsSelect {project} membershipRole={membership.role} />
 		{:else}
 			<p>ไม่พบข้อมูลสำหรับโครงการที่มี ID: {id}</p>
 		{/if}

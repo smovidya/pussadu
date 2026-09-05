@@ -8,6 +8,8 @@
 	import AssetsList from './assets-booking-list.svelte';
 	import ConsentContent from './asset-consent-content.svelte';
 	import AssetsFilters from './assets-filters.svelte';
+	import ProjectMembers from '$stories/projects/project-members.svelte';
+	import ProjectBorrowingSummary from '$stories/projects/project-borrowing-summary.svelte';
 
 	interface Props {
 		project: {
@@ -16,9 +18,10 @@
 			status: 'notstarted' | 'inprogress' | 'completed' | 'evaluated' | 'cancelled';
 			owner: string;
 		};
+		membershipRole?: 'member' | 'coordinator';
 	}
 
-	let { project = $bindable() }: Props = $props();
+	let { project = $bindable(), membershipRole = 'member' }: Props = $props();
 
 	const listAssetsQuery = listAssets({ projectId: project.id });
 	let assetFilters = $state({
@@ -64,4 +67,6 @@
 			/>
 		{/await}
 	</article>
+	{#if membershipRole === 'coordinator'}<ProjectBorrowingSummary projectId={project.id} />{/if}
+	<ProjectMembers projectId={project.id} canManage={membershipRole === 'coordinator'} />
 </PageWrapper>

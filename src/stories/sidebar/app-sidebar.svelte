@@ -55,8 +55,8 @@
 			allowRoles: ['admin', 'staff'],
 			items: [
 				{
-					title: 'จัดการผู้ใช้',
-					url: '/admin/users'
+					title: 'บุคคล',
+					url: '/admin/people'
 				},
 				{
 					title: 'รายการยืม',
