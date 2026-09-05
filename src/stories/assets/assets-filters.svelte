@@ -1,7 +1,7 @@
 <script lang="ts">
 	import * as Card from '$stories/shadcnui/card';
 	import * as ToggleGroup from '$stories/shadcnui/toggle-group';
-	import Input from '$stories/shadcnui/input/input.svelte';
+	import { Input } from '$stories/shadcnui/input';
 	import { assetTypeOptions } from '$lib/constants';
 
 	interface Props {
@@ -26,7 +26,7 @@
 				<ToggleGroup.Item
 					{value}
 					aria-label={`แสดง ${label}`}
-					class="data-[state=on]:bg-amber-500 data-[state=on]:text-yellow-50"
+					class="data-[state=on]:bg-brand data-[state=on]:text-brand-foreground"
 				>
 					{label}
 				</ToggleGroup.Item>

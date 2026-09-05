@@ -7,7 +7,8 @@
 	import * as Empty from '$stories/shadcnui/empty';
 	import * as Select from '$stories/shadcnui/select';
 	import Input from '$stories/shadcnui/input/input.svelte';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 	import { cn } from '$stories/utils';
 	import AdminApprovalSidesheet from './admin-approval-sidesheet.svelte';
 	import DatePicker from '$stories/date/date-picker.svelte';
@@ -64,10 +65,10 @@
 </script>
 
 <PageWrapper pageTitle="รายการยืม" groupTitle="แอดมิน" groupUrl="/admin">
-	<div>
-		<h1 class="text-2xl font-bold">รายการการยืม</h1>
-		<p>ตรวจสอบและอนุมัติการยืมพัสดุในระบบ กดที่การ์ดเพื่อดูรายละเอียดเพิ่มเติมและอนุมัติการยืม</p>
-	</div>
+	<PageHeader
+		title="รายการการยืม"
+		description="ตรวจสอบและอนุมัติการยืมพัสดุในระบบ กดที่การ์ดเพื่อดูรายละเอียดเพิ่มเติมและอนุมัติการยืม"
+	/>
 
 	<section>
 		<Card.Root>
@@ -167,13 +168,11 @@
 									เลือกไว้ {filter.statuses.length} สถานะ
 								</Select.Trigger>
 								<Select.Content>
-									{#each borrowingStatus as status (status.value)}
-										<Select.Item value={status.value}>
-											<Badge class={cn('ml-2 border-0', status.color)}>
-												{status.label}
-											</Badge>
-										</Select.Item>
-									{/each}
+									<Select.Group>
+										{#each borrowingStatus as status (status.value)}
+											<Select.Item value={status.value}>{status.label}</Select.Item>
+										{/each}
+									</Select.Group>
 								</Select.Content>
 							</Select.Root>
 						</div>
@@ -195,8 +194,10 @@
 									เลือกไว้ {filter.projectStatus.length} สถานะ
 								</Select.Trigger>
 								<Select.Content>
-									<Select.Item value="inprogress">ยังดำเนินอยู่</Select.Item>
-									<Select.Item value="ended">โครงสิ้นสุดแล้ว</Select.Item>
+									<Select.Group>
+										<Select.Item value="inprogress">ยังดำเนินอยู่</Select.Item>
+										<Select.Item value="ended">โครงสิ้นสุดแล้ว</Select.Item>
+									</Select.Group>
 								</Select.Content>
 							</Select.Root>
 						</div>
@@ -204,7 +205,7 @@
 					<Separator />
 					<div class="flex flex-col gap-2">
 						<span class="text-sm text-muted-foreground"> ค้นหาไว ๆ </span>
-						<div class="flex flex-wrap space-y-2 space-x-2">
+						<div class="flex flex-wrap gap-2">
 							{#each presets as preset, i (preset.label)}
 								<Button size="sm" variant="secondary" onclick={() => applyPreset(i)}>
 									<TextSearch />
@@ -246,7 +247,7 @@
 											class="h-full w-full object-cover outline outline-1 -outline-offset-1 outline-black/10 dark:outline-white/10"
 										/>
 									</div>
-									<div class="mt-2 space-y-1 text-sm">
+									<div class="mt-2 flex flex-col gap-1 text-sm">
 										<div class="flex items-center justify-between gap-2">
 											<span class="flex items-center text-muted-foreground"> ชื่อผู้ยืม </span>
 											<span>
@@ -262,12 +263,9 @@
 										<div class="flex items-center justify-between gap-2">
 											<span class="flex items-center text-muted-foreground"> สถานะ </span>
 											<span class="truncate">
-												<Badge
-													variant="outline"
-													class={cn('border-0 shadow', requestStatus?.color)}
-												>
-													{requestStatus?.label}
-												</Badge>
+												{#if requestStatus}
+													<StatusBadge tone={requestStatus.tone}>{requestStatus.label}</StatusBadge>
+												{/if}
 											</span>
 										</div>
 									</div>

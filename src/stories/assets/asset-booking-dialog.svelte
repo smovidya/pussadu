@@ -1,9 +1,10 @@
 <script lang="ts">
-	import Button, { buttonVariants } from '$stories/shadcnui/button/button.svelte';
+	import { Button, buttonVariants } from '$stories/shadcnui/button';
 	import * as Dialog from '$stories/shadcnui/dialog';
 	import * as Popover from '$stories/shadcnui/popover';
-	import Input from '$stories/shadcnui/input/input.svelte';
-	import Label from '$stories/shadcnui/label/label.svelte';
+	import { Input } from '$stories/shadcnui/input';
+	import * as Field from '$stories/shadcnui/field';
+	import * as InputGroup from '$stories/shadcnui/input-group';
 	import { CalendarIcon, Minus, Plus, ShoppingCart } from '@lucide/svelte';
 	import { cn } from '$stories/utils';
 	import { DateFormatter, getLocalTimeZone, now, type DateValue } from '@internationalized/date';
@@ -33,7 +34,7 @@
 			id: string;
 			title: string;
 		};
-		trigger?: Snippet<{ props: Record<string, any> }>;
+		trigger?: Snippet<[{ props: Record<string, unknown> }]>;
 	}
 
 	const submitBorrowingMutation = createMutation(() => ({
@@ -106,7 +107,7 @@
 				{@render trigger({ props: args.props })}
 			{:else}
 				<Button class="w-full" {...args.props}>
-					<ShoppingCart class="mr-2" />
+					<ShoppingCart data-icon="inline-start" />
 					ยืม
 				</Button>
 			{/if}
@@ -135,53 +136,58 @@
 						<p class="font-bold tabular-nums">พร้อมยืม: {asset.amount} {asset.unitTerm}</p>
 					</div>
 				</div>
-				<div class="mt-6 flex flex-col gap-2 border-t pt-4 text-start">
-					<div class="flex flex-col gap-1">
-						<Label>โครงการ</Label>
+				<Field.Group class="mt-6 border-t pt-4 text-start">
+					<Field.Field>
+						<Field.Label>โครงการ</Field.Label>
 						<p class="text-lg font-semibold text-foreground">{project.title}</p>
-					</div>
-					<div class="flex flex-col gap-1">
-						<Label>จำนวนที่ยืม</Label>
-						<div class="flex flex-row gap-2 text-foreground">
-							<Button
-								size="icon"
-								variant="outline"
-								aria-label="ลดจำนวนพัสดุ"
-								onclick={() => {
-									bookingInfoValue.amount = Math.max(1, bookingInfoValue.amount - 1);
-								}}
-							>
-								<Minus />
-							</Button>
-							<Input
+					</Field.Field>
+					<Field.Field>
+						<Field.Label for="borrow-amount">จำนวนที่ยืม</Field.Label>
+						<InputGroup.Root>
+							<InputGroup.Addon>
+								<InputGroup.Button
+									size="icon-xs"
+									aria-label="ลดจำนวนพัสดุ"
+									onclick={() => {
+										bookingInfoValue.amount = Math.max(1, bookingInfoValue.amount - 1);
+									}}
+								>
+									<Minus />
+								</InputGroup.Button>
+							</InputGroup.Addon>
+							<InputGroup.Input
+								id="borrow-amount"
 								bind:value={bookingInfoValue.amount}
 								type="number"
 								min={1}
 								max={asset.amount}
 								class="text-center text-lg tabular-nums"
 							/>
-							<Button
-								size="icon"
-								variant="outline"
-								aria-label="เพิ่มจำนวนพัสดุ"
-								onclick={() => {
-									bookingInfoValue.amount = Math.min(asset.amount, bookingInfoValue.amount + 1);
-								}}
-							>
-								<Plus />
-							</Button>
-						</div>
-					</div>
-					<div class="flex flex-col gap-2">
-						<Label>หมายเหตุ</Label>
+							<InputGroup.Addon align="inline-end">
+								<InputGroup.Button
+									size="icon-xs"
+									aria-label="เพิ่มจำนวนพัสดุ"
+									onclick={() => {
+										bookingInfoValue.amount = Math.min(asset.amount, bookingInfoValue.amount + 1);
+									}}
+								>
+									<Plus />
+								</InputGroup.Button>
+							</InputGroup.Addon>
+						</InputGroup.Root>
+						<Field.Description>เลือกได้สูงสุด {asset.amount} {asset.unitTerm}</Field.Description>
+					</Field.Field>
+					<Field.Field>
+						<Field.Label for="borrow-note">หมายเหตุ</Field.Label>
 						<Input
+							id="borrow-note"
 							bind:value={bookingInfoValue.note}
 							class="text-foreground"
 							placeholder="กรอกหมายเหตุ"
 						/>
-					</div>
-					<div class="flex flex-col gap-2">
-						<Label>ช่วงวันที่ยืม</Label>
+					</Field.Field>
+					<Field.Field>
+						<Field.Label>ช่วงวันที่ยืม</Field.Label>
 						<div class="grid gap-2">
 							<Popover.Root>
 								<Popover.Trigger
@@ -190,7 +196,7 @@
 										!dateValue && 'text-muted-foreground'
 									)}
 								>
-									<CalendarIcon class="mr-2 size-4" />
+									<CalendarIcon data-icon="inline-start" />
 									{#if dateValue && dateValue.start}
 										{#if dateValue.end}
 											{df.format(dateValue.start.toDate(getLocalTimeZone()))} - {df.format(
@@ -217,7 +223,7 @@
 								</Popover.Content>
 							</Popover.Root>
 						</div>
-					</div>
+					</Field.Field>
 					<div>
 						<Button
 							variant="default"
@@ -233,7 +239,7 @@
 							{/if}
 						</Button>
 					</div>
-				</div>
+				</Field.Group>
 			</Dialog.Description>
 		</Dialog.Header>
 	</Dialog.Content>

@@ -1,15 +1,15 @@
 <script lang="ts" generics="TData, TValue">
-	import CirclePlusIcon from '@lucide/svelte/icons/circle-plus';
 	import CheckIcon from '@lucide/svelte/icons/check';
+	import CirclePlusIcon from '@lucide/svelte/icons/circle-plus';
 	import type { Column } from '@tanstack/table-core';
 	import { SvelteSet } from 'svelte/reactivity';
+	import { Badge } from '$stories/shadcnui/badge';
+	import { Button } from '$stories/shadcnui/button';
 	import * as Command from '$stories/shadcnui/command';
 	import * as Popover from '$stories/shadcnui/popover';
-	import { Button } from '$stories/shadcnui/button';
-	import { cn } from '$stories/utils';
 	import { Separator } from '$stories/shadcnui/separator';
-	import { Badge } from '$stories/shadcnui/badge';
-	import type { Component } from 'svelte';
+	import { cn } from '$stories/utils';
+	import type { FacetedFilterOption } from './types';
 
 	let {
 		column,
@@ -18,35 +18,31 @@
 	}: {
 		column: Column<TData, TValue>;
 		title: string;
-		options: {
-			label: string;
-			value: string;
-			icon?: Component;
-		}[];
+		options: FacetedFilterOption[];
 	} = $props();
 
-	const facets = $derived(column?.getFacetedUniqueValues());
-	const selectedValues = $derived(new SvelteSet(column?.getFilterValue() as string[]));
+	const facets = $derived(column.getFacetedUniqueValues());
+	const selectedValues = $derived(new SvelteSet((column.getFilterValue() as string[]) ?? []));
 </script>
 
 <Popover.Root>
 	<Popover.Trigger>
 		{#snippet child({ props })}
-			<Button {...props} variant="outline" size="sm" class="h-8 border-dashed">
-				<CirclePlusIcon />
+			<Button {...props} variant="outline" size="sm" class="border-dashed">
+				<CirclePlusIcon data-icon="inline-start" />
 				{title}
 				{#if selectedValues.size > 0}
-					<Separator orientation="vertical" class="mx-2 h-4" />
+					<Separator orientation="vertical" class="mx-1 h-4" />
 					<Badge variant="secondary" class="rounded-sm px-1 font-normal lg:hidden">
 						{selectedValues.size}
 					</Badge>
-					<div class="hidden space-x-1 lg:flex">
+					<div class="hidden gap-1 lg:flex">
 						{#if selectedValues.size > 2}
 							<Badge variant="secondary" class="rounded-sm px-1 font-normal">
 								เลือกไว้ {selectedValues.size} รายการ
 							</Badge>
 						{:else}
-							{#each options.filter((opt) => selectedValues.has(opt.value)) as option (option)}
+							{#each options.filter( (option) => selectedValues.has(option.value) ) as option (option.value)}
 								<Badge variant="secondary" class="rounded-sm px-1 font-normal">
 									{option.label}
 								</Badge>
@@ -57,41 +53,36 @@
 			</Button>
 		{/snippet}
 	</Popover.Trigger>
-	<Popover.Content class="w-[200px] p-0" align="start">
+	<Popover.Content class="w-52 p-0" align="start">
 		<Command.Root>
-			<Command.Input placeholder={title} />
+			<Command.Input placeholder={`ค้นหา${title}`} />
 			<Command.List>
 				<Command.Empty>ไม่พบผลลัพธ์</Command.Empty>
 				<Command.Group>
-					{#each options as option (option)}
+					{#each options as option (option.value)}
 						{@const isSelected = selectedValues.has(option.value)}
 						<Command.Item
 							onSelect={() => {
-								if (isSelected) {
-									selectedValues.delete(option.value);
-								} else {
-									selectedValues.add(option.value);
-								}
-								const filterValues = Array.from(selectedValues);
-								column?.setFilterValue(filterValues.length ? filterValues : undefined);
+								if (isSelected) selectedValues.delete(option.value);
+								else selectedValues.add(option.value);
+								const values = Array.from(selectedValues);
+								column.setFilterValue(values.length ? values : undefined);
 							}}
 						>
-							<div
+							<span
 								class={cn(
-									'mr-2 flex size-4 items-center justify-center rounded-sm border border-primary',
+									'flex size-4 items-center justify-center rounded-sm border border-primary',
 									isSelected ? 'bg-primary text-primary-foreground' : 'opacity-50 [&_svg]:invisible'
 								)}
 							>
-								<CheckIcon class="size-4" />
-							</div>
+								<CheckIcon />
+							</span>
 							{#if option.icon}
-								{@const Icon = option.icon}
-								<Icon class="text-muted-foreground" />
+								{@render SpecificIcon({ Icon: option.icon })}
 							{/if}
-
 							<span>{option.label}</span>
-							{#if facets?.get(option.value)}
-								<span class="ml-auto flex size-4 items-center justify-center font-mono text-xs">
+							{#if facets.get(option.value)}
+								<span class="ml-auto font-mono text-xs tabular-nums">
 									{facets.get(option.value)}
 								</span>
 							{/if}
@@ -101,10 +92,7 @@
 				{#if selectedValues.size > 0}
 					<Command.Separator />
 					<Command.Group>
-						<Command.Item
-							onSelect={() => column?.setFilterValue(undefined)}
-							class="justify-center text-center"
-						>
+						<Command.Item onSelect={() => column.setFilterValue(undefined)} class="justify-center">
 							ลบตัวกรอง
 						</Command.Item>
 					</Command.Group>
@@ -113,3 +101,10 @@
 		</Command.Root>
 	</Popover.Content>
 </Popover.Root>
+
+{#snippet SpecificIcon({ Icon }: { Icon: FacetedFilterOption['icon'] })}
+	{@const ResolvedIcon = Icon}
+	{#if ResolvedIcon}
+		<ResolvedIcon data-icon="inline-start" />
+	{/if}
+{/snippet}

@@ -5,7 +5,7 @@
 	import { Input } from '$stories/shadcnui/input';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import { Spinner } from '$stories/shadcnui/spinner';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { arktype } from 'sveltekit-superforms/adapters';
 	import { createBorrowerSchema } from '$lib/validator/borrower.validator';
@@ -14,6 +14,7 @@
 	import { toast } from 'svelte-sonner';
 	import { isHttpError } from '@sveltejs/kit';
 	import type { Snippet } from 'svelte';
+	import { untrack } from 'svelte';
 
 	type Borrower = NonNullable<ReturnType<typeof listAllBorrowers>['current']>[number];
 
@@ -25,21 +26,22 @@
 	let { trigger, borrower }: Props = $props();
 	let open = $state(false);
 
-	const isEdit = !!borrower;
+	const initialBorrower = untrack(() => borrower);
+	const isEdit = $derived(!!borrower);
 	const validators = arktype(createBorrowerSchema);
 	const form = superForm(
 		defaults(validators, {
 			defaults: {
-				ouid: borrower?.ouid ?? '',
-				name: borrower?.name ?? '',
-				email: borrower?.email ?? '',
-				line_id: borrower?.line_id ?? '',
-				phone: borrower?.phone ?? '',
-				departmentId: borrower?.departmentId ?? ''
+				ouid: initialBorrower?.ouid ?? '',
+				name: initialBorrower?.name ?? '',
+				email: initialBorrower?.email ?? '',
+				line_id: initialBorrower?.line_id ?? '',
+				phone: initialBorrower?.phone ?? '',
+				departmentId: initialBorrower?.departmentId ?? ''
 			}
 		}),
 		{
-			id: `borrower-form-${borrower?.ouid ?? 'new'}`,
+			id: `borrower-form-${initialBorrower?.ouid ?? 'new'}`,
 			SPA: true,
 			validators,
 			async onUpdate({ form }) {
@@ -169,9 +171,11 @@
 									{departments.find((d) => d.id === $formData.departmentId)?.name ?? 'เลือกภาควิชา'}
 								</Select.Trigger>
 								<Select.Content>
-									{#each departments as dept (dept.id)}
-										<Select.Item value={dept.id}>{dept.name}</Select.Item>
-									{/each}
+									<Select.Group>
+										{#each departments as dept (dept.id)}
+											<Select.Item value={dept.id}>{dept.name}</Select.Item>
+										{/each}
+									</Select.Group>
 								</Select.Content>
 							</Select.Root>
 						{/await}
@@ -182,7 +186,7 @@
 			<div class="flex flex-wrap gap-2 py-4">
 				<Button type="submit" disabled={$submitting}>
 					{#if $submitting}
-						<Spinner />
+						<Spinner data-icon="inline-start" />
 						<span>กำลังบันทึก...</span>
 					{:else}
 						{isEdit ? 'บันทึก' : 'เพิ่ม'}

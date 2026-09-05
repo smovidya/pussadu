@@ -1,10 +1,10 @@
 <script lang="ts">
 	import * as Sheet from '$stories/shadcnui/sheet';
 	import * as Tabs from '$stories/shadcnui/tabs';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
 	import { Input } from '$stories/shadcnui/input';
-	import { Label } from '$stories/shadcnui/label';
-	import Textarea from '$stories/shadcnui/textarea/textarea.svelte';
+	import * as Field from '$stories/shadcnui/field';
+	import { Textarea } from '$stories/shadcnui/textarea';
 	import { Spinner } from '$stories/shadcnui/spinner';
 	import { CirclePlus } from '@lucide/svelte';
 	import { toast } from 'svelte-sonner';
@@ -85,7 +85,7 @@
 	<Sheet.Trigger>
 		{#snippet child({ props })}
 			<Button {...props} variant="default">
-				<CirclePlus />
+				<CirclePlus data-icon="inline-start" />
 				<span>เพิ่มนิสิต</span>
 			</Button>
 		{/snippet}
@@ -104,52 +104,61 @@
 					<Tabs.Trigger value="single" class="flex-1">เพิ่มทีละคน</Tabs.Trigger>
 					<Tabs.Trigger value="bulk" class="flex-1">เพิ่มหลายคน</Tabs.Trigger>
 				</Tabs.List>
-				<Tabs.Content value="single" class="flex flex-col gap-4">
-					<div class="flex flex-col gap-1">
-						<Label for="single-email">อีเมล</Label>
-						<Input
-							id="single-email"
-							type="email"
-							placeholder="6xxxxxxxxx@student.chula.ac.th"
-							bind:value={singleEmail}
-						/>
-					</div>
-					<div class="flex flex-col gap-1">
-						<Label for="single-name">ชื่อ</Label>
-						<Input
-							id="single-name"
-							placeholder="ชื่อ-นามสกุล (ถ้าไม่ระบุจะใช้ค่าเริ่มต้น)"
-							bind:value={singleName}
-						/>
-					</div>
-					<Button
-						onclick={handleSingleSubmit}
-						disabled={!!createStudentUser.pending || !singleEmail}
-					>
-						{#if createStudentUser.pending}
-							<Spinner />
-							<span>กำลังเพิ่ม...</span>
-						{:else}
-							เพิ่มนิสิต
-						{/if}
-					</Button>
+				<Tabs.Content value="single">
+					<Field.Group>
+						<Field.Field>
+							<Field.Label for="single-email">อีเมล</Field.Label>
+							<Input
+								id="single-email"
+								type="email"
+								placeholder="6xxxxxxxxx@student.chula.ac.th"
+								bind:value={singleEmail}
+							/>
+						</Field.Field>
+						<Field.Field>
+							<Field.Label for="single-name">ชื่อ</Field.Label>
+							<Input
+								id="single-name"
+								placeholder="ชื่อ-นามสกุล (ถ้าไม่ระบุจะใช้ค่าเริ่มต้น)"
+								bind:value={singleName}
+							/>
+						</Field.Field>
+						<Button
+							onclick={handleSingleSubmit}
+							disabled={!!createStudentUser.pending || !singleEmail}
+						>
+							{#if createStudentUser.pending}
+								<Spinner data-icon="inline-start" />
+								<span>กำลังเพิ่ม...</span>
+							{:else}
+								เพิ่มนิสิต
+							{/if}
+						</Button>
+					</Field.Group>
 				</Tabs.Content>
-				<Tabs.Content value="bulk" class="flex flex-col gap-4">
-					<div class="flex flex-col gap-1">
-						<Label for="bulk-rows">รายชื่อ (บรรทัดละ 1 คน รูปแบบ: อีเมล,ชื่อ)</Label>
-						<Textarea id="bulk-rows" rows={8} placeholder={bulkPlaceholder} bind:value={bulkText} />
-						<p class="text-xs text-muted-foreground">
-							ไม่ระบุชื่อได้ (จะใช้ส่วนหน้าอีเมลแทน) แต่ต้องมีอีเมลทุกบรรทัด
-						</p>
-					</div>
-					<Button onclick={handleBulkSubmit} disabled={!!bulkCreateStudentUsers.pending}>
-						{#if bulkCreateStudentUsers.pending}
-							<Spinner />
-							<span>กำลังเพิ่ม...</span>
-						{:else}
-							เพิ่มนิสิตทั้งหมด
-						{/if}
-					</Button>
+				<Tabs.Content value="bulk">
+					<Field.Group>
+						<Field.Field>
+							<Field.Label for="bulk-rows">รายชื่อ (บรรทัดละ 1 คน รูปแบบ: อีเมล,ชื่อ)</Field.Label>
+							<Textarea
+								id="bulk-rows"
+								rows={8}
+								placeholder={bulkPlaceholder}
+								bind:value={bulkText}
+							/>
+							<Field.Description>
+								ไม่ระบุชื่อได้ (จะใช้ส่วนหน้าอีเมลแทน) แต่ต้องมีอีเมลทุกบรรทัด
+							</Field.Description>
+						</Field.Field>
+						<Button onclick={handleBulkSubmit} disabled={!!bulkCreateStudentUsers.pending}>
+							{#if bulkCreateStudentUsers.pending}
+								<Spinner data-icon="inline-start" />
+								<span>กำลังเพิ่ม...</span>
+							{:else}
+								เพิ่มนิสิตทั้งหมด
+							{/if}
+						</Button>
+					</Field.Group>
 				</Tabs.Content>
 			</Tabs.Root>
 		</div>

@@ -21,11 +21,11 @@
 	{#if v === null || v === undefined}
 		<span class="text-muted-foreground italic">null</span>
 	{:else if typeof v === 'string'}
-		<span class="break-all text-emerald-700 dark:text-emerald-400">{v}</span>
+		<span class="break-all text-success">{v}</span>
 	{:else if typeof v === 'number'}
-		<span class="text-sky-700 dark:text-sky-400">{v}</span>
+		<span class="text-info tabular-nums">{v}</span>
 	{:else if typeof v === 'boolean'}
-		<span class="text-purple-700 dark:text-purple-400">{v}</span>
+		<span class="text-warning">{v}</span>
 	{:else}
 		<span>{String(v)}</span>
 	{/if}

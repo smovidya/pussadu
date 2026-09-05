@@ -4,6 +4,7 @@
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import UsersDataTable from './borrowers-data-table.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 
 	interface Props {
 		authClient: AuthClient;
@@ -13,8 +14,8 @@
 </script>
 
 <PageWrapper pageTitle="การจัดการผู้ยืม" groupTitle="ผู้ยืม" groupUrl="/admin/borrowers">
-	<article class="container mx-auto my-5 flex flex-col gap-4">
-		<h1 class="text-2xl font-bold">การจัดการผู้ยืม</h1>
+	<article class="flex flex-col gap-6">
+		<PageHeader title="การจัดการผู้ยืม" description="จัดการข้อมูลนิสิตที่มีสิทธิ์ยืมพัสดุ" />
 		{#await authClient.admin.hasPermission({ permission: { borrower: ['list'] } })}
 			<Skeleton class="h-6 w-32" />
 		{:then perm}

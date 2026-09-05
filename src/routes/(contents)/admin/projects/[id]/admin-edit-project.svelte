@@ -8,6 +8,7 @@
 	import { ScrollText, TriangleAlert } from '@lucide/svelte';
 	import StaffList from './staff-list.svelte';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 
 	let {
 		id
@@ -20,20 +21,17 @@
 	<AsyncHttpBoundary dataLoader={adminGetProjectInfo({ id })}>
 		{#snippet children(projectInfo)}
 			{#if projectInfo}
-				<div class="p-2">
-					<div class="flex flex-wrap items-center gap-2">
-						<h1 class="text-2xl font-bold">{projectInfo.title}</h1>
-						<Button variant="outline" size="sm" href={`/admin/log/project/${id}`}>
-							<ScrollText class="size-3.5" />
-							ประวัติ
-						</Button>
-					</div>
-					<p class="text-muted-foreground">แก้ไขรายละเอียดโครงการ</p>
-				</div>
+				{#snippet actions()}
+					<Button variant="outline" size="sm" href={`/admin/log/project/${id}`}>
+						<ScrollText data-icon="inline-start" />
+						ประวัติ
+					</Button>
+				{/snippet}
+				<PageHeader title={projectInfo.title} description="แก้ไขรายละเอียดโครงการ" {actions} />
 				<EditProjectForm projectData={projectInfo} />
 				<StaffList projectId={id} />
 			{:else}
-				<Alert.Root class="border-destructive/50 text-destructive dark:border-destructive">
+				<Alert.Root variant="destructive">
 					<TriangleAlert class="h-4 w-4" />
 					<Alert.Title>ไม่พบโครงการ</Alert.Title>
 					<Alert.Description>
@@ -44,7 +42,7 @@
 		{/snippet}
 
 		{#snippet pending()}
-			<div class="space-y-4">
+			<div class="flex flex-col gap-4">
 				<Skeleton class="h-8 w-1/3" />
 				<Skeleton class="h-20 w-full" />
 				<Skeleton class="h-12 w-1/4" />

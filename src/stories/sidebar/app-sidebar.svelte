@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { dev } from '$app/environment';
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
+	import ThemeToggle from '$stories/theme-toggle/theme-toggle.svelte';
 	import { LifeBuoy, Package2Icon, PlusIcon } from '@lucide/svelte';
 	import type { ComponentProps } from 'svelte';
 	import * as DropdownMenu from '../shadcnui/dropdown-menu';
@@ -77,20 +79,18 @@
 	];
 </script>
 
+<!-- Navigation data is runtime-configured, so its links cannot use typed resolve(). -->
+<!-- eslint-disable svelte/no-navigation-without-resolve -->
 <Sidebar.Root {...restProps} bind:ref>
 	<Sidebar.Header>
-		<a href="/" class="flex items-center space-x-2 transition-opacity hover:opacity-80">
+		<a href={resolve('/')} class="flex items-center gap-2 transition-opacity hover:opacity-80">
 			<div
-				class="flex aspect-square size-8 items-center justify-center rounded-lg bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-md"
+				class="flex size-8 items-center justify-center rounded-lg bg-brand text-brand-foreground shadow-sm"
 			>
-				<Package2Icon class="size-4 text-white" />
+				<Package2Icon />
 			</div>
 			<div>
-				<h2
-					class="bg-gradient-to-r from-yellow-500 to-yellow-600 bg-clip-text text-lg font-bold text-transparent"
-				>
-					ระบบพัสดุ
-				</h2>
+				<h2 class="text-lg font-bold text-sidebar-foreground">ระบบพัสดุ</h2>
 				<p class="-mt-1 text-xs text-muted-foreground">สโมสรนิสิตคณะวิทยาศาสตร์ จุฬาฯ</p>
 			</div>
 		</a>
@@ -131,6 +131,7 @@
 		{/each}
 	</Sidebar.Content>
 	<Sidebar.Footer>
+		<ThemeToggle />
 		<Sidebar.Menu>
 			<Sidebar.MenuItem>
 				<Sidebar.MenuButton>
@@ -174,17 +175,18 @@
 							{/snippet}
 						</DropdownMenu.Trigger>
 						<DropdownMenu.Content class="w-56" align="start">
-							<!-- <DropdownMenu.Label>My Account</DropdownMenu.Label> -->
-							<DropdownMenu.Separator />
-							<DropdownMenu.Item
-								variant="destructive"
-								onclick={async () => {
-									await authClient.signOut();
-									await goto('/');
-								}}
-							>
-								ออกจากระบบ
-							</DropdownMenu.Item>
+							<DropdownMenu.Group>
+								<DropdownMenu.Label>บัญชีผู้ใช้</DropdownMenu.Label>
+								<DropdownMenu.Item
+									variant="destructive"
+									onclick={async () => {
+										await authClient.signOut();
+										await goto(resolve('/'));
+									}}
+								>
+									ออกจากระบบ
+								</DropdownMenu.Item>
+							</DropdownMenu.Group>
 						</DropdownMenu.Content>
 					</DropdownMenu.Root>
 				</div>
@@ -192,7 +194,7 @@
 		{:else}
 			<Button
 				onclick={async () => {
-					await goto('/');
+					await goto(resolve('/'));
 				}}>เข้าสู่ระบบ</Button
 			>
 		{/if}
@@ -204,3 +206,4 @@
 	</Sidebar.Footer>
 	<Sidebar.Rail />
 </Sidebar.Root>
+<!-- eslint-enable svelte/no-navigation-without-resolve -->

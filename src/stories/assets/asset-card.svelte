@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { assetStatusOptions, assetTypeOptions } from '$lib/constants';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Badge } from '$stories/shadcnui/badge';
+	import { Button } from '$stories/shadcnui/button';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
 	import * as Card from '$stories/shadcnui/card';
 	import * as DropdownMenu from '$stories/shadcnui/dropdown-menu';
 	import { cn } from '$stories/utils';
@@ -58,9 +59,11 @@
 		/>
 		<div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
 		<!-- Status Badge -->
-		<Badge class={cn('absolute top-3 right-3 text-xs font-semibold', assetStatus?.color)}>
-			{assetStatus?.label}
-		</Badge>
+		{#if assetStatus}
+			<StatusBadge tone={assetStatus.tone} class="absolute top-3 right-3">
+				{assetStatus.label}
+			</StatusBadge>
+		{/if}
 	</div>
 
 	<!-- Content Section -->
@@ -99,7 +102,7 @@
 		</p>
 
 		<!-- Details -->
-		<div class="space-y-2 text-sm">
+		<div class="flex flex-col gap-2 text-sm">
 			<div class="flex items-center justify-between">
 				<span class="flex items-center text-muted-foreground">
 					<Package class="mr-2 size-4" />

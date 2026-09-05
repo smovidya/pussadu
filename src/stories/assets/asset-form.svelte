@@ -6,11 +6,11 @@
 	import * as Select from '$stories/shadcnui/select';
 	import * as FormPrimitive from 'formsnap';
 	import { assetStatusOptions, assetTypeOptions, projectOwnerOptions } from '$lib/constants';
-	import Textarea from '$stories/shadcnui/textarea/textarea.svelte';
+	import { Textarea } from '$stories/shadcnui/textarea';
 	import { insertAssetSchema, updateAssetSchema } from '$lib/validator/asset.validator';
 	import Upload from '$stories/file-input/upload.svelte';
 	import { listCategories } from '$lib/rpc/categories.remote';
-	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
+	import { Skeleton } from '$stories/shadcnui/skeleton';
 
 	type TSchema = typeof insertAssetSchema.infer | typeof updateAssetSchema.infer;
 
@@ -53,7 +53,7 @@
 		<Form.Legend>ประเภทพัสดุ</Form.Legend>
 		<RadioGroup.Root bind:value={$formData.type} name="type" class="w-full">
 			{#each assetTypeOptions as option (option.value)}
-				<div class="flex w-full flex-row items-start space-y-0 space-x-2">
+				<div class="flex w-full flex-row items-start gap-2">
 					<Form.Control>
 						{#snippet children({ props })}
 							<RadioGroup.Item disabled={mode === 'view'} value={option.value} {...props} />
@@ -135,9 +135,11 @@
 						{/if}
 					</Select.Trigger>
 					<Select.Content>
-						{#each assetStatusOptions as option (option.value)}
-							<Select.Item value={option.value}>{option.label}</Select.Item>
-						{/each}
+						<Select.Group>
+							{#each assetStatusOptions as option (option.value)}
+								<Select.Item value={option.value}>{option.label}</Select.Item>
+							{/each}
+						</Select.Group>
 					</Select.Content>
 				</Select.Root>
 			{/snippet}
@@ -166,9 +168,11 @@
 						{/if}
 					</Select.Trigger>
 					<Select.Content>
-						{#each projectOwnerOptions as item (item.value)}
-							<Select.Item value={item.value}>{item.label}</Select.Item>
-						{/each}
+						<Select.Group>
+							{#each projectOwnerOptions as item (item.value)}
+								<Select.Item value={item.value}>{item.label}</Select.Item>
+							{/each}
+						</Select.Group>
 					</Select.Content>
 				</Select.Root>
 			{/snippet}
@@ -223,9 +227,11 @@
 							{/if}
 						</Select.Trigger>
 						<Select.Content>
-							{#each categories as category (category.id)}
-								<Select.Item value={category.id}>{category.name}</Select.Item>
-							{/each}
+							<Select.Group>
+								{#each categories as category (category.id)}
+									<Select.Item value={category.id}>{category.name}</Select.Item>
+								{/each}
+							</Select.Group>
 						</Select.Content>
 					</Select.Root>
 				{:catch err}

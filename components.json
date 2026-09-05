@@ -12,5 +12,6 @@
 		"lib": "$stories"
 	},
 	"typescript": true,
+	"iconLibrary": "lucide",
 	"registry": "https://shadcn-svelte.com/registry"
 }

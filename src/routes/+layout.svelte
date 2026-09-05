@@ -6,6 +6,7 @@
 	import { QueryClient, QueryClientProvider } from '@tanstack/svelte-query';
 	import { Toaster } from '$stories/shadcnui/sonner';
 	import SmoLogo from '$lib/assets/smo.svg';
+	import { ModeWatcher } from 'mode-watcher';
 
 	const queryClient = new QueryClient({
 		defaultOptions: {
@@ -33,6 +34,8 @@
 	});
 </script>
 
+<ModeWatcher defaultMode="system" />
+
 <svelte:head>
 	<link rel="icon" href={favicon} />
 </svelte:head>
@@ -43,12 +46,10 @@
 	</QueryClientProvider>
 	{#snippet pending()}
 		<div class="relative flex h-screen w-full items-center justify-center">
-			<span
-				class="size-14 animate-spin rounded-full border-4 border-x-yellow-300/20 border-y-yellow-400"
-			>
+			<span class="size-14 animate-spin rounded-full border-4 border-x-brand/20 border-y-brand">
 				<span class="sr-only"> กำลังโหลด </span>
 			</span>
-			<img src={SmoLogo} alt="SMO Logo" class="absolute size-7 text-yellow-400" />
+			<img src={SmoLogo} alt="SMO Logo" class="absolute size-7 text-brand" />
 		</div>
 	{/snippet}
 </svelte:boundary>

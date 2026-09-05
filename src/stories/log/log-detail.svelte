@@ -70,8 +70,7 @@
 </script>
 
 {#snippet bulkList(items: unknown[], tone: 'success' | 'failure')}
-	{@const toneClass =
-		tone === 'success' ? 'text-green-700 dark:text-green-400' : 'text-red-700 dark:text-red-400'}
+	{@const toneClass = tone === 'success' ? 'text-success' : 'text-destructive'}
 	<ul class="flex flex-col gap-0.5">
 		{#each items.slice(0, BULK_LIST_CAP) as item, i (i)}
 			<li class="break-all">
@@ -113,14 +112,14 @@
 		{:else if action === 'update-borrowing-request' && isRecord(detail.to)}
 			<LogDetailDiff from={isRecord(detail.from) ? detail.from : null} to={detail.to} />
 		{:else if action === 'add-to-stock' && typeof detail.amountReturned === 'number'}
-			<p class="mb-1 font-medium text-green-700 dark:text-green-400">
+			<p class="mb-1 font-medium text-success">
 				<span class="tabular-nums">รับคืนเข้าคลัง +{detail.amountReturned}</span>
 			</p>
 			{#if isRecord(detail.request)}
 				<LogDetailKv data={detail.request} keys={KV_KEY_ORDER} />
 			{/if}
 		{:else if action === 'remove-from-stock' && typeof detail.difference === 'number'}
-			<p class="mb-1 font-medium text-orange-700 tabular-nums dark:text-orange-400">
+			<p class="mb-1 font-medium text-warning tabular-nums">
 				ตัดออกจากคลัง −{detail.difference} (คงเหลือ {detail.newAmount})
 			</p>
 			{#if isRecord(detail.request)}
@@ -133,7 +132,7 @@
 				{/if}
 				{#if detail.succeeded.length > 0}
 					<div>
-						<p class="font-medium text-green-700 dark:text-green-400">
+						<p class="font-medium text-success">
 							<span class="tabular-nums">สำเร็จ ({detail.succeeded.length})</span>
 						</p>
 						{@render bulkList(detail.succeeded, 'success')}
@@ -141,7 +140,7 @@
 				{/if}
 				{#if detail.failed.length > 0}
 					<div>
-						<p class="font-medium text-red-700 dark:text-red-400">
+						<p class="font-medium text-destructive">
 							<span class="tabular-nums">ล้มเหลว ({detail.failed.length})</span>
 						</p>
 						{@render bulkList(detail.failed, 'failure')}

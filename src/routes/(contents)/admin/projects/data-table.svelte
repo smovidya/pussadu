@@ -7,7 +7,6 @@
 		type RowSelectionState,
 		type SortingState,
 		type VisibilityState,
-		type Table as TableType,
 		getCoreRowModel,
 		getFacetedRowModel,
 		getFacetedUniqueValues,
@@ -16,7 +15,7 @@
 		getSortedRowModel,
 		type Column
 	} from '@tanstack/table-core';
-	import DataTableToolbar from './data-table-toolbar.svelte';
+	import { DataTablePagination, DataTableToolbar } from '$stories/data-table';
 	import { createSvelteTable } from '$stories/shadcnui/data-table/data-table.svelte.js';
 	import FlexRender from '$stories/shadcnui/data-table/flex-render.svelte';
 	import * as Table from '$stories/shadcnui/table';
@@ -26,10 +25,6 @@
 	import Checkbox from '$stories/shadcnui/checkbox/checkbox.svelte';
 	import { Button } from '$stories/shadcnui/button';
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
-	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import ChevronsLeftIcon from '@lucide/svelte/icons/chevrons-left';
-	import ChevronsRightIcon from '@lucide/svelte/icons/chevrons-right';
 	import ArrowUpIcon from '@lucide/svelte/icons/arrow-up';
 	import ArrowDownIcon from '@lucide/svelte/icons/arrow-down';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
@@ -43,8 +38,10 @@
 	import { toast } from 'svelte-sonner';
 	import { ChevronRight } from '@lucide/svelte';
 	import { goto } from '$app/navigation';
-	import { createMutation } from '@tanstack/svelte-query';
+	import { resolve } from '$app/paths';
 	import { Spinner } from '$stories/shadcnui/spinner';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import * as Empty from '$stories/shadcnui/empty';
 
 	type Project = {
 		id: string;
@@ -68,8 +65,6 @@
 	const { getAllProjectsQuery = $bindable() }: Props = $props();
 
 	const data = getAllProjectsQuery.current ?? [];
-	let dialogRemoveOpen = $state(false);
-
 	let rowSelection = $state<RowSelectionState>({});
 	let columnVisibility = $state<VisibilityState>({});
 	let columnFilters = $state<ColumnFiltersState>([]);
@@ -160,7 +155,7 @@
 					isPinned: row.original.isPinned
 				});
 			},
-			sortingFn: (rowA, rowB, columnId) => {
+			sortingFn: (rowA, rowB) => {
 				const aCount = rowA.original.isPinned ? Infinity : rowA.original.staffs.length;
 				const bCount = rowB.original.isPinned ? Infinity : rowB.original.staffs.length;
 				return aCount - bCount;
@@ -278,23 +273,18 @@
 			}}
 			{value}
 		>
-			<Select.Trigger
-				size="sm"
-				disabled={!!setProjectInfo.pending}
-				class={cn('w-35 justify-start border-none shadow-none', status.color)}
-			>
-				<status.icon class={cn('mr-2 size-4 shrink-0 text-inherit')} />
-				<span>
-					{status.label}
-				</span>
+			<Select.Trigger size="sm" disabled={!!setProjectInfo.pending} class="w-40 justify-start">
+				<StatusBadge tone={status.tone} Icon={status.icon}>{status.label}</StatusBadge>
 			</Select.Trigger>
 			<Select.Content>
-				{#each projectStatusOptions as status (status.value)}
-					<Select.Item value={status.value} class={cn(status.color, 'bg-background')}>
-						<status.icon class="mr-2 size-4 shrink-0 text-inherit" />
-						<span>{status.label}</span>
-					</Select.Item>
-				{/each}
+				<Select.Group>
+					{#each projectStatusOptions as status (status.value)}
+						<Select.Item value={status.value}>
+							<status.icon data-icon="inline-start" />
+							<span>{status.label}</span>
+						</Select.Item>
+					{/each}
+				</Select.Group>
 			</Select.Content>
 		</Select.Root>
 	{/if}
@@ -325,11 +315,11 @@
 				</span>
 			</Select.Trigger>
 			<Select.Content>
-				{#each projectOwnerOptions as owner (owner.value)}
-					<Select.Item value={owner.value} class="bg-background">
-						<span>{owner.label}</span>
-					</Select.Item>
-				{/each}
+				<Select.Group>
+					{#each projectOwnerOptions as owner (owner.value)}
+						<Select.Item value={owner.value}><span>{owner.label}</span></Select.Item>
+					{/each}
+				</Select.Group>
 			</Select.Content>
 		</Select.Root>
 	{/if}
@@ -364,7 +354,7 @@
 {/snippet}
 
 {#snippet TitleCell({ value }: { value: string })}
-	<div class="flex space-x-2">
+	<div class="flex gap-2">
 		<span class="max-w-125 truncate font-medium">
 			{value}
 		</span>
@@ -386,12 +376,12 @@
 				<DropdownMenu.Label>ดำเนินการ</DropdownMenu.Label>
 				<DropdownMenu.Item
 					onclick={() => {
-						goto(`/admin/projects/${row.original.id}`);
+						goto(resolve(`/admin/projects/${row.original.id}`));
 					}}>แก้ไข</DropdownMenu.Item
 				>
 				<DropdownMenu.Item
 					onclick={() => {
-						goto(`/admin/log/project/${row.original.id}`);
+						goto(resolve(`/admin/log/project/${row.original.id}`));
 					}}
 				>
 					ประวัติการดำเนินการ
@@ -436,81 +426,6 @@
 			</AlertDialog.Content>
 		</AlertDialog.Portal>
 	</AlertDialog.Root>
-{/snippet}
-
-{#snippet Pagination({ table }: { table: TableType<Project> })}
-	<div class="flex items-center justify-between px-2">
-		<div class="flex-1 text-sm text-muted-foreground tabular-nums">
-			เลือก {table.getFilteredSelectedRowModel().rows.length} แถวจาก
-			{table.getFilteredRowModel().rows.length} แถว
-		</div>
-		<div class="flex items-center space-x-6 lg:space-x-8">
-			<div class="flex items-center space-x-2">
-				<p class="text-sm font-medium">แถวต่อหน้า</p>
-				<Select.Root
-					allowDeselect={false}
-					type="single"
-					value={`${table.getState().pagination.pageSize}`}
-					onValueChange={(value) => {
-						table.setPageSize(Number(value));
-					}}
-				>
-					<Select.Trigger class="h-8 w-17.5 tabular-nums">
-						{String(table.getState().pagination.pageSize)}
-					</Select.Trigger>
-					<Select.Content side="top">
-						{#each [10, 20, 30, 40, 50] as pageSize (pageSize)}
-							<Select.Item value={`${pageSize}`}>
-								{pageSize}
-							</Select.Item>
-						{/each}
-					</Select.Content>
-				</Select.Root>
-			</div>
-			<div class="flex w-25 items-center justify-center text-sm font-medium">
-				หน้า {table.getState().pagination.pageIndex + 1} จาก
-				{table.getPageCount()}
-			</div>
-			<div class="flex items-center space-x-2">
-				<Button
-					variant="outline"
-					class="hidden size-8 p-0 lg:flex"
-					onclick={() => table.setPageIndex(0)}
-					disabled={!table.getCanPreviousPage()}
-				>
-					<span class="sr-only">ไปที่หน้าแรก</span>
-					<ChevronsLeftIcon />
-				</Button>
-				<Button
-					variant="outline"
-					class="size-8 p-0"
-					onclick={() => table.previousPage()}
-					disabled={!table.getCanPreviousPage()}
-				>
-					<span class="sr-only">ไปหน้าก่อนหน้า</span>
-					<ChevronLeftIcon />
-				</Button>
-				<Button
-					variant="outline"
-					class="size-8 p-0"
-					onclick={() => table.nextPage()}
-					disabled={!table.getCanNextPage()}
-				>
-					<span class="sr-only">ไปหน้าถัดไป</span>
-					<ChevronRightIcon />
-				</Button>
-				<Button
-					variant="outline"
-					class="hidden size-8 p-0 lg:flex"
-					onclick={() => table.setPageIndex(table.getPageCount() - 1)}
-					disabled={!table.getCanNextPage()}
-				>
-					<span class="sr-only">ไปหน้าสุดท้าย</span>
-					<ChevronsRightIcon />
-				</Button>
-			</div>
-		</div>
-	</div>
 {/snippet}
 
 {#snippet ColumnHeader({
@@ -567,8 +482,13 @@
 	{/if}
 {/snippet}
 
-<div class="space-y-4">
-	<DataTableToolbar {table} />
+<div class="flex flex-col gap-4">
+	<DataTableToolbar
+		{table}
+		searchColumn="title"
+		searchPlaceholder="ค้นหาโครงการ"
+		filters={[{ column: 'status', title: 'สถานะ', options: projectStatusOptions }]}
+	/>
 	<div class="rounded-md border">
 		<Table.Root>
 			<Table.Header>
@@ -598,11 +518,18 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length} class="h-24 text-center">ไม่พบข้อมูล</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<Empty.Root class="py-10">
+								<Empty.Header>
+									<Empty.Title>ไม่พบโครงการ</Empty.Title>
+									<Empty.Description>ลองเปลี่ยนคำค้นหาหรือล้างตัวกรอง</Empty.Description>
+								</Empty.Header>
+							</Empty.Root>
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</div>
-	{@render Pagination({ table })}
+	<DataTablePagination {table} />
 </div>

@@ -5,16 +5,14 @@
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
 	import { borrowingStatus, projectStatusOptions } from '$lib/constants';
-	import { Badge } from '$stories/shadcnui/badge';
-	import { cn } from '$stories/utils';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
+	import * as Empty from '$stories/shadcnui/empty';
 	import { formatDate } from '$lib/utils/datetime';
 </script>
 
 <PageWrapper pageTitle="รายการยืมของฉัน" groupTitle="ยืมพัสดุ" groupUrl="/projects">
-	<div>
-		<h1 class="text-2xl font-bold">รายการยืมของฉัน</h1>
-		<p>แสดงรายการพัสดุที่ยืมอยู่ในขณะนี้</p>
-	</div>
+	<PageHeader title="รายการยืมของฉัน" description="แสดงรายการพัสดุที่ยืมอยู่ในขณะนี้" />
 	{#await listBorrowed()}
 		<Skeleton class="h-20 w-full" />
 	{:then borrowedItems}
@@ -38,19 +36,17 @@
 						)}
 						<Table.Row class="hover:bg-muted/50">
 							<Table.Cell>
-								<Badge class={cn('text-medium', status?.color)}>
-									{status?.label}
-								</Badge>
+								{#if status}<StatusBadge tone={status.tone}>{status.label}</StatusBadge>{/if}
 							</Table.Cell>
 							<Table.Cell class="flex flex-row items-center"
 								>{item.project.title}
-								<Badge class={cn(projectStatus?.color, 'bg-background')}
-									>{projectStatus?.label}</Badge
-								></Table.Cell
+								{#if projectStatus}
+									<StatusBadge tone={projectStatus.tone}>{projectStatus.label}</StatusBadge>
+								{/if}</Table.Cell
 							>
 							<Table.Cell class="font-medium">
 								<a
-									href={resolve('/my-borrowing/[id]', { id: item.id })}
+									href={resolve(`/my-borrowing/${item.id}`)}
 									class="rounded-sm underline-offset-4 hover:underline focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
 								>
 									{item.asset.name}
@@ -66,7 +62,12 @@
 						</Table.Row>
 					{:else}
 						<Table.Row>
-							<Table.Cell colSpan={6} class="text-center">ไม่มีรายการยืม</Table.Cell>
+							<Table.Cell colspan={6}>
+								<Empty.Root
+									><Empty.Header><Empty.Title>ไม่มีรายการยืม</Empty.Title></Empty.Header
+									></Empty.Root
+								>
+							</Table.Cell>
 						</Table.Row>
 					{/each}
 				</Table.Body>

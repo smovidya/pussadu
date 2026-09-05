@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import { resolve } from '$app/paths';
 	import { createProject } from '$lib/rpc/project.remote';
 	import { createProjectSchema } from '$lib/validator/project.validator';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
 	import * as Card from '$stories/shadcnui/card';
 	import * as Form from '$stories/shadcnui/form';
 	import * as Select from '$stories/shadcnui/select';
-	import Input from '$stories/shadcnui/input/input.svelte';
+	import { Input } from '$stories/shadcnui/input';
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { arktype } from 'sveltekit-superforms/adapters';
 	import { possibleOwnerList } from '$lib/constants';
@@ -19,7 +20,7 @@
 		async onUpdate({ form }) {
 			if (!form.valid) return;
 			await createProject(form.data);
-			await goto('/admin/projects');
+			await goto(resolve('/admin/projects'));
 		}
 	});
 
@@ -31,7 +32,7 @@
 		<Card.Title>รายละเอียดโครงการ</Card.Title>
 	</Card.Header>
 	<Card.Content>
-		<form method="POST" use:enhance class="w-2/3 space-y-6">
+		<form method="POST" use:enhance class="flex w-full max-w-2xl flex-col gap-6">
 			<Form.Field {form} name="title">
 				<Form.Control>
 					{#snippet children({ props })}
@@ -60,9 +61,11 @@
 								{/if}
 							</Select.Trigger>
 							<Select.Content>
-								{#each possibleOwnerList as item (item)}
-									<Select.Item value={item}>{item}</Select.Item>
-								{/each}
+								<Select.Group>
+									{#each possibleOwnerList as item (item)}
+										<Select.Item value={item}>{item}</Select.Item>
+									{/each}
+								</Select.Group>
 							</Select.Content>
 						</Select.Root>
 					{/snippet}
@@ -89,8 +92,10 @@
 								{/if}
 							</Select.Trigger>
 							<Select.Content>
-								<Select.Item value="true">ทุกคนยืมได้</Select.Item>
-								<Select.Item value="false">เฉพาะสตาฟงาน</Select.Item>
+								<Select.Group>
+									<Select.Item value="true">ทุกคนยืมได้</Select.Item>
+									<Select.Item value="false">เฉพาะสตาฟงาน</Select.Item>
+								</Select.Group>
 							</Select.Content>
 						</Select.Root>
 					{/snippet}
@@ -126,11 +131,13 @@
 								{/if}
 							</Select.Trigger>
 							<Select.Content>
-								<Select.Item value="notstarted">ยังไม่เริ่ม</Select.Item>
-								<Select.Item value="inprogress">กำลังดำเนินการ</Select.Item>
-								<Select.Item value="completed">เสร็จสิ้น</Select.Item>
-								<Select.Item value="evaluated">อยู่ระหว่างการประเมิน</Select.Item>
-								<Select.Item value="cancelled">ยกเลิก</Select.Item>
+								<Select.Group>
+									<Select.Item value="notstarted">ยังไม่เริ่ม</Select.Item>
+									<Select.Item value="inprogress">กำลังดำเนินการ</Select.Item>
+									<Select.Item value="completed">เสร็จสิ้น</Select.Item>
+									<Select.Item value="evaluated">อยู่ระหว่างการประเมิน</Select.Item>
+									<Select.Item value="cancelled">ยกเลิก</Select.Item>
+								</Select.Group>
 							</Select.Content>
 						</Select.Root>
 					{/snippet}

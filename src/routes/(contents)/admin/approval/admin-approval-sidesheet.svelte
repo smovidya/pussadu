@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { borrowingUpdateSchema } from '$lib/validator/borrowing.validator';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
 	import * as Sheet from '$stories/shadcnui/sheet';
 	import * as Form from '$stories/shadcnui/form';
 	import * as Alert from '$stories/shadcnui/alert';
@@ -11,8 +11,8 @@
 	import { defaults, superForm } from 'sveltekit-superforms';
 	import { arktype } from 'sveltekit-superforms/adapters';
 	import { listBorrowingRequests, updateBorrowingRequest } from '$lib/rpc/borrowing.remote';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
-	import { cn } from '$stories/utils';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import * as InputGroup from '$stories/shadcnui/input-group';
 	import { borrowingStatus, projectStatusOptions } from '$lib/constants';
 	import { BadgeAlert } from '@lucide/svelte';
 	import Textarea from '$stories/shadcnui/textarea/textarea.svelte';
@@ -112,10 +112,12 @@
 				<span class="text-muted-foreground">โครงการ</span>
 				<strong class="flex flex-row items-center gap-2 text-lg"
 					>{request.project?.title}
-					<Badge class={cn('border-0', projectStatus?.color)}>{projectStatus?.label}</Badge></strong
+					{#if projectStatus}<StatusBadge tone={projectStatus.tone}
+							>{projectStatus.label}</StatusBadge
+						>{/if}</strong
 				>
 				{#if ['cancelled', 'completed', 'evaluated'].includes(request.project?.status || '')}
-					<Alert.Root variant="destructive" class="border-red-300/60 bg-red-50/60">
+					<Alert.Root variant="destructive" class="bg-destructive/10">
 						<BadgeAlert class="size-10" />
 						<Alert.Title>โครงปิดแล้วหรือเปล่า</Alert.Title>
 						<Alert.Description>
@@ -156,27 +158,22 @@
 				<div class="flex flex-col gap-1">
 					<span class="text-sm text-muted-foreground"> ยืมทั้งหมด </span>
 					<div>
-						<Form.Field {form} name="adminNote">
+						<Form.Field {form} name="amount">
 							<Form.Control>
 								{#snippet children({ props })}
-									<div
-										class={cn(
-											'flex h-9 w-full min-w-0 rounded-md border border-input bg-background px-3 py-1 text-base shadow-xs ring-offset-background transition-[color,box-shadow] outline-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 md:text-sm dark:bg-input/30'
-										)}
-									>
-										<input
+									<InputGroup.Root>
+										<InputGroup.Input
 											placeholder="จำนวน"
 											type="number"
 											bind:value={$formData.amount}
 											min={1}
 											max={(request.asset?.amount || 0) + request.asset_to_project.amount}
 											{...props}
-											class="w-full"
 										/>
-										<span>
-											{request.asset?.unitTerm}
-										</span>
-									</div>
+										<InputGroup.Addon align="inline-end">
+											<InputGroup.Text>{request.asset?.unitTerm}</InputGroup.Text>
+										</InputGroup.Addon>
+									</InputGroup.Root>
 								{/snippet}
 							</Form.Control>
 							<Form.FieldErrors />
@@ -274,13 +271,11 @@
 									{/if}
 								</Select.Trigger>
 								<Select.Content>
-									{#each borrowingStatus as { label, value, color } (value)}
-										<Select.Item {value}>
-											<Badge class={cn('ml-2 border-0', color)}>
-												{label}
-											</Badge>
-										</Select.Item>
-									{/each}
+									<Select.Group>
+										{#each borrowingStatus as { label, value } (value)}
+											<Select.Item {value}>{label}</Select.Item>
+										{/each}
+									</Select.Group>
 								</Select.Content>
 							</Select.Root>
 						{/snippet}

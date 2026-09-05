@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { getAllSystemLogs } from '$lib/rpc/log.remote';
 	import { getUserDirectory } from '$lib/rpc/user.remote';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
@@ -9,12 +10,12 @@
 	import * as Avatar from '$stories/shadcnui/avatar';
 	import * as Pagination from '$stories/shadcnui/pagination';
 	import { Input } from '$stories/shadcnui/input';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import * as Empty from '$stories/shadcnui/empty';
 	import { ArrowDown, ArrowUp, ChevronsUpDown, XIcon } from '@lucide/svelte';
 	import { logActionOptions } from '$lib/constants';
 	import { formatRelativeTime } from '$lib/utils/datetime';
-	import { cn } from '$stories/utils';
 	import LogDetail from './log-detail.svelte';
 	import LogTarget from './log-target.svelte';
 
@@ -109,17 +110,19 @@
 		<Select.Root type="single" bind:value={action}>
 			<Select.Trigger class="w-full md:w-[220px]">
 				{#if selectedAction}
-					<selectedAction.icon class={cn('mr-1 size-4 shrink-0', selectedAction.color)} />
+					<selectedAction.icon data-icon="inline-start" />
 					{selectedAction.label}
 				{/if}
 			</Select.Trigger>
 			<Select.Content>
-				{#each logActionOptions as opt (opt.value)}
-					<Select.Item value={opt.value}>
-						<opt.icon class={cn('mr-2 size-4 shrink-0', opt.color)} />
-						{opt.label}
-					</Select.Item>
-				{/each}
+				<Select.Group>
+					{#each logActionOptions as opt (opt.value)}
+						<Select.Item value={opt.value}>
+							<opt.icon data-icon="inline-start" />
+							{opt.label}
+						</Select.Item>
+					{/each}
+				</Select.Group>
 			</Select.Content>
 		</Select.Root>
 		{#if isFiltered}
@@ -216,12 +219,9 @@
 									</span>
 								</Table.Cell>
 								<Table.Cell>
-									<Badge class={cn('gap-1.5 border-0 font-normal', meta?.color)}>
-										{#if meta}
-											<meta.icon class="size-3.5" />
-										{/if}
+									<StatusBadge tone={meta?.tone ?? 'neutral'} Icon={meta?.icon}>
 										{meta?.label ?? log.action}
-									</Badge>
+									</StatusBadge>
 								</Table.Cell>
 								<Table.Cell class="max-w-90">
 									<p class="truncate text-sm" title={log.comment ?? undefined}>
@@ -259,10 +259,8 @@
 															<span class="font-semibold">{actorInfo.name}</span>
 															<span class="text-muted-foreground">{actorInfo.email}</span>
 															<code class="text-xs text-muted-foreground">{actorInfo.ouid}</code>
-															<!-- runtime row id, not a compile-time-known route, so it can't go through resolve() -->
-															<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 															<a
-																href={`/admin/log/user/${actorInfo.id}`}
+																href={resolve(`/admin/log/user/${actorInfo.id}`)}
 																class="text-xs text-primary hover:underline"
 															>
 																ดูโปรไฟล์และประวัติผู้ใช้
@@ -304,8 +302,13 @@
 							</Table.Row>
 						{:else}
 							<Table.Row>
-								<Table.Cell colspan={columnCount} class="h-32 text-center text-muted-foreground">
-									ไม่พบประวัติการดำเนินการ
+								<Table.Cell colspan={columnCount}>
+									<Empty.Root class="py-10">
+										<Empty.Header>
+											<Empty.Title>ไม่พบประวัติการดำเนินการ</Empty.Title>
+											<Empty.Description>ลองเปลี่ยนคำค้นหาหรือล้างตัวกรอง</Empty.Description>
+										</Empty.Header>
+									</Empty.Root>
 								</Table.Cell>
 							</Table.Row>
 						{/each}

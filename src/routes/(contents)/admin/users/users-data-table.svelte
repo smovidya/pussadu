@@ -7,7 +7,6 @@
 		type RowSelectionState,
 		type SortingState,
 		type VisibilityState,
-		type Table as TableType,
 		getCoreRowModel,
 		getFacetedRowModel,
 		getFacetedUniqueValues,
@@ -16,7 +15,7 @@
 		getSortedRowModel,
 		type Column
 	} from '@tanstack/table-core';
-	import DataTableToolbar from './data-table-toolbar.svelte';
+	import { DataTablePagination, DataTableToolbar } from '$stories/data-table';
 	import AddStudentSheet from './add-student-sheet.svelte';
 	import { createSvelteTable } from '$stories/shadcnui/data-table/data-table.svelte.js';
 	import FlexRender from '$stories/shadcnui/data-table/flex-render.svelte';
@@ -29,10 +28,6 @@
 	import { Input } from '$stories/shadcnui/input';
 	import Badge from '$stories/shadcnui/badge/badge.svelte';
 	import EllipsisIcon from '@lucide/svelte/icons/ellipsis';
-	import ChevronRightIcon from '@lucide/svelte/icons/chevron-right';
-	import ChevronLeftIcon from '@lucide/svelte/icons/chevron-left';
-	import ChevronsLeftIcon from '@lucide/svelte/icons/chevrons-left';
-	import ChevronsRightIcon from '@lucide/svelte/icons/chevrons-right';
 	import ArrowUpIcon from '@lucide/svelte/icons/arrow-up';
 	import ArrowDownIcon from '@lucide/svelte/icons/arrow-down';
 	import ChevronsUpDownIcon from '@lucide/svelte/icons/chevrons-up-down';
@@ -52,6 +47,8 @@
 	import { toast } from 'svelte-sonner';
 	import { Spinner } from '$stories/shadcnui/spinner';
 	import { goto } from '$app/navigation';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import * as Empty from '$stories/shadcnui/empty';
 
 	type User = {
 		id: string;
@@ -279,28 +276,26 @@
 			}
 		}}
 	>
-		<Select.Trigger
-			size="sm"
-			disabled={!!setStudentUserRole.pending}
-			class={cn('w-32 justify-start border-none shadow-none', role?.color)}
-		>
-			{role?.label ?? value}
+		<Select.Trigger size="sm" disabled={!!setStudentUserRole.pending} class="w-32 justify-start">
+			<Badge variant="secondary">{role?.label ?? value}</Badge>
 		</Select.Trigger>
 		<Select.Content>
-			{#each userRoleOptions as role (role.value)}
-				<Select.Item value={role.value} class={cn(role.color, 'bg-background')}>
-					{role.label}
-				</Select.Item>
-			{/each}
+			<Select.Group>
+				{#each userRoleOptions as role (role.value)}
+					<Select.Item value={role.value}>{role.label}</Select.Item>
+				{/each}
+			</Select.Group>
 		</Select.Content>
 	</Select.Root>
 {/snippet}
 
 {#snippet StatusCell({ banned, reason }: { banned: boolean | null; reason: string | null })}
 	{@const status = userStatusOptions.find((s) => s.value === (banned ? 'banned' : 'active'))}
-	<Badge class={cn('border-0', status?.color)} title={banned ? reason || undefined : undefined}>
-		{status?.label}
-	</Badge>
+	{#if status}
+		<StatusBadge tone={status.tone} title={banned ? reason || undefined : undefined}>
+			{status.label}
+		</StatusBadge>
+	{/if}
 {/snippet}
 
 {#snippet CreatedAtCell({ value }: { value: Date | null })}
@@ -388,81 +383,6 @@
 	</AlertDialog.Root>
 {/snippet}
 
-{#snippet Pagination({ table }: { table: TableType<User> })}
-	<div class="flex items-center justify-between px-2">
-		<div class="flex-1 text-sm text-muted-foreground tabular-nums">
-			เลือก {table.getFilteredSelectedRowModel().rows.length} แถวจาก
-			{table.getFilteredRowModel().rows.length} แถว
-		</div>
-		<div class="flex items-center space-x-6 lg:space-x-8">
-			<div class="flex items-center space-x-2">
-				<p class="text-sm font-medium">แถวต่อหน้า</p>
-				<Select.Root
-					allowDeselect={false}
-					type="single"
-					value={`${table.getState().pagination.pageSize}`}
-					onValueChange={(value) => {
-						table.setPageSize(Number(value));
-					}}
-				>
-					<Select.Trigger class="h-8 w-17.5 tabular-nums">
-						{String(table.getState().pagination.pageSize)}
-					</Select.Trigger>
-					<Select.Content side="top">
-						{#each [10, 20, 30, 40, 50] as pageSize (pageSize)}
-							<Select.Item value={`${pageSize}`}>
-								{pageSize}
-							</Select.Item>
-						{/each}
-					</Select.Content>
-				</Select.Root>
-			</div>
-			<div class="flex w-25 items-center justify-center text-sm font-medium">
-				หน้า {table.getState().pagination.pageIndex + 1} จาก
-				{table.getPageCount()}
-			</div>
-			<div class="flex items-center space-x-2">
-				<Button
-					variant="outline"
-					class="hidden size-8 p-0 lg:flex"
-					onclick={() => table.setPageIndex(0)}
-					disabled={!table.getCanPreviousPage()}
-				>
-					<span class="sr-only">ไปที่หน้าแรก</span>
-					<ChevronsLeftIcon />
-				</Button>
-				<Button
-					variant="outline"
-					class="size-8 p-0"
-					onclick={() => table.previousPage()}
-					disabled={!table.getCanPreviousPage()}
-				>
-					<span class="sr-only">ไปหน้าก่อนหน้า</span>
-					<ChevronLeftIcon />
-				</Button>
-				<Button
-					variant="outline"
-					class="size-8 p-0"
-					onclick={() => table.nextPage()}
-					disabled={!table.getCanNextPage()}
-				>
-					<span class="sr-only">ไปหน้าถัดไป</span>
-					<ChevronRightIcon />
-				</Button>
-				<Button
-					variant="outline"
-					class="hidden size-8 p-0 lg:flex"
-					onclick={() => table.setPageIndex(table.getPageCount() - 1)}
-					disabled={!table.getCanNextPage()}
-				>
-					<span class="sr-only">ไปหน้าสุดท้าย</span>
-					<ChevronsRightIcon />
-				</Button>
-			</div>
-		</div>
-	</div>
-{/snippet}
-
 {#snippet ColumnHeader({
 	column,
 	title,
@@ -515,11 +435,18 @@
 	{/if}
 {/snippet}
 
-<div class="space-y-4">
-	<div class="flex items-center justify-between gap-2">
-		<DataTableToolbar {table} />
-		<AddStudentSheet />
-	</div>
+<div class="flex flex-col gap-4">
+	<DataTableToolbar
+		{table}
+		searchColumn="name"
+		searchPlaceholder="ค้นหาด้วยชื่อหรืออีเมล"
+		filters={[
+			{ column: 'role', title: 'บทบาท', options: userRoleOptions },
+			{ column: 'status', title: 'สถานะ', options: userStatusOptions }
+		]}
+	>
+		{#snippet actions()}<AddStudentSheet />{/snippet}
+	</DataTableToolbar>
 
 	{#if selectedIds.length > 0}
 		<div class="flex items-center gap-2 rounded-md border bg-muted/40 p-2">
@@ -682,11 +609,18 @@
 					</Table.Row>
 				{:else}
 					<Table.Row>
-						<Table.Cell colspan={columns.length} class="h-24 text-center">ไม่พบข้อมูล</Table.Cell>
+						<Table.Cell colspan={columns.length}>
+							<Empty.Root class="py-10">
+								<Empty.Header>
+									<Empty.Title>ไม่พบผู้ใช้</Empty.Title>
+									<Empty.Description>ลองเปลี่ยนคำค้นหาหรือล้างตัวกรอง</Empty.Description>
+								</Empty.Header>
+							</Empty.Root>
+						</Table.Cell>
 					</Table.Row>
 				{/each}
 			</Table.Body>
 		</Table.Root>
 	</div>
-	{@render Pagination({ table })}
+	<DataTablePagination {table} />
 </div>

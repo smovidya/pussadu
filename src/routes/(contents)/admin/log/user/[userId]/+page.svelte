@@ -7,16 +7,19 @@
 	import * as Card from '$stories/shadcnui/card';
 	import * as Tabs from '$stories/shadcnui/tabs';
 	import * as Avatar from '$stories/shadcnui/avatar';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
+	import { Badge } from '$stories/shadcnui/badge';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
 	import { userRoleOptions, userStatusOptions } from '$lib/constants';
 	import { formatDate } from '$lib/utils/datetime';
-	import { cn } from '$stories/utils';
+	import PageHeader from '$stories/page-header/page-header.svelte';
+	import * as Empty from '$stories/shadcnui/empty';
 
 	let userId = $derived(page.params.userId ?? '');
 </script>
 
 <PageWrapper pageTitle="ประวัติผู้ใช้" groupTitle="ประวัติการดำเนินการ" groupUrl="/admin/log">
-	<div class="container mx-auto flex flex-col gap-4 py-10">
+	<div class="flex flex-col gap-6">
+		<PageHeader title="ประวัติผู้ใช้" description="ข้อมูลผู้ใช้และประวัติการดำเนินการในระบบ" />
 		<AsyncHttpBoundary dataLoader={getUserProfile({ userId })}>
 			{#snippet children(user)}
 				{#if user}
@@ -33,12 +36,12 @@
 							</Avatar.Root>
 							<div class="flex min-w-0 flex-col gap-0.5">
 								<div class="flex flex-wrap items-center gap-2">
-									<h1 class="text-xl font-bold">{user.name}</h1>
+									<h2 class="text-xl font-bold">{user.name}</h2>
 									{#if role}
-										<Badge class={cn('border-0 font-normal', role.color)}>{role.label}</Badge>
+										<Badge variant="secondary">{role.label}</Badge>
 									{/if}
 									{#if status}
-										<Badge class={cn('border-0 font-normal', status.color)}>{status.label}</Badge>
+										<StatusBadge tone={status.tone}>{status.label}</StatusBadge>
 									{/if}
 								</div>
 								<p class="text-sm text-muted-foreground">{user.email}</p>
@@ -62,9 +65,14 @@
 							{#if user.ouid}
 								<LogTable fixed={{ actor: user.ouid }} hideColumns={['actor']} />
 							{:else}
-								<p class="py-8 text-center text-muted-foreground">
-									ผู้ใช้นี้ยังไม่มีรหัสนิสิต (ouid) จึงไม่มีประวัติการกระทำในระบบ
-								</p>
+								<Empty.Root>
+									<Empty.Header>
+										<Empty.Title>ไม่มีประวัติการกระทำ</Empty.Title>
+										<Empty.Description>
+											ผู้ใช้นี้ยังไม่มีรหัสนิสิต (ouid) จึงไม่มีประวัติการกระทำในระบบ
+										</Empty.Description>
+									</Empty.Header>
+								</Empty.Root>
 							{/if}
 						</Tabs.Content>
 						<Tabs.Content value="about-user" class="pt-2">
@@ -72,9 +80,12 @@
 						</Tabs.Content>
 					</Tabs.Root>
 				{:else}
-					<p class="py-8 text-center text-muted-foreground">
-						ไม่พบผู้ใช้ <code class="rounded bg-muted px-1.5 py-0.5 text-xs">{userId}</code>
-					</p>
+					<Empty.Root>
+						<Empty.Header>
+							<Empty.Title>ไม่พบผู้ใช้</Empty.Title>
+							<Empty.Description>ไม่พบข้อมูลผู้ใช้รหัส {userId}</Empty.Description>
+						</Empty.Header>
+					</Empty.Root>
 				{/if}
 			{/snippet}
 		</AsyncHttpBoundary>

@@ -7,22 +7,23 @@
 	import ProjectCard from './project-card.svelte';
 	import * as Alert from '$stories/shadcnui/alert';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 </script>
 
 <PageWrapper pageTitle="เลือกโครงการ" groupTitle="ยืมพัสดุ" groupUrl="/projects">
-	<section class="container mx-auto my-4">
-		<h2 class="text-2xl font-bold">เลือกโครงการ</h2>
+	<section class="flex flex-col gap-4">
+		<PageHeader title="เลือกโครงการ" description="เลือกโครงการที่ต้องการใช้สำหรับการยืมพัสดุ" />
 		<AsyncHttpBoundary dataLoader={getMyBorrowerData()}>
 			{#snippet children(myBorrowerData)}
 				{#if myBorrowerData}
 					{@const data = myBorrowerData}
 					<p class="my-2">
-						ยินดีต้อนรับ <span class="font-semibold text-yellow-600">{data.name}</span>
+						ยินดีต้อนรับ <span class="font-semibold text-foreground">{data.name}</span>
 						({data.email}) เลือกโครงการที่ต้องการยืมด้านล่าง หากไม่เจอโครงการที่ต้องการ
 						ติดต่อฝ่ายพัสดุสโมสรนิสิตฯ
 					</p>
 				{:else}
-					<Alert.Root class="border-destructive/50 text-destructive dark:border-destructive">
+					<Alert.Root variant="destructive">
 						<Alert.Title>ไม่พบข้อมูลผู้ยืม</Alert.Title>
 						<Alert.Description>
 							ไม่สามารถโหลดข้อมูลผู้ยืมได้ โปรดติดต่อฝ่ายพัสดุสโมสรนิสิตฯ

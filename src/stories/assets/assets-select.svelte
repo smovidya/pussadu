@@ -2,7 +2,8 @@
 	import { assetTypeOptions, projectStatusOptions } from '$lib/constants';
 	import { listAssets } from '$lib/rpc/assets.remote';
 	import PageWrapper from '$stories/page-wrapper/page-wrapper.svelte';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 	import Skeleton from '$stories/shadcnui/skeleton/skeleton.svelte';
 	import AssetsList from './assets-booking-list.svelte';
 	import ConsentContent from './asset-consent-content.svelte';
@@ -28,16 +29,12 @@
 </script>
 
 <PageWrapper groupTitle="ยืมพัสดุ" groupUrl="/projects" pageTitle="ยืมพัสดุใหม่">
-	<header class="sticky top-0 z-10 bg-background py-5">
-		<span class="text-muted-foreground"> คุณกำลังยืมพัสดุสำหรับโครงการ </span>
-		<h1 class="flex items-center gap-2 text-2xl font-bold">
-			<span>
-				{project.title}
-			</span>
-
-			<Badge class={status?.color}>{status?.label}</Badge>
-		</h1>
-	</header>
+	<PageHeader title={project.title} description="คุณกำลังยืมพัสดุสำหรับโครงการนี้">
+		{#snippet actions()}
+			{#if status}<StatusBadge tone={status.tone} Icon={status.icon}>{status.label}</StatusBadge
+				>{/if}
+		{/snippet}
+	</PageHeader>
 	<section>
 		<ConsentContent />
 	</section>

@@ -32,13 +32,11 @@
 		{#each changes as change (change.key)}
 			<div class="flex flex-wrap items-center gap-1.5">
 				<span class="font-medium text-muted-foreground">{labelForKey(change.key)}:</span>
-				<span
-					class="rounded bg-red-50 px-1 text-red-700 line-through dark:bg-red-950 dark:text-red-300"
-				>
+				<span class="rounded bg-destructive/15 px-1 text-destructive line-through">
 					{change.oldText}
 				</span>
-				<MoveRight class="size-3 shrink-0 text-muted-foreground" />
-				<span class="rounded bg-green-50 px-1 text-green-700 dark:bg-green-950 dark:text-green-300">
+				<MoveRight class="shrink-0 text-muted-foreground" />
+				<span class="rounded bg-success/15 px-1 text-success">
 					{change.newText}
 				</span>
 			</div>

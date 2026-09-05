@@ -1,13 +1,13 @@
 <script lang="ts">
-	import * as Card from '$stories/shadcnui/card';
+	import * as Alert from '$stories/shadcnui/alert';
+	import CircleAlertIcon from '@lucide/svelte/icons/circle-alert';
 </script>
 
-<Card.Root class="border-yellow-200 bg-yellow-50">
-	<Card.Header>
-		<h2 class="text-lg font-semibold">เงื่อนไขการยืมพัสดุ</h2>
-		<p class="text-sm text-muted-foreground">กรุณาอ่านและยอมรับเงื่อนไขการยืมพัสดุก่อนดำเนินการ</p>
-	</Card.Header>
-	<Card.Content>
+<Alert.Root>
+	<CircleAlertIcon />
+	<Alert.Title>เงื่อนไขการยืมพัสดุ</Alert.Title>
+	<Alert.Description>
+		<p>กรุณาอ่านและยอมรับเงื่อนไขการยืมพัสดุก่อนดำเนินการ</p>
 		<ul class="list-disc pl-5">
 			<li>
 				การคืนพัสดุต้องทำในระยะเวลาของโครงการหรือหลังจบโครงการไปได้ไม่เกิน 3 วัน โดยไม่นับวันหยุด
@@ -18,5 +18,5 @@
 				จะมีการแจ้งเตือนจากทางสโมสรนิสิต (Not final)
 			</li>
 		</ul>
-	</Card.Content>
-</Card.Root>
+	</Alert.Description>
+</Alert.Root>

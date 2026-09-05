@@ -7,6 +7,7 @@
 	import AssetsNewButton from '$stories/assets/asset-new-button.svelte';
 	import { authClient } from '$lib/auth-client';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 
 	const auth = authClient.useSession();
 
@@ -19,15 +20,11 @@
 </script>
 
 <PageWrapper groupTitle="ยืมพัสดุ" pageTitle="รายการพัสดุ" groupUrl="/projects">
-	<header class="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-		<div>
-			<h1 class="text-2xl font-bold">รายการพัสดุ</h1>
-			<p>รายการพัสดุที่สามารถยืมได้</p>
-		</div>
-		{#if $auth.data?.user.role?.split(',').includes('admin')}
-			<AssetsNewButton />
-		{/if}
-	</header>
+	<PageHeader title="รายการพัสดุ" description="รายการพัสดุที่สามารถยืมได้">
+		{#snippet actions()}
+			{#if $auth.data?.user.role?.split(',').includes('admin')}<AssetsNewButton />{/if}
+		{/snippet}
+	</PageHeader>
 
 	<AsyncHttpBoundary dataLoader={listAssetsLoader}>
 		{#snippet children(assets)}

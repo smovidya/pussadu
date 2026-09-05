@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { assetStatusOptions } from '$lib/constants';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
-	import Button from '$stories/shadcnui/button/button.svelte';
+	import { Button } from '$stories/shadcnui/button';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
 	import * as DropdownMenu from '$stories/shadcnui/dropdown-menu';
 	import { cn } from '$stories/utils';
 	import { Ellipsis } from '@lucide/svelte';
@@ -54,9 +54,11 @@
 		loading="lazy"
 	/>
 
-	<Badge class={cn('absolute top-2 right-2 text-xs font-semibold', assetStatus?.color)}>
-		{assetStatus?.label}
-	</Badge>
+	{#if assetStatus}
+		<StatusBadge tone={assetStatus.tone} class="absolute top-2 right-2">
+			{assetStatus.label}
+		</StatusBadge>
+	{/if}
 
 	{#if actionDropdownMenuContent}
 		<div
@@ -65,9 +67,8 @@
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>
 					{#snippet child({ props })}
-						<Button variant="secondary" size="icon" class="size-7 shadow" {...props}>
-							<Ellipsis class="size-4" />
-							<span class="sr-only">เปิดเมนู</span>
+						<Button variant="secondary" size="icon" {...props} aria-label="เปิดเมนู">
+							<Ellipsis />
 						</Button>
 					{/snippet}
 				</DropdownMenu.Trigger>

@@ -3,11 +3,11 @@
 	import { getMyBorrowingRequestInfo } from '$lib/rpc/borrowing.remote';
 	import AsyncHttpBoundary from '$stories/boundary/async-http-boundary.svelte';
 	import { Skeleton } from '$stories/shadcnui/skeleton';
-	import Badge from '$stories/shadcnui/badge/badge.svelte';
+	import StatusBadge from '$stories/status-badge/status-badge.svelte';
 	import { Separator } from '$stories/shadcnui/separator';
 	import { borrowingStatus, projectStatusOptions } from '$lib/constants';
 	import { formatDate } from '$lib/utils/datetime';
-	import { cn } from '$stories/utils';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 
 	let { id }: { id: string } = $props();
 </script>
@@ -18,13 +18,14 @@
 			{@const status = borrowingStatus.find((s) => s.value === request.status)}
 			{@const projectStatus = projectStatusOptions.find((s) => s.value === request.project?.status)}
 			<div class="mx-auto flex w-full max-w-2xl flex-col gap-4">
-				<div class="flex flex-col gap-1">
-					<div class="flex items-center gap-2">
-						<h1 class="text-2xl font-bold">{request.asset?.name}</h1>
-						<Badge class={cn('border-0', status?.color)}>{status?.label}</Badge>
-					</div>
-					<p class="text-muted-foreground">{request.asset?.description}</p>
-				</div>
+				{#snippet actions()}
+					{#if status}<StatusBadge tone={status.tone}>{status.label}</StatusBadge>{/if}
+				{/snippet}
+				<PageHeader
+					title={request.asset?.name ?? 'รายละเอียดการยืม'}
+					description={request.asset?.description ?? undefined}
+					{actions}
+				/>
 
 				{#if request.asset?.image_url}
 					<div class="w-full overflow-hidden rounded-md shadow">
@@ -43,9 +44,9 @@
 					<div class="flex items-center gap-2">
 						<strong class="text-lg">{request.project?.title}</strong>
 						{#if projectStatus}
-							<Badge class={cn('border-0 bg-background', projectStatus.color)}>
+							<StatusBadge tone={projectStatus.tone}>
 								{projectStatus.label}
-							</Badge>
+							</StatusBadge>
 						{/if}
 					</div>
 				</div>

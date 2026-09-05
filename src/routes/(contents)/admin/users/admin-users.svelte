@@ -5,17 +5,16 @@
 	import AlertErrorHttpUnauthorized from '$stories/alert/alert-error-http-unauthorized.svelte';
 	import UsersDataTable from './users-data-table.svelte';
 	import { authClient } from '$lib/auth-client';
+	import PageHeader from '$stories/page-header/page-header.svelte';
 
 	const getAllStudentUsersQuery = getAllStudentUsers();
 </script>
 
 <PageWrapper groupTitle="การจัดการผู้ใช้" pageTitle="รายการผู้ใช้" groupUrl="/admin/users">
-	<div class="flex flex-col gap-2">
-		<h1 class="text-2xl font-bold">การจัดการผู้ใช้</h1>
-		<p class="text-muted-foreground">
-			จัดการบัญชีผู้ใช้ในระบบ เพิ่ม ลบ แบน และเปลี่ยนบทบาทได้ทั้งแบบทีละคนและหลายคนพร้อมกัน
-		</p>
-	</div>
+	<PageHeader
+		title="การจัดการผู้ใช้"
+		description="จัดการบัญชีผู้ใช้ในระบบ เพิ่ม ลบ แบน และเปลี่ยนบทบาทได้ทั้งแบบทีละคนและหลายคนพร้อมกัน"
+	/>
 	{#await authClient.admin.hasPermission({ permission: { user: ['list'] } })}
 		<Skeleton class="h-40 w-full" />
 	{:then perm}
