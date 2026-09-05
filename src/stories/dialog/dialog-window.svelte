@@ -30,12 +30,12 @@
 		bind:ref
 		data-slot="dialog-content"
 		interactOutsideBehavior="ignore"
-		class="win7 group fixed top-[50%] left-[50%] z-50 w-72 translate-x-[-50%] translate-y-[-50%] data-[state=closed]:animate-out"
+		class="win7 group data-[state=closed]:animate-out fixed top-[50%] left-[50%] z-50 w-72 translate-x-[-50%] translate-y-[-50%]"
 		{...restProps}
 	>
 		<div
 			class={cn(
-				'window glass active pointer-events-auto w-full group-data-[state=closed]:animate-out group-data-[state=closed]:fade-out-0 group-data-[state=closed]:zoom-out-95 group-data-[state=open]:animate-in group-data-[state=open]:fade-in-0 group-data-[state=open]:zoom-in-95',
+				'window glass active group-data-[state=closed]:animate-out group-data-[state=closed]:fade-out-0 group-data-[state=closed]:zoom-out-95 group-data-[state=open]:animate-in group-data-[state=open]:fade-in-0 group-data-[state=open]:zoom-in-95 pointer-events-auto w-full',
 				className
 			)}
 			{...draggable.container}
