@@ -10,11 +10,11 @@ import * as projectModel from '$lib/server/models/project.model';
 import { insertNewLog } from '$lib/server/models/audit.model';
 
 const peopleFilterSchema = type({
-	'query?': 'string',
-	'departmentId?': 'string',
-	'eligibility?': '"eligible" | "suspended"',
-	'projectId?': 'string',
-	'role?': '"admin" | "staff" | "user"',
+	'query?': 'string | undefined',
+	'departmentId?': 'string | undefined',
+	'eligibility?': '"eligible" | "suspended" | undefined',
+	'projectId?': 'string | undefined',
+	'role?': '"admin" | "staff" | "user" | undefined',
 	page: 'number.integer>=1',
 	pageSize: 'number.integer>=10'
 });
@@ -25,7 +25,7 @@ export const listPeople = query(peopleFilterSchema, async (filters) => {
 });
 
 export const searchProjectMemberCandidates = query(
-	type({ projectId: 'string', 'query?': 'string' }),
+	type({ projectId: 'string', 'query?': 'string | undefined' }),
 	async ({ projectId, query: search }) => {
 		const user = Guard.loggedIn();
 		const isAdmin = (user as typeof user & { role?: string }).role?.split(',').includes('admin');
@@ -49,7 +49,7 @@ export const setBorrowingEligibility = command(
 	type({
 		ouid: 'string',
 		eligibility: '"eligible" | "suspended"',
-		'reason?': 'string'
+		'reason?': 'string | undefined'
 	}),
 	async (data) => {
 		const { ouid: actorOuid } = Guard.admin();

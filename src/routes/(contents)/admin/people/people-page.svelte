@@ -28,18 +28,31 @@
 	const departmentsQuery = listDepartment();
 	const projectsQuery = getAllProjects();
 
-	const peopleQuery = $derived(
-		listPeople({
-			query: page.url.searchParams.get('query') || undefined,
-			eligibility:
-				(page.url.searchParams.get('eligibility') as 'eligible' | 'suspended' | null) ?? undefined,
-			role: (page.url.searchParams.get('role') as 'admin' | 'staff' | 'user' | null) ?? undefined,
-			departmentId: page.url.searchParams.get('departmentId') || undefined,
-			projectId: page.url.searchParams.get('projectId') || undefined,
-			page: Math.max(1, Number(page.url.searchParams.get('page') ?? 1)),
+	function getPeopleFilters() {
+		const params = page.url.searchParams;
+		const searchQuery = params.get('query')?.trim();
+		const eligibilityFilter = params.get('eligibility');
+		const roleFilter = params.get('role');
+		const selectedDepartmentId = params.get('departmentId');
+		const selectedProjectId = params.get('projectId');
+		const requestedPage = Number(params.get('page') ?? 1);
+
+		return {
+			...(searchQuery ? { query: searchQuery } : {}),
+			...(eligibilityFilter === 'eligible' || eligibilityFilter === 'suspended'
+				? { eligibility: eligibilityFilter }
+				: {}),
+			...(roleFilter === 'admin' || roleFilter === 'staff' || roleFilter === 'user'
+				? { role: roleFilter }
+				: {}),
+			...(selectedDepartmentId ? { departmentId: selectedDepartmentId } : {}),
+			...(selectedProjectId ? { projectId: selectedProjectId } : {}),
+			page: Number.isInteger(requestedPage) && requestedPage >= 1 ? requestedPage : 1,
 			pageSize: 20
-		})
-	);
+		};
+	}
+
+	const peopleQuery = $derived(listPeople(getPeopleFilters()));
 
 	async function updateUrl(nextPage = 1) {
 		const url = new URL(page.url);
@@ -50,7 +63,8 @@
 			else url.searchParams.delete(key);
 		}
 		url.searchParams.set('page', String(nextPage));
-		await goto(`${resolve('/admin/people')}${url.search}`, {
+		const destination = resolve(`/admin/people${url.search}`);
+		await goto(destination, {
 			replaceState: true,
 			noScroll: true,
 			keepFocus: true
