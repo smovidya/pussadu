@@ -29,7 +29,8 @@
 			if (value) url.searchParams.set(key, value);
 			else url.searchParams.delete(key);
 		}
-		goto(`${resolve('/my-borrowing')}${url.search}`, {
+		const destination = resolve(`/my-borrowing${url.search}`);
+		goto(destination, {
 			replaceState: true,
 			noScroll: true,
 			keepFocus: true
@@ -50,7 +51,7 @@
 			const days = item.createdAt
 				? Math.max(0, Math.floor((Date.now() - item.createdAt.getTime()) / 86_400_000))
 				: 0;
-			return days ? `รอเจ้าหน้าที่ตรวจมา ${days} วัน (ไม่มีวันหมดอายุ)` : 'รอเจ้าหน้าที่ตรวจคำขอ';
+			return days ? `รอฝ่ายพัสดุตรวจมา ${days} วัน (ไม่มีวันหมดอายุ)` : 'รอฝ่ายพัสดุตรวจคำขอ';
 		}
 		if (item.status === 'approved') return 'พร้อมรับพัสดุ';
 		if (item.status === 'inuse') return dueInfo(item)?.label ?? 'ส่งคืนตามกำหนด';

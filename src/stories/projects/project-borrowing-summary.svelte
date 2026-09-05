@@ -16,7 +16,7 @@
 <Card.Root class="mx-auto mt-6 w-full max-w-7xl">
 	<Card.Header
 		><Card.Title>คำขอยืมของโครงการ</Card.Title><Card.Description
-			>ผู้ประสานงานดูสถานะรวมได้ การอนุมัติและรับคืนยังเป็นหน้าที่เจ้าหน้าที่พัสดุ</Card.Description
+			>ผู้ประสานงานดูสถานะรวมได้ การอนุมัติและรับคืนยังเป็นหน้าที่ฝ่ายพัสดุ</Card.Description
 		></Card.Header
 	>
 	<Card.Content>

@@ -46,14 +46,14 @@
 	};
 
 	function nextStep(status: string, endDate: Date) {
-		if (status === 'pending') return 'เจ้าหน้าที่กำลังตรวจคำขอ รายการถูกพักไว้ให้แล้ว';
-		if (status === 'approved') return 'ติดต่อเจ้าหน้าที่เพื่อรับพัสดุตามวันที่กำหนด';
+		if (status === 'pending') return 'ฝ่ายพัสดุกำลังตรวจคำขอ รายการถูกพักไว้ให้แล้ว';
+		if (status === 'approved') return 'ติดต่อฝ่ายพัสดุเพื่อรับพัสดุตามวันที่กำหนด';
 		if (status === 'inuse') {
 			return endDate < new Date()
-				? 'เลยกำหนดส่งคืนแล้ว โปรดติดต่อเจ้าหน้าที่ทันที'
+				? 'เลยกำหนดส่งคืนแล้ว โปรดติดต่อฝ่ายพัสดุทันที'
 				: `ส่งคืนภายใน ${formatDate(endDate)}`;
 		}
-		if (status === 'rejected') return 'ตรวจหมายเหตุจากเจ้าหน้าที่ แล้วสร้างคำขอใหม่ได้';
+		if (status === 'rejected') return 'ตรวจหมายเหตุจากฝ่ายพัสดุ แล้วสร้างคำขอใหม่ได้';
 		if (status === 'cancelled') return 'คำขอนี้ถูกยกเลิก พัสดุถูกคืนสู่จำนวนพร้อมยืมแล้ว';
 		return 'รายการนี้เสร็จสิ้นแล้ว';
 	}
@@ -161,7 +161,7 @@
 									<p class="break-words">{request.note || 'ไม่ระบุ'}</p>
 								</div>
 								<div class="sm:col-span-2">
-									<p class="text-sm text-muted-foreground">หมายเหตุจากเจ้าหน้าที่</p>
+									<p class="text-sm text-muted-foreground">หมายเหตุจากฝ่ายพัสดุ</p>
 									<p class="break-words">{request.adminNote || 'ไม่ระบุ'}</p>
 								</div>
 							</Card.Content>
@@ -232,7 +232,7 @@
 							<Dialog.Content
 								><Dialog.Header
 									><Dialog.Title>แก้ไขคำขอ</Dialog.Title><Dialog.Description
-										>แก้จำนวน ช่วงวันที่ และหมายเหตุได้จนกว่าเจ้าหน้าที่จะอนุมัติ</Dialog.Description
+										>แก้จำนวน ช่วงวันที่ และหมายเหตุได้จนกว่าฝ่ายพัสดุจะอนุมัติ</Dialog.Description
 									></Dialog.Header
 								>
 								<Field.Group
@@ -294,7 +294,7 @@
 								<AlertDialog.Header
 									><AlertDialog.Title>ยกเลิกคำขอนี้?</AlertDialog.Title><AlertDialog.Description
 										>{request.status === 'approved'
-											? 'คำขออนุมัติแล้ว เจ้าหน้าที่อาจเตรียมพัสดุไว้แล้ว'
+											? 'คำขออนุมัติแล้ว ฝ่ายพัสดุอาจเตรียมพัสดุไว้แล้ว'
 											: 'พัสดุที่พักไว้จะกลับมาให้ผู้อื่นยืมได้'}</AlertDialog.Description
 									></AlertDialog.Header
 								>

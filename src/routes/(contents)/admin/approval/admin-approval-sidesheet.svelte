@@ -125,12 +125,12 @@
 
 			<Field.Field>
 				<Field.Label for={`admin-note-${request.asset_to_project.id}`}
-					>หมายเหตุเจ้าหน้าที่</Field.Label
+					>หมายเหตุฝ่ายพัสดุ</Field.Label
 				>
 				<Textarea
 					id={`admin-note-${request.asset_to_project.id}`}
 					bind:value={note}
-					placeholder="เหตุผลหรือข้อมูลส่งต่อให้เจ้าหน้าที่คนถัดไป"
+					placeholder="เหตุผลหรือข้อมูลส่งต่อภายในฝ่ายพัสดุ"
 				/>
 			</Field.Field>
 
