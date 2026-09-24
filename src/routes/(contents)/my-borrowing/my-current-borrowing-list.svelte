@@ -37,6 +37,16 @@
 		});
 	}
 
+	function isDue(item: Item) {
+		return item.status === 'inuse' && item.endDate.getTime() <= Date.now() + 3 * 86_400_000;
+	}
+
+	function filterBySummary(status: string) {
+		selectedStatus = status;
+		search = '';
+		setParams({ status, tab: null, query: null });
+	}
+
 	function dueInfo(item: Item) {
 		if (item.status !== 'inuse') return null;
 		const days = Math.ceil((item.endDate.getTime() - Date.now()) / 86_400_000);
@@ -91,13 +101,19 @@
 			pending: items.filter((item) => item.status === 'pending').length,
 			approved: items.filter((item) => item.status === 'approved').length,
 			inuse: items.filter((item) => item.status === 'inuse').length,
-			due: items.filter(
-				(item) => item.status === 'inuse' && item.endDate.getTime() <= Date.now() + 3 * 86_400_000
-			).length
+			due: items.filter(isDue).length
 		}}
 		<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-			{#each [{ label: 'รออนุมัติ', value: counts.pending, tone: 'info' as const }, { label: 'พร้อมรับ', value: counts.approved, tone: 'success' as const }, { label: 'กำลังใช้งาน', value: counts.inuse, tone: 'warning' as const }, { label: 'ใกล้/เกินกำหนด', value: counts.due, tone: counts.due ? ('destructive' as const) : ('neutral' as const) }] as summary (summary.label)}
-				<Card.Root>
+			{#each [{ label: 'รออนุมัติ', status: 'pending', value: counts.pending, tone: 'info' as const }, { label: 'พร้อมรับ', status: 'approved', value: counts.approved, tone: 'success' as const }, { label: 'กำลังใช้งาน', status: 'inuse', value: counts.inuse, tone: 'warning' as const }, { label: 'ใกล้/เกินกำหนด', status: 'due', value: counts.due, tone: counts.due ? ('destructive' as const) : ('neutral' as const) }] as summary (summary.label)}
+				<Card.Root class="relative hover:bg-muted/50">
+					<button
+						type="button"
+						class="absolute inset-0 cursor-pointer rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-pressed:ring-2 aria-pressed:ring-ring"
+						aria-label={`กรองรายการ: ${summary.label} (${summary.value})`}
+						aria-pressed={page.url.searchParams.get('tab') !== 'history' &&
+							page.url.searchParams.get('status') === summary.status}
+						onclick={() => filterBySummary(summary.status)}
+					></button>
 					<Card.Header class="gap-2">
 						<Card.Description>{summary.label}</Card.Description>
 						<Card.Title class="text-3xl tabular-nums">{summary.value}</Card.Title>
@@ -136,11 +152,15 @@
 				/>
 				<Select.Root type="single" bind:value={selectedStatus}>
 					<Select.Trigger aria-label="กรองสถานะ">
-						{borrowingStatus.find((status) => status.value === selectedStatus)?.label ?? 'ทุกสถานะ'}
+						{selectedStatus === 'due'
+							? 'ใกล้/เกินกำหนด'
+							: (borrowingStatus.find((status) => status.value === selectedStatus)?.label ??
+								'ทุกสถานะ')}
 					</Select.Trigger>
 					<Select.Content>
 						<Select.Group>
 							<Select.Item value="all">ทุกสถานะ</Select.Item>
+							<Select.Item value="due">ใกล้/เกินกำหนด</Select.Item>
 							{#each borrowingStatus as status (status.value)}
 								<Select.Item value={status.value}>{status.label}</Select.Item>
 							{/each}
@@ -161,7 +181,11 @@
 									? currentStatuses.includes(item.status as (typeof currentStatuses)[number])
 									: !currentStatuses.includes(item.status as (typeof currentStatuses)[number])
 							)
-							.filter((item) => !statusFilter || item.status === statusFilter)
+							.filter(
+								(item) =>
+									!statusFilter ||
+									(statusFilter === 'due' ? isDue(item) : item.status === statusFilter)
+							)
 							.filter(
 								(item) =>
 									!queryText ||

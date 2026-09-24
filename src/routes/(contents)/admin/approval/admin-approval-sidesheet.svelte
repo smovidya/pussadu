@@ -102,6 +102,35 @@
 					<p class="font-medium">{request.borrower?.name ?? '-'}</p>
 					<p class="text-sm text-muted-foreground">{request.borrower?.ouid}</p>
 				</div>
+				<div class="min-w-0 sm:col-span-2">
+					<p class="text-sm text-muted-foreground">ข้อมูลติดต่อผู้ยืม</p>
+					<dl class="mt-1 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1 text-sm">
+						<dt class="text-muted-foreground">โทรศัพท์</dt>
+						<dd>
+							{#if request.borrower?.phone}
+								<a
+									class="break-words underline underline-offset-4"
+									href={`tel:${request.borrower.phone}`}
+								>
+									{request.borrower.phone}
+								</a>
+							{:else}ไม่ระบุ{/if}
+						</dd>
+						<dt class="text-muted-foreground">อีเมล</dt>
+						<dd>
+							{#if request.borrower?.email}
+								<a
+									class="break-all underline underline-offset-4"
+									href={`mailto:${request.borrower.email}`}
+								>
+									{request.borrower.email}
+								</a>
+							{:else}ไม่ระบุ{/if}
+						</dd>
+						<dt class="text-muted-foreground">LINE ID</dt>
+						<dd class="break-words">{request.borrower?.line_id || 'ไม่ระบุ'}</dd>
+					</dl>
+				</div>
 				<div>
 					<p class="text-sm text-muted-foreground">จำนวน</p>
 					<p class="font-medium tabular-nums">
