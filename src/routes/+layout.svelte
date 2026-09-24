@@ -49,7 +49,7 @@
 			<span class="size-14 animate-spin rounded-full border-4 border-x-brand/20 border-y-brand">
 				<span class="sr-only"> กำลังโหลด </span>
 			</span>
-			<img src={SmoLogo} alt="SMO Logo" class="absolute size-7 text-brand" />
+			<img src={SmoLogo} alt="SMO Logo" class="absolute size-7 text-brand dark:invert" />
 		</div>
 	{/snippet}
 </svelte:boundary>
