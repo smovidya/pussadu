@@ -4,7 +4,6 @@
 	import * as Form from '$stories/shadcnui/form';
 	import * as RadioGroup from '$stories/shadcnui/radio-group';
 	import * as Select from '$stories/shadcnui/select';
-	import * as FormPrimitive from 'formsnap';
 	import { assetTypeOptions, projectOwnerOptions } from '$lib/constants';
 	import { Textarea } from '$stories/shadcnui/textarea';
 	import { insertAssetSchema, updateAssetSchema } from '$lib/validator/asset.validator';
@@ -17,13 +16,20 @@
 	interface Props {
 		form: SuperForm<TSchema>;
 		mode: 'create' | 'edit' | 'view';
+		embedded?: boolean;
 	}
 
-	let { form = $bindable(), mode = 'create' }: Props = $props();
+	let { form = $bindable(), mode = 'create', embedded = false }: Props = $props();
 	const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" use:enhance class="grid flex-1 auto-rows-min gap-4 overflow-y-auto px-4">
+<form
+	method="POST"
+	use:enhance
+	class={embedded
+		? 'grid auto-rows-min gap-6'
+		: 'grid flex-1 auto-rows-min gap-4 overflow-y-auto px-4'}
+>
 	<Form.Field {form} name="name">
 		<Form.Control>
 			{#snippet children({ props })}
@@ -49,7 +55,7 @@
 		<Form.Description />
 		<Form.FieldErrors />
 	</Form.Field>
-	<Form.Fieldset {form} name="type">
+	<Form.Fieldset {form} name="type" class="grid gap-2">
 		<Form.Legend>ประเภทพัสดุ</Form.Legend>
 		<RadioGroup.Root bind:value={$formData.type} name="type" class="w-full">
 			{#each assetTypeOptions as option (option.value)}
@@ -72,51 +78,33 @@
 		</RadioGroup.Root>
 		<Form.FieldErrors />
 	</Form.Fieldset>
-	<div
-		class="grid grid-cols-2 grid-rows-3"
-		style="grid-template-areas: 'label label' 'input-amount input-unitTerm' 'description-amount description-unitTerm' 'errors-amount errors-unitTerm'"
-	>
-		<FormPrimitive.Field {form} name="amount">
+	<div class="grid gap-4 sm:grid-cols-2">
+		{#if mode === 'create'}
+			<Form.Field {form} name="amount">
+				<Form.Control>
+					{#snippet children({ props })}
+						<Form.Label>จำนวนตั้งต้น</Form.Label>
+						<Input {...props} type="number" min="1" bind:value={$formData.amount} />
+					{/snippet}
+				</Form.Control>
+				<Form.Description>จำนวนทั้งหมดในทะเบียน</Form.Description>
+				<Form.FieldErrors />
+			</Form.Field>
+		{/if}
+		<Form.Field {form} name="unitTerm">
 			<Form.Control>
 				{#snippet children({ props })}
-					<Form.Label class="grid-area-['label'] col-span-2">จำนวน</Form.Label>
+					<Form.Label>หน่วยนับ</Form.Label>
 					<Input
 						{...props}
-						placeholder="10"
-						min="1"
-						type="number"
-						bind:value={$formData.amount}
-						style="grid-area: input-amount"
-						class="rounded-r-none border-r-0"
-						readonly={mode !== 'create'}
-					/>
-				{/snippet}
-			</Form.Control>
-			<Form.Description style="grid-area: description-amount"
-				>{mode === 'create'
-					? 'จำนวนตั้งต้นทั้งหมดในทะเบียน'
-					: 'ปรับจำนวนผ่านส่วนคลังและสภาพพัสดุด้านล่าง'}</Form.Description
-			>
-			<Form.FieldErrors style="grid-area: errors-amount" />
-		</FormPrimitive.Field>
-		<FormPrimitive.Field {form} name="unitTerm">
-			<Form.Control>
-				{#snippet children({ props })}
-					<Input
-						{...props}
-						placeholder="อัน"
+						placeholder="เช่น ชิ้น, ใบ, อัน"
 						bind:value={$formData.unitTerm}
-						class="rounded-l-none"
-						style="grid-area: input-unitTerm"
 						readonly={mode === 'view'}
 					/>
 				{/snippet}
 			</Form.Control>
-			<Form.Description style="grid-area: description-unitTerm"
-				>คำลักษณะนามที่จะใช้กับพัสดุนี้ เช่น ชิ้น</Form.Description
-			>
-			<Form.FieldErrors style="grid-area: errors-unitTerm" />
-		</FormPrimitive.Field>
+			<Form.FieldErrors />
+		</Form.Field>
 	</div>
 	<Form.Field {form} name="owner">
 		<Form.Control>
