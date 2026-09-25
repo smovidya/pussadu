@@ -23,6 +23,7 @@
 	interface Item {
 		title: string;
 		url: string;
+		allowRoles?: string[];
 		rightAction?: RightAction;
 	}
 	interface Group {
@@ -57,6 +58,11 @@
 				{
 					title: 'บุคคล',
 					url: '/admin/people'
+				},
+				{
+					title: 'ผู้ดูแลระบบ',
+					url: '/admin/administrators',
+					allowRoles: ['admin']
 				},
 				{
 					title: 'รายการยืม',
@@ -104,7 +110,9 @@
 				<Sidebar.GroupLabel>{group.title}</Sidebar.GroupLabel>
 				<Sidebar.GroupContent>
 					<Sidebar.Menu>
-						{#each group.items as item (item.title)}
+						{#each group.items.filter((item) => !item.allowRoles || item.allowRoles.some( (role) => $auth.data?.user.role
+											?.split(',')
+											.includes(role) )) as item (item.title)}
 							<Sidebar.MenuItem>
 								<Sidebar.MenuButton isActive={page.url.pathname === item.url}>
 									{#snippet child({ props })}
