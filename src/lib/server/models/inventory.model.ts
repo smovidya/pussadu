@@ -79,22 +79,22 @@ export async function listAssetsWithAvailability(
 ) {
 	if (!assets.length) return [];
 	const now = new Date();
-	const requests = await db.query.assetToProject.findMany({
-		where: (request, { and, inArray: inStatuses }) =>
-			and(
-				inArray(
-					request.assetId,
-					assets.map((asset) => asset.id)
-				),
-				inStatuses(request.status, ['pending', 'approved', 'inuse'])
-			),
-		with: { movements: true }
-	});
+	const statuses = ['pending', 'approved', 'inuse'] as const;
+	// D1 allows 100 bound parameters per query, including the status filters.
+	const batchSize = 100 - statuses.length;
 	const requestsByAsset = new Map<string, RequestWithMovements[]>();
-	for (const request of requests) {
-		const grouped = requestsByAsset.get(request.assetId) ?? [];
-		grouped.push(request);
-		requestsByAsset.set(request.assetId, grouped);
+	for (let offset = 0; offset < assets.length; offset += batchSize) {
+		const assetIds = assets.slice(offset, offset + batchSize).map((asset) => asset.id);
+		const requests = await db.query.assetToProject.findMany({
+			where: (request, { and, inArray: inStatuses }) =>
+				and(inArray(request.assetId, assetIds), inStatuses(request.status, [...statuses])),
+			with: { movements: true }
+		});
+		for (const request of requests) {
+			const grouped = requestsByAsset.get(request.assetId) ?? [];
+			grouped.push(request);
+			requestsByAsset.set(request.assetId, grouped);
+		}
 	}
 	return assets.map((asset) => ({
 		...asset,
