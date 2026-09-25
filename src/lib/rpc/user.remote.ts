@@ -18,7 +18,7 @@ import { Locals, LocalRequest } from '$lib/server/helpers/facades/request-event'
  * (same gap `guard.ts`'s `userHasPermission` call already has). Narrow cast to the
  * subset of the admin plugin API (see `better-auth/plugins/admin/routes.ts`) actually used here.
  */
-interface AdminApi {
+export interface AdminApi {
 	createUser(args: {
 		headers: Headers;
 		body: { email: string; name: string; role?: string };
@@ -31,7 +31,7 @@ interface AdminApi {
 	removeUser(args: { headers: Headers; body: { userId: string } }): Promise<{ success: boolean }>;
 	setRole(args: {
 		headers: Headers;
-		body: { userId: string; role: string };
+		body: { userId: string; role: string | string[] };
 	}): Promise<{ user: { id: string; email: string } }>;
 }
 
@@ -220,7 +220,7 @@ export const setStudentUserRole = command(setRoleSchema, async (data) => {
 
 	const { user } = await adminApi().setRole({
 		headers,
-		body: { userId: data.id, role }
+		body: { userId: data.id, role: Array.from(roles) }
 	});
 
 	await insertNewLog(Locals.db, {
