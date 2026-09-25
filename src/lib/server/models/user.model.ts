@@ -1,4 +1,4 @@
-import { isNotNull } from 'drizzle-orm';
+import { asc, isNotNull, like, or, sql } from 'drizzle-orm';
 import { tables, type DrizzleClient } from '../db';
 
 export const selectAllUsers = async (db: DrizzleClient) => {
@@ -37,3 +37,33 @@ export const selectUserById = async (db: DrizzleClient, id: string) => {
 		}
 	});
 };
+
+const administratorColumns = {
+	id: tables.user.id,
+	name: tables.user.name,
+	email: tables.user.email,
+	ouid: tables.user.ouid,
+	role: tables.user.role,
+	banned: tables.user.banned
+};
+
+export const selectAdministrators = (db: DrizzleClient) =>
+	db
+		.select(administratorColumns)
+		.from(tables.user)
+		.where(sql`instr(',' || coalesce(${tables.user.role}, '') || ',', ',admin,') > 0`)
+		.orderBy(asc(tables.user.name), asc(tables.user.id));
+
+export const searchAdministratorAccounts = (db: DrizzleClient, search: string) =>
+	db
+		.select(administratorColumns)
+		.from(tables.user)
+		.where(
+			or(
+				like(tables.user.name, `%${search}%`),
+				like(tables.user.email, `%${search}%`),
+				like(tables.user.ouid, `%${search}%`)
+			)
+		)
+		.orderBy(asc(tables.user.name), asc(tables.user.id))
+		.limit(20);
